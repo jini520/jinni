@@ -73,23 +73,6 @@ Desktop.ini
 *.pid
 *.pid.lock
 
-# Environment variables (보안상 중요!)
-env-*.properties
-env.properties
-!env-template.properties
-
-# Application properties with sensitive information
-# 기본 설정 파일 (나중에 민감한 정보가 들어갈 수 있음)
-**/application.properties
-!**/application.properties.example
-
-# 프로파일별 설정 파일 (개인 DB 정보 포함)
-**/application-dev.properties
-**/application-test.properties
-**/application-prod.properties
-**/application-local.properties
-**/application-*-local.properties
-
 # Database
 *.db
 *.sqlite
