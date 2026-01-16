@@ -3,7 +3,6 @@ package site.jejinni.server.dto.project;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,6 +15,6 @@ public class ProjectDetailDto {
 	private String[] skills;
 	private Integer participants;
 	private String period;
+	private String contents;
 	private Integer order;
-	private List<ProjectContentDto> contents;
 }
