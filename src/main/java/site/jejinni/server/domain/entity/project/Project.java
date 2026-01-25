@@ -38,16 +38,20 @@ public class Project extends BaseEntity {
 	@Column(name = "period", length = 50)
 	private String period;
 
+	@Column(name = "contents", columnDefinition = "TEXT")
+	private String contents;
+
 	@Column(name = "order_index", nullable = false)
 	private Integer order;
 
 	@Builder
-	public Project(String title, String description, String[] skills, Integer participants, String period, Integer order) {
+	public Project(String title, String description, String[] skills, Integer participants, String period, String contents, Integer order) {
 		this.title = title;
 		this.description = description;
 		this.skills = skills != null ? skills : new String[0];
 		this.participants = participants != null ? participants : 0;
 		this.period = period;
+		this.contents = contents;
 		this.order = order != null ? order : 0;
 	}
 
@@ -69,6 +73,10 @@ public class Project extends BaseEntity {
 
 	public void updatePeriod(String period) {
 		this.period = period;
+	}
+
+	public void updateContents(String contents) {
+		this.contents = contents;
 	}
 
 	public void updateOrder(Integer order) {
