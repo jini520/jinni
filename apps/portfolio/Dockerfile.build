@@ -7,13 +7,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # 의존성 설치
-RUN npm install
+RUN pnpm install
 
 # 소스 코드 복사
 COPY . .
 
 # 빌드 수행
-RUN npm run build
+RUN pnpm run build
 
 # 빌드된 파일만 포함하는 최종 이미지
 FROM alpine:latest
