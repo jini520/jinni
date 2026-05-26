@@ -1,0 +1,34 @@
+// Shared breakpoints
+$breakpoints: (
+  --bp-xs: 0px,
+  --bp-sm: 480px,
+  --bp-md: 768px,
+  --bp-lg: 1024px,
+  --bp-xl: 1280px,
+  --bp-2xl: 1536px,
+);
+
+$bp-xs: 0px;
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;
+$bp-2xl: 1536px;
+
+@mixin min-width($bp) {
+  @if $bp == xs { @media (min-width: $bp-xs) { @content; } }
+  @else if $bp == sm { @media (min-width: $bp-sm) { @content; } }
+  @else if $bp == md { @media (min-width: $bp-md) { @content; } }
+  @else if $bp == lg { @media (min-width: $bp-lg) { @content; } }
+  @else if $bp == xl { @media (min-width: $bp-xl) { @content; } }
+  @else if $bp == 2xl { @media (min-width: $bp-2xl) { @content; } }
+  @else { @media (min-width: $bp) { @content; } }
+}
+
+@mixin max-width($bp) {
+  @if $bp == sm { @media (max-width: calc($bp-sm - 1px)) { @content; } }
+  @else if $bp == md { @media (max-width: calc($bp-md - 1px)) { @content; } }
+  @else if $bp == lg { @media (max-width: calc($bp-lg - 1px)) { @content; } }
+  @else if $bp == xl { @media (max-width: calc($bp-xl - 1px)) { @content; } }
+  @else { @media (max-width: $bp) { @content; } }
+}

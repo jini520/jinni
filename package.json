@@ -1,48 +1,15 @@
 {
-  "name": "jejinni-client",
-  "version": "0.1.0",
+  "name": "jejinni",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@tanstack/react-query": "^5.90.2",
-    "@xmldom/xmldom": "^0.8.11",
-    "classnames": "^2.5.1",
-    "highlight.js": "^11.11.1",
-    "lodash": "^4.17.23",
-    "marked": "^17.0.1",
-    "marked-highlight": "^2.2.3",
-    "next": "15.5.9",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "dev:web": "pnpm --filter @jejinni/web dev",
+    "dev:portfolio": "pnpm --filter @jejinni/portfolio dev",
+    "build:web": "pnpm --filter @jejinni/web build",
+    "build:portfolio": "pnpm --filter @jejinni/portfolio build",
+    "build": "pnpm --filter '@jejinni/*' build"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@svgr/webpack": "^8.1.0",
-    "@tailwindcss/postcss": "^4",
-    "@tanstack/react-query-devtools": "^5.90.2",
-    "@types/lodash": "^4.17.23",
-    "@types/marked": "^6.0.0",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@vitejs/plugin-react": "^5.0.2",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.2",
-    "msw": "^2.11.3",
-    "sass": "^1.92.1",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "vite": "^7.1.4"
+    "typescript": "^5"
   },
-  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748",
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
-  }
+  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
 }

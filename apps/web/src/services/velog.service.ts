@@ -1,13 +1,14 @@
-import { VelogPost } from "@/types/velog.types";
 import { DOMParser } from "@xmldom/xmldom";
+import { VelogPost } from "@/types/velog.types";
 import { parseRSSDate } from "@/lib/parseDate";
 
 export const fetchVelogPost = async (): Promise<VelogPost[]> => {
   try {
     const rssUrl = process.env.NEXT_PUBLIC_BLOG_RSS_URL;
     const username = process.env.NEXT_PUBLIC_BLOG_USERNAME;
-
+    
     if (!rssUrl || !username) {
+      console.log(rssUrl, username)
       console.error("rss url or username is not configured");
       return [];
     }

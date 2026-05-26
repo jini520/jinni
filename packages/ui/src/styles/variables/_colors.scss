@@ -1,0 +1,78 @@
+// Shared color tokens
+$color-primary-red: #FF3B30;
+$color-primary-orange: #FF9500;
+$color-primary-yellow: #FFCC00;
+$color-primary-green: #34C759;
+$color-primary-mint: #00C7BE;
+$color-primary-teal: #30B0C7;
+$color-primary-cyan: #32ADE6;
+$color-primary-blue: #007AFF;
+$color-primary-indigo: #5856D6;
+$color-primary-purple: #AF52DE;
+$color-primary-pink: #FF2D55;
+$color-primary-brown: #A2845E;
+$color-white: #ffffff;
+$color-black: #000000;
+
+// Gray scale
+$color-gray: #8E8E93;
+$color-gray-100: #AEAEB2;
+$color-gray-200: #C7C7CC;
+$color-gray-300: #D1D1D6;
+$color-gray-400: #E5E5EA;
+$color-gray-500: #F2F2F7;
+
+// Theme maps
+$theme-map-light: (
+  --color-primary-red: $color-primary-red,
+  --color-primary-orange: $color-primary-orange,
+  --color-primary-yellow: $color-primary-yellow,
+  --color-primary-green: $color-primary-green,
+  --color-primary-mint: $color-primary-mint,
+  --color-primary-teal: $color-primary-teal,
+  --color-primary-cyan: $color-primary-cyan,
+  --color-primary-blue: $color-primary-blue,
+  --color-primary-indigo: $color-primary-indigo,
+  --color-primary-purple: $color-primary-purple,
+  --color-primary-pink: $color-primary-pink,
+  --color-primary-brown: $color-primary-brown,
+  --color-white: $color-white,
+  --color-black: $color-black,
+  --color-gray: $color-gray,
+  --color-gray-100: $color-gray-100,
+  --color-gray-200: $color-gray-200,
+  --color-gray-300: $color-gray-300,
+  --color-gray-400: $color-gray-400,
+  --color-gray-500: $color-gray-500,
+  --bg-color-primary: #FFFFFF,
+  --bg-color-secondary: #F2F2F7,
+  --text-color-primary: #1C1C1E,
+  --text-color-inherit: #1C1C1E,
+);
+
+$theme-map-dark: (
+  --color-primary-red: #FF453A,
+  --color-primary-orange: #FF9F0A,
+  --color-primary-yellow: #FFD60A,
+  --color-primary-green: #30D158,
+  --color-primary-mint: #63E6E2,
+  --color-primary-teal: #40CBE0,
+  --color-primary-cyan: #64D2FF,
+  --color-primary-blue: #0A84FF,
+  --color-primary-indigo: #5E5CE6,
+  --color-primary-purple: #BF5AF2,
+  --color-primary-pink: #FF375F,
+  --color-primary-brown: #AC8E68,
+  --color-white: $color-white,
+  --color-black: $color-black,
+  --color-gray: $color-gray,
+  --color-gray-100: #636366,
+  --color-gray-200: #48484A,
+  --color-gray-300: #3A3A3C,
+  --color-gray-400: #2C2C2E,
+  --color-gray-500: #1C1C1E,
+  --bg-color-primary: #0F182A,
+  --bg-color-secondary: #2C2C2E,
+  --text-color-primary: $color-white,
+  --text-color-inherit: $color-white,
+);
