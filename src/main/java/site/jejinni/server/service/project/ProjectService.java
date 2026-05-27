@@ -50,33 +50,27 @@ public class ProjectService {
 				.description(request.getDescription())
 				.skills(request.getSkills())
 				.participants(request.getParticipants())
-				.period(request.getPeriod())
+				.startedAt(request.getStartedAt())
+				.endedAt(request.getEndedAt())
+				.status(request.getStatus())
+				.company(request.getCompany())
+				.overview(request.getOverview())
+				.highlights(request.getHighlights())
+				.responsibilities(request.getResponsibilities())
+				.features(request.getFeatures())
+				.links(request.getLinks())
 				.contentImageUrls(request.getContentImageUrls())
 				.contents(request.getContents())
 				.order(request.getOrder())
 				.build();
 
 		project = projectRepository.save(project);
-
-		ProjectDetailDto data = ProjectDetailDto.builder()
-				.id(project.getId())
-				.title(project.getTitle())
-				.description(project.getDescription())
-				.skills(project.getSkills())
-				.participants(project.getParticipants())
-				.period(project.getPeriod())
-				.contentImageUrls(project.getContentImageUrls())
-				.contents(project.getContents())
-				.order(project.getOrder())
-				.build();
-
-		return new ApiResponse<>(data);
+		return new ApiResponse<>(buildDetailResponse(project));
 	}
 
 	public ApiResponse<ProjectDetailDto> getProjectDetail(UUID projectId) {
 		Project project = projectRepository.findById(projectId)
 				.orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
-
 		return new ApiResponse<>(buildDetailResponse(project));
 	}
 
@@ -85,58 +79,42 @@ public class ProjectService {
 		Project project = projectRepository.findById(projectId)
 				.orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
 
-		if (request.getTitle() != null) {
-			project.updateTitle(request.getTitle());
-		}
-		if (request.getDescription() != null) {
-			project.updateDescription(request.getDescription());
-		}
-		if (request.getSkills() != null) {
-			project.updateSkills(request.getSkills());
-		}
-		if (request.getParticipants() != null) {
-			project.updateParticipants(request.getParticipants());
-		}
-		if (request.getPeriod() != null) {
-			project.updatePeriod(request.getPeriod());
-		}
-		if (request.getContentImageUrls() != null) {
-			project.updateContentImageUrls(request.getContentImageUrls());
-		}
-		if (request.getContents() != null) {
-			project.updateContents(request.getContents());
-		}
-		if (request.getOrder() != null) {
-			project.updateOrder(request.getOrder());
-		}
+		if (request.getTitle() != null)            project.updateTitle(request.getTitle());
+		if (request.getDescription() != null)      project.updateDescription(request.getDescription());
+		if (request.getSkills() != null)           project.updateSkills(request.getSkills());
+		if (request.getParticipants() != null)     project.updateParticipants(request.getParticipants());
+		if (request.getStartedAt() != null)        project.updateStartedAt(request.getStartedAt());
+		// endedAt은 null 전달 시 명시적으로 초기화 가능하도록 항상 반영
+		project.updateEndedAt(request.getEndedAt());
+		if (request.getStatus() != null)           project.updateStatus(request.getStatus());
+		if (request.getCompany() != null)          project.updateCompany(request.getCompany());
+		if (request.getOverview() != null)         project.updateOverview(request.getOverview());
+		if (request.getHighlights() != null)       project.updateHighlights(request.getHighlights());
+		if (request.getResponsibilities() != null) project.updateResponsibilities(request.getResponsibilities());
+		if (request.getFeatures() != null)         project.updateFeatures(request.getFeatures());
+		if (request.getLinks() != null)            project.updateLinks(request.getLinks());
+		if (request.getContentImageUrls() != null) project.updateContentImageUrls(request.getContentImageUrls());
+		if (request.getContents() != null)         project.updateContents(request.getContents());
+		if (request.getOrder() != null)            project.updateOrder(request.getOrder());
 
 		return new ApiResponse<>(buildDetailResponse(project));
 	}
 
-	/**
-	 * 프로젝트를 삭제합니다. 업로드된 이미지 디렉터리와 DB 레코드를 모두 삭제합니다.
-	 */
 	@Transactional
 	public void deleteProject(UUID projectId) {
 		Project project = projectRepository.findById(projectId)
 				.orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
-
 		fileStorageService.deleteProjectImageDir(projectId);
 		projectRepository.delete(project);
 	}
 
-	/**
-	 * 프로젝트의 contentImageUrls에 이미지 URL 한 개를 추가합니다.
-	 */
 	@Transactional
 	public ApiResponse<ProjectDetailDto> addContentImageUrl(UUID projectId, String newImageUrl) {
 		Project project = projectRepository.findById(projectId)
 				.orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + projectId));
 
 		String[] existing = project.getContentImageUrls();
-		if (existing == null) {
-			existing = new String[0];
-		}
+		if (existing == null) existing = new String[0];
 		String[] updated = Arrays.copyOf(existing, existing.length + 1);
 		updated[existing.length] = newImageUrl;
 		project.updateContentImageUrls(updated);
@@ -144,9 +122,6 @@ public class ProjectService {
 		return new ApiResponse<>(buildDetailResponse(project));
 	}
 
-	/**
-	 * 프로젝트의 contentImageUrls에서 해당 이미지 URL을 제거하고 파일을 삭제합니다.
-	 */
 	@Transactional
 	public ApiResponse<ProjectDetailDto> removeContentImageUrl(UUID projectId, UUID fileId) {
 		Project project = projectRepository.findById(projectId)
@@ -154,9 +129,7 @@ public class ProjectService {
 
 		String targetUrl = "/api/projects/" + projectId + "/images/" + fileId;
 		String[] existing = project.getContentImageUrls();
-		if (existing == null) {
-			existing = new String[0];
-		}
+		if (existing == null) existing = new String[0];
 		String[] updated = Arrays.stream(existing)
 				.filter(url -> !Objects.equals(url, targetUrl))
 				.toArray(String[]::new);
@@ -172,19 +145,25 @@ public class ProjectService {
 	}
 
 	private ProjectDetailDto buildDetailResponse(Project project) {
-		ProjectDetailDto data = ProjectDetailDto.builder()
+		return ProjectDetailDto.builder()
 				.id(project.getId())
 				.title(project.getTitle())
 				.description(project.getDescription())
 				.skills(project.getSkills())
 				.participants(project.getParticipants())
-				.period(project.getPeriod())
+				.startedAt(project.getStartedAt())
+				.endedAt(project.getEndedAt())
+				.status(project.getStatus())
+				.company(project.getCompany())
+				.overview(project.getOverview())
+				.highlights(project.getHighlights())
+				.responsibilities(project.getResponsibilities())
+				.features(project.getFeatures())
+				.links(project.getLinks())
 				.contentImageUrls(project.getContentImageUrls())
 				.contents(project.getContents())
 				.order(project.getOrder())
 				.build();
-
-		return data;
 	}
 
 	private ProjectListItemDto toListDto(Project project) {
@@ -193,7 +172,9 @@ public class ProjectService {
 				.title(project.getTitle())
 				.description(project.getDescription())
 				.skills(project.getSkills())
-				.period(project.getPeriod())
+				.startedAt(project.getStartedAt())
+				.endedAt(project.getEndedAt())
+				.status(project.getStatus())
 				.order(project.getOrder())
 				.build();
 	}
