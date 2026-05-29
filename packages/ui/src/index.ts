@@ -5,6 +5,17 @@ export * from './atoms/Badge';
 export * from './atoms/Icon';
 export * from './atoms/Pill';
 
+// ── Molecules ────────────────────────────────────────────────────────────────
+export * from './molecules/Chip';
+export * from './molecules/Accordion';
+
+// ── Organisms ────────────────────────────────────────────────────────────────
+export * from './organisms/Nav';
+export * from './organisms/Card';
+export * from './organisms/Modal';
+export * from './organisms/IconGrid';
+export * from './organisms/ProgressBar';
+
 // ── Hooks ────────────────────────────────────────────────────────────────────
 export { useReveal }         from './hooks/useReveal';
 export { useMouse }          from './hooks/useMouse';
