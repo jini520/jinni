@@ -42,14 +42,28 @@ function AppContent() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // 새로고침 전 스크롤 위치 저장
+    const saveScroll = () => sessionStorage.setItem('scrollY', String(window.scrollY));
+    window.addEventListener('beforeunload', saveScroll);
+
     const [dataPromise, timerPromise] = [
       fetchPortfolioData(),
       new Promise<void>((resolve) => setTimeout(resolve, 1000)),
     ];
-    Promise.all([dataPromise, timerPromise]).then(([d]) => setData(d));
+    Promise.all([dataPromise, timerPromise]).then(([d]) => {
+      setData(d);
+      // 데이터 로드 완료 후 저장된 스크롤 위치 복원
+      const saved = sessionStorage.getItem('scrollY');
+      if (saved) {
+        requestAnimationFrame(() => window.scrollTo(0, parseInt(saved)));
+        sessionStorage.removeItem('scrollY');
+      }
+    });
     try {
       if (localStorage.getItem('aurora-theme') === 'light') setDark(false);
     } catch {}
+
+    return () => window.removeEventListener('beforeunload', saveScroll);
   }, []);
 
   useEffect(() => {
@@ -59,7 +73,8 @@ function AppContent() {
   return (
     <>
       <ScrollProgress accent={PROGRESS_ACCENT} />
-      {data ? (
+      {!data && <div className="portfolio-loading" />}
+      {data && (
         <AuroraVariant
           data={data}
           dark={dark}
@@ -68,8 +83,6 @@ function AppContent() {
             navigate(`/projects/${id}`, { state: { accent, idx } })
           }
         />
-      ) : (
-        <div className="portfolio-loading" />
       )}
       <Routes>
         <Route path="/projects/:id" element={<ProjectModalRoute dark={dark} />} />
