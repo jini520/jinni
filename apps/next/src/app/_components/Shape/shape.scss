@@ -1,0 +1,19 @@
+@reference "tailwindcss";
+
+@layer components {
+  .shape {
+    @apply w-full h-full;
+  }
+
+  .shape--sm {
+    @apply w-4 h-4;
+  }
+
+  .shape--md {
+    @apply w-8 h-8;
+  }
+
+  .shape--lg {
+    @apply w-16 h-16;
+  }
+}

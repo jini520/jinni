@@ -1,0 +1,38 @@
+@reference 'tailwindcss';
+
+@layer components {
+  
+  .glass-container {
+    @apply relative;
+    background: transparent;  
+    overflow: hidden;
+    isolation: isolate;
+    // box-shadow: 0 6px 6px rgba(0, 0, 0, 0.02), 0 0 20px rgba(0, 0, 0, 0.01);
+    box-shadow: 0px 6px 10px -8px var(--opacity-20);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+  }
+  
+  .glass-filter {
+    @apply absolute inset-0 z-0;
+
+    backdrop-filter: blur(4px);
+    filter: url(#lg-dist);
+    isolation: isolate;
+  }
+  
+  .glass-overlay {
+    @apply absolute inset-0 z-1;
+  }
+  
+  .glass-specular {
+    @apply absolute inset-0 z-2;
+    
+    border-radius: inherit;
+    overflow: hidden;
+    box-shadow: inset 0 0 8px -2px var(--opacity-20);
+  }
+  
+  .glass-content {
+    @apply relative z-3 w-full;
+  }
+}

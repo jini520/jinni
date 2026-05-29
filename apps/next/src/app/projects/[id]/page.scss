@@ -1,0 +1,7 @@
+@reference 'tailwindcss';
+
+@layer components {
+  .project__page-container {
+    @apply w-full h-full pt-12 pb-24 pl-4 pr-4;
+  }
+}

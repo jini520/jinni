@@ -1,0 +1,23 @@
+@reference 'tailwindcss';
+
+@layer components {
+  .download-button {
+    @apply relative;
+  }
+
+  .download-button__wrapper {
+    @apply relative rounded-lg cursor-pointer;
+
+    &:hover {
+      background-color: var(--bg-color-primary);
+    }
+  }
+
+  .download-button__content {
+    @apply flex items-center justify-center px-4 py-3 gap-2;
+  }
+
+  .download-button__icon {
+    @apply w-5 h-5;
+  }
+}

@@ -1,0 +1,99 @@
+@reference 'tailwindcss';
+
+@layer components {
+  .nav {
+    @apply relative w-[10rem];
+    @apply sm:w-auto;
+
+    transition: width 0.5s;
+    
+    .nav-wrapper {
+      @apply rounded-full;
+    }
+    
+    .nav-inner {
+      @apply flex px-2 py-2 gap-2 items-center justify-between;
+    }
+
+    &--open {
+      @apply w-full;
+      @apply sm:w-auto;
+    }
+  }
+
+  .logo {
+    @apply px-4 py-2 grid grid-cols-2 grid-cols-2 justify-center grid-rows-[1rem_1rem] grid-cols-[1rem_1rem];
+
+    & > svg {
+      @apply w-4 h-4 stroke-40;
+
+    }
+    &:hover {
+      cursor: pointer;
+      // 각 svg에 순차적으로 통통 튀는 애니메이션(bounce)을 적용합니다.
+      // 접근성과 일관성을 위해 prefers-reduced-motion도 고려합니다.
+      & > svg {
+        animation: none;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        & > svg {
+          animation: logo-bounce 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0s 1;
+          animation-play-state: paused;
+        }
+        & > svg:nth-child(1) { animation-delay: 0s; }
+        & > svg:nth-child(2) { animation-delay: 0.08s; }
+        & > svg:nth-child(3) { animation-delay: 0.16s; }
+        & > svg:nth-child(4) { animation-delay: 0.24s; }
+        &:hover > svg {
+          animation-play-state: running;
+        }
+      }
+
+      @keyframes logo-bounce {
+        0%   { transform: translateY(0); }
+        20%  { transform: translateY(-8px); }
+        40%  { transform: translateY(0); }
+        60%  { transform: translateY(-4px); }
+        80%  { transform: translateY(0); }
+        100% { transform: translateY(0); }
+      }
+    }
+  }
+
+  .nav-item {
+    @apply relative sm:block hidden font-medium cursor-pointer px-4 py-3 rounded-full;
+
+    list-style: none;
+    color: var(--color-text-primary);
+
+    &.active {
+      @apply font-bold;
+      
+      box-shadow: inset 0 0 20px 2px rgba(255, 255, 255, 0.45);
+      // background-color: rgba(255, 255, 255, 0.15);
+    }
+  }
+
+  .nav-hamburger {
+    @apply px-4 py-2 sm:hidden block;
+  }
+
+  .nav__dropdown {
+    @apply hidden absolute! z-9999 mt-3 top-[100%] w-full left-0 rounded-[2rem] p-6;
+    @apply sm:hidden;
+
+    &--open {
+      @apply block;
+      @apply sm:hidden;
+    }
+    
+
+    &-items {
+      @apply flex flex-col gap-4;
+    }
+
+    &-item {
+      @apply text-lg;
+    }
+  }
+}

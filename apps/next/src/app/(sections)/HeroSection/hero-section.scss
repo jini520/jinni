@@ -1,0 +1,48 @@
+@reference "tailwindcss";
+
+@layer components {
+  .section__hero {
+    .section__title {
+      @apply text-4xl font-bold leading-tight text-center;
+      @apply sm:text-5xl;
+
+      color: var(--color-text-primary);
+    }
+
+    .section__description {
+      @apply text-lg font-medium leading-tight text-center mt-12;
+
+      color: var(--color-gray);
+    }
+  }
+  .flicker-text {
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 5px #f0f,
+      0 0 10px #f0f,
+      0 0 20px #f0f,
+      0 0 40px #f0f;
+    animation: flicker 2.5s infinite;
+  }
+
+  .section__download-area {
+    @apply flex justify-center;
+  }
+
+  @keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+      opacity: 1;
+      text-shadow:
+        0 0 5px #f0f,
+        0 0 10px #f0f,
+        0 0 20px #f0f,
+        0 0 40px #f0f;
+    }
+    20%, 24%, 55% {
+      opacity: 0.4;
+      text-shadow: none;
+    }
+  }
+}

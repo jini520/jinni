@@ -1,0 +1,13 @@
+@reference 'tailwindcss';
+
+@layer components {
+  .back-button {
+    @apply flex items-center justify-center pt-4 pb-4 pl-16 pr-16 rounded-lg cursor-pointer;
+
+    background-color: var(--color-gray-100);
+
+    &:hover {
+      background-color: var(--color-gray-200);
+    }
+  }
+}

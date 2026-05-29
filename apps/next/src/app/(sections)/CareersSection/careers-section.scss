@@ -1,0 +1,103 @@
+@reference "tailwindcss";
+
+@layer components {
+  .section__careers {
+    .timeline {
+      &__group-title {
+        @apply flex items-center justify-center gap-4 mt-10;
+
+        color: var(--color-gray);
+        
+        & .title {
+          @apply whitespace-nowrap;
+        }
+
+        & .bar {
+          @apply w-[50%] h-[1.5px] rounded-full;
+          
+          background: linear-gradient(to right, var(--bg-color-primary), var(--color-gray-200));
+        }
+  
+        & .bar__reverse {
+          background: linear-gradient(to left, var(--bg-color-primary), var(--color-gray-200));
+        }
+      }
+  
+      &__list {
+        // @apply flex flex-col gap-4;
+      }
+  
+      &__item {
+        @apply flex flex-col items-start gap-0.5 mt-8;
+        @apply sm:grid sm:grid-cols-3 sm:gap-4;
+  
+      }
+  
+      &__content {
+        @apply flex flex-col col-span-2;
+        @apply ml-8;
+  
+      }
+      
+      &__header {
+        @apply flex items-center gap-4 justify-end leading-relaxed;
+        
+        & > svg {
+          // @apply w-6 h-6;
+          color: var(--color-gray-100)
+        }
+  
+      }
+  
+      &__date {
+        @apply min-w-28;
+      }
+  
+      &__title {
+        @apply flex items-center gap-2 text-lg font-bold;
+      }
+  
+      &__status {
+        @apply text-sm font-medium leading-tight;
+
+        color: var(--color-gray);
+      }
+  
+      &__description {
+          @apply flex flex-col text-sm font-medium leading-tight;
+
+          color: var(--color-gray);
+      }
+
+      &__button-detail {
+        @apply text-sm mt-2;
+
+        color: var(--color-primary-orange);
+
+        & > span {
+          @apply mt-0.5;
+
+          line-height: 20px;
+        }
+      }
+
+      &__content-detail {
+        @apply p-4 rounded-md mt-2;
+
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      &__content-detail-item {
+        @apply text-sm list-disc ml-4;
+
+      }
+    }
+  
+    .skill__icons {
+      @apply flex gap-2 mt-2;
+    }
+  
+    .skill__icon {
+    }
+  }
+}

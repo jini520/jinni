@@ -1,0 +1,42 @@
+@reference 'tailwindcss';
+
+@layer components {
+  .blog__card {
+    @apply rounded-[1rem] cursor-pointer;
+    
+    
+    &-inner {
+      @apply h-full flex flex-col gap-4 justify-end min-h-59 p-7;
+
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: multiply;
+      background-color: rgba(0, 0, 0, 0.6);
+      
+      &--default {
+      
+      }
+      &--devops {
+        background-image: url('/illustrations/devops.jpg');
+      }
+      &--cloud {
+        background-image: url('/illustrations/cloud.jpg');
+      }
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+    }
+
+    &-title {
+      @apply flex text-lg font-bold h-12;
+    }
+
+    &-pubDate {
+      @apply flex text-sm;
+
+      color: var(--color-gray);
+    }
+  }
+}

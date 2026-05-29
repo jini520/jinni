@@ -1,0 +1,25 @@
+@reference "tailwindcss";
+
+@layer components {
+  .section {
+    @apply relative mt-16;
+    @apply sm:mt-28;
+
+    scroll-margin-top: 150px; /* 각 섹션의 상단에서 100px 떨어지게 */
+    
+    &__title {
+      @apply text-center text-base;
+      @apply sm:text-lg;
+  
+      color: var(--color-primary-orange);
+      font-weight: var(--font-semibold);
+    }
+  
+    &__description {
+      @apply text-center text-lg mt-2;
+      @apply sm:text-xl;
+  
+      font-weight: var(--font-semibold);
+    }
+  }
+}

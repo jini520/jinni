@@ -15,12 +15,12 @@ export function PortfolioClient({ data }: Props) {
 
   useEffect(() => {
     try {
-      if (localStorage.getItem('aurora-theme') === 'light') setDark(false);
+      if (localStorage.getItem('portfolio-theme') === 'light') setDark(false);
     } catch {}
   }, []);
 
   useEffect(() => {
-    try { localStorage.setItem('aurora-theme', dark ? 'dark' : 'light'); } catch {}
+    try { localStorage.setItem('portfolio-theme', dark ? 'dark' : 'light'); } catch {}
   }, [dark]);
 
   return (

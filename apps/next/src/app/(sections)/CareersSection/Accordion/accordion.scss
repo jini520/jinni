@@ -1,0 +1,23 @@
+@reference "tailwindcss";
+
+@layer components {
+  .accordion {
+    @apply flex gap-1 items-center cursor-pointer;
+
+    &__icon {
+      @apply rotate-180 transition-transform duration-100;
+
+    }
+    &.active &__icon {
+      @apply rotate-270;
+    }
+
+    &__content {
+      @apply overflow-hidden transition-transform duration-100 hidden;
+
+      &.active {
+        @apply h-auto block;
+      }
+    }
+  }
+}

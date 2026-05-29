@@ -1,0 +1,39 @@
+@reference "tailwindcss";
+
+@layer components {
+  .section__certifications {
+    .certifications__list {
+      @apply flex flex-col gap-4 mt-8;
+    }
+
+    .certification__item {
+      @apply flex gap-4 mx-0;
+      @apply sm:min-w-150 sm:mx-auto sm:gap-8;
+    }
+
+    .certification__icon {
+      @apply p-3 w-12 h-12 rounded-lg;
+    }
+
+    .certification__content-wrapper {
+      @apply flex flex-col;
+      @apply sm:flex-row sm:gap-12;
+    }
+
+    .certification__content {
+      @apply flex flex-col text-lg font-bold min-w-60;
+      @apply sm:col-span-2;
+    }
+
+    .certification__description {
+      @apply text-sm;
+
+      color: var(--color-gray);
+    }
+
+    .certification__date {
+      @apply min-w-20;
+      @apply sm:mt-1.5;
+    }
+  }
+}

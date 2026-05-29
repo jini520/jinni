@@ -1,0 +1,11 @@
+@reference "tailwindcss";
+
+@layer components {
+  .home {
+    @apply relative pt-12 pb-48;
+  }  
+
+  .nav-container {
+    @apply relative flex justify-center sticky top-6 z-9999 mt-6;
+  }
+}
