@@ -2,10 +2,14 @@
 @use 'light' as l;
 @use 'dark' as d;
 @use '../tokens/typography' as t;
+@use '../tokens/colors' as c;
 
 :root {
   // 기본값: light 테마
   @include mx.spread-map(l.$theme-light);
+
+  --color-white: #{c.$color-white};
+  --color-pulse-green: #{c.$color-pulse-green};
 
   // Typography CSS 변수 노출
   --font-sans:  #{t.$font-sans};
