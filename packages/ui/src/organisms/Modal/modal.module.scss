@@ -1,0 +1,79 @@
+@use '../../styles/mixins/responsive' as rsp;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow-y: auto;
+  background: transparent;
+  animation: overlayIn 0.3s ease;
+
+  @include rsp.min-width(md) {
+    background: color-mix(in oklch, var(--color-bg), transparent 28%);
+    backdrop-filter: blur(20px) saturate(140%);
+  }
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 920px;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  border: none;
+  border-radius: 0;
+  min-height: 100vh;
+  margin: 0 auto;
+  animation: modalIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  @include rsp.min-width(md) {
+    border: 1px solid var(--color-border);
+    border-radius: 22px;
+    min-height: auto;
+    margin: clamp(16px, 3vw, 40px) auto;
+    box-shadow: 0 30px 80px color-mix(in oklch, var(--color-bg), transparent 50%);
+  }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.97) translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.closeRow {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 16px 0;
+  background: var(--color-bg);
+}
+
+.close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: var(--text-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s, transform 0.25s, border-color 0.25s;
+
+  &:hover {
+    transform: rotate(90deg);
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border-color: var(--color-accent);
+  }
+}
