@@ -9,7 +9,6 @@ import { useReveal } from '../../hooks/useReveal';
 
 const CARD_ACCENTS = ['#ff3d9a', '#9b5cff', '#3dd0ff', '#ffb84d'];
 
-
 const TECH_GROUPS_KO: Record<string, string> = {
   언어: '언어',
   프론트엔드: '프론트엔드',
@@ -40,9 +39,11 @@ interface Props {
   data: PortfolioData;
   dark: boolean;
   onToggleTheme: () => void;
+  /** 카드 클릭 시 호출 — 라우팅 처리는 호출부에서 담당 */
+  onProjectClick?: (id: string, accent: string, idx: string) => void;
 }
 
-export function AuroraVariant({ data, dark, onToggleTheme }: Props) {
+export function AuroraVariant({ data, dark, onToggleTheme, onProjectClick }: Props) {
   useReveal();
   const m = useMouse();
 
@@ -120,7 +121,6 @@ export function AuroraVariant({ data, dark, onToggleTheme }: Props) {
               </span>
             </h1>
           </div>
-
         </section>
 
         {/* ABOUT */}
@@ -223,18 +223,20 @@ export function AuroraVariant({ data, dark, onToggleTheme }: Props) {
           <div className="aurora-projects">
             {projects.map((p, i) => {
               const accent = CARD_ACCENTS[i % CARD_ACCENTS.length];
+              const idx = String(i + 1).padStart(2, '0');
               const MAX = 3;
               const showAll = p.skills.length <= MAX + 1;
               return (
                 <article
                   key={p.id}
-                  className="project-card"
+                  className={`project-card${onProjectClick ? ' project-card--clickable' : ''}`}
                   data-reveal
                   data-delay={Math.min(i + 1, 4) as 1 | 2 | 3 | 4}
                   style={{ ['--c' as string]: accent }}
+                  onClick={() => onProjectClick?.(p.id, accent, idx)}
                 >
                   <div>
-                    <div className="num">{String(i + 1).padStart(2, '0')}</div>
+                    <div className="num">{idx}</div>
                     <h3 className="title">{p.title}</h3>
                     <p className="desc">{p.description}</p>
                   </div>
@@ -252,6 +254,7 @@ export function AuroraVariant({ data, dark, onToggleTheme }: Props) {
                         )
                       }
                     </div>
+                    {onProjectClick && <span className="proj-card-arrow">→</span>}
                   </div>
                 </article>
               );
@@ -344,6 +347,7 @@ export function AuroraVariant({ data, dark, onToggleTheme }: Props) {
           <span>Designed & coded with care.</span>
         </footer>
       </main>
+
     </div>
   );
 }

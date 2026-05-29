@@ -1,67 +1,195 @@
 @reference 'tailwindcss';
 
 @layer components {
-  .project__detail-container {
-  }
-  
-  .shape {
-    &--orange {
-      color: var(--color-primary-orange);
-    }
-  
-    &--green {
-      color: var(--color-primary-green);
-    }
-  
-    &--blue {
-      color: var(--color-primary-blue);
-    }
+  .pd {
+    --c: var(--color-primary-orange);
+
+    &--orange { --c: var(--color-primary-orange); }
+    &--green  { --c: var(--color-primary-green); }
+    &--blue   { --c: var(--color-primary-blue); }
   }
 
-  .project__detail-header {
-    @apply flex flex-col gap-6;
+  // ── Head ──────────────────────────────────────────────────────────────────
+  .pd-head { @apply flex flex-col gap-4 mb-6; }
+  .pd-head-l { @apply flex flex-col gap-3; }
+
+  .pd-num {
+    @apply text-xs font-mono tracking-widest;
+    color: var(--c);
   }
 
-  .project__detail-title {
-    @apply text-2xl font-bold;
-  }
+  .pd-title-row { @apply flex items-center gap-4; }
 
-  .project__detail-caption {
-    @apply text-sm;
+  .pd-title { @apply text-2xl font-bold leading-tight; }
 
+  .pd-sub {
+    @apply text-sm leading-relaxed;
     color: var(--color-gray);
   }
 
-  .project__detail-description {
-    @apply mt-2;
+  .pd-pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono;
+    background: var(--bg-color-secondary);
+    border: 1px solid var(--color-gray-400);
+    color: var(--color-gray);
+    width: fit-content;
+  }
+  .pd-pill-dot {
+    @apply w-1.5 h-1.5 rounded-full;
+    background: var(--c);
+    box-shadow: 0 0 6px var(--c);
   }
 
-  .project__detail-skills {
-    @apply flex flex-wrap gap-2 mt-2;
+  // ── Meta Grid ─────────────────────────────────────────────────────────────
+  .pd-meta {
+    @apply grid gap-px rounded-xl overflow-hidden mb-6;
+    background: var(--color-gray-400);
+    border: 1px solid var(--color-gray-400);
+  }
+  .pd-meta-cell {
+    @apply px-4 py-3;
+    background: var(--bg-color-secondary);
+  }
+  .pd-meta-k {
+    @apply text-xs font-mono tracking-widest uppercase;
+    color: var(--c);
+  }
+  .pd-meta-v {
+    @apply text-sm font-medium mt-1 leading-snug;
+    color: var(--text-color-primary);
   }
 
-  .project__detail-divider {
-    @apply w-full h-[1px] mt-8 mb-8;
+  // ── Blocks ────────────────────────────────────────────────────────────────
+  .pd-blocks { @apply flex flex-col gap-6 mb-6; }
 
-    background-color: var(--color-gray-100);
-  }
+  .pd-block {
+    @apply grid gap-4;
+    grid-template-columns: 120px 1fr;
 
-  .project__detail-content-title {
-    @apply text-lg font-bold mt-8;
-  }
-
-  .project__detail-content-list {
-    @apply flex flex-col list-none;
-
-    list-style: outside;
-
-    &.level-0 {
-      @apply ml-5 text-base gap-6 mt-4 font-semibold;
-      list-style-type: decimal;
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+      gap: 8px;
     }
+  }
 
-    &.level-1 {
-      @apply list-disc ml-5 text-sm gap-2 mt-2 font-normal;
+  .pd-block-label {
+    @apply text-xs font-mono tracking-widest uppercase pt-1 flex items-center gap-2;
+    color: var(--c);
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, color-mix(in srgb, var(--c) 30%, transparent), transparent);
     }
+    @media (max-width: 640px) {
+      &::after { display: none; }
+    }
+  }
+
+  .pd-block-body {
+    @apply text-sm leading-relaxed;
+    color: var(--text-color-primary);
+
+    p { margin: 0; }
+
+    ul {
+      @apply flex flex-col gap-2 list-none p-0 m-0;
+    }
+    li {
+      @apply grid gap-2 items-start;
+      grid-template-columns: 14px 1fr;
+
+      &::before {
+        content: '→';
+        color: var(--c);
+        font-family: monospace;
+        font-size: 11px;
+        line-height: 1.6;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // ── Features ──────────────────────────────────────────────────────────────
+  .pd-features {
+    @apply grid gap-2;
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 640px) { grid-template-columns: 1fr; }
+  }
+
+  .pd-feature {
+    @apply grid gap-3 items-start rounded-xl px-4 py-3 relative overflow-hidden;
+    grid-template-columns: 28px 1fr;
+    background: var(--bg-color-secondary);
+    border: 1px solid var(--color-gray-400);
+    transition: border-color .2s;
+
+    &:hover { border-color: var(--c); }
+
+    &::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+      background: var(--c); opacity: .5;
+    }
+  }
+  .pd-feature-n {
+    @apply text-xs font-mono font-semibold pt-0.5;
+    color: var(--c);
+  }
+  .pd-feature-title {
+    @apply text-sm font-semibold leading-snug;
+    color: var(--text-color-primary);
+  }
+  .pd-feature-note {
+    @apply text-xs leading-relaxed mt-1;
+    color: var(--color-gray);
+  }
+
+  // ── Skills ────────────────────────────────────────────────────────────────
+  .pd-skills { @apply flex flex-wrap gap-2; }
+
+  // ── Links ─────────────────────────────────────────────────────────────────
+  .pd-links {
+    @apply flex gap-2 flex-wrap py-4 border-t;
+    border-color: var(--color-gray-400);
+  }
+
+  .pd-link {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium no-underline;
+    background: var(--bg-color-secondary);
+    border: 1px solid var(--color-gray-300);
+    color: var(--text-color-primary);
+    transition: background .2s, border-color .2s, transform .2s;
+
+    &:hover { border-color: var(--c); transform: translateY(-1px); }
+
+    &--primary {
+      background: var(--c);
+      border-color: var(--c);
+      color: #fff;
+    }
+  }
+
+  // ── 세부 내용 ──────────────────────────────────────────────────────────────
+  .pd-contents { @apply mt-2; }
+
+  .pd-contents-divider {
+    @apply flex items-center gap-3 my-6 text-xs font-mono tracking-widest uppercase;
+    color: var(--color-gray);
+
+    &::before, &::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: var(--color-gray-400);
+    }
+  }
+
+  // Shape 색상
+  .shape {
+    &--orange { color: var(--color-primary-orange); }
+    &--green  { color: var(--color-primary-green); }
+    &--blue   { color: var(--color-primary-blue); }
   }
 }

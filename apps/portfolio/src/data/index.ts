@@ -4,6 +4,7 @@ import type {
   PageResponse,
   PortfolioData,
   Project,
+  ProjectDetail,
   Skills,
   VelogPost,
 } from '@jejinni/types';
@@ -44,6 +45,9 @@ async function fetchPosts(): Promise<VelogPost[]> {
   return data ?? [];
 }
 
+export async function fetchProjectDetail(id: string): Promise<ProjectDetail | undefined> {
+  return apiFetch<ProjectDetail>(`/api/projects/${id}`);
+}
 
 export async function fetchPortfolioData(): Promise<PortfolioData> {
   const [skills, careers, projects, posts] = await Promise.all([

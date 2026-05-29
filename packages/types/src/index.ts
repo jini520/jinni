@@ -61,11 +61,27 @@ export interface Careers {
 }
 
 // ── projects.types ─────────────────────────────────────────────────────────
+export type ProjectStatus = 'IN_PROGRESS' | 'LIVE' | 'COMPLETED';
+
+export interface ProjectFeature {
+  name: string;
+  note: string;
+}
+
+export interface ProjectLink {
+  label: string;
+  href: string;
+}
+
 export interface Project {
   id: string;
   title: string;
   description: string;
   skills: string[];
+  startedAt: string | null;   // ISO date "2025-11-01"
+  endedAt: string | null;     // null = 진행 중
+  status: ProjectStatus | null;
+  order: number;
 }
 
 export interface ProjectDetail {
@@ -73,9 +89,19 @@ export interface ProjectDetail {
   title: string;
   description: string;
   skills: string[];
-  participants: number;
-  period: string;
+  participants: string | null;
+  startedAt: string | null;
+  endedAt: string | null;
+  status: ProjectStatus | null;
+  company: string | null;
+  overview: string | null;
+  highlights: string[] | null;
+  responsibilities: string[] | null;
+  features: ProjectFeature[] | null;
+  links: ProjectLink[] | null;
+  contentImageUrls: string[];
   contents: string;
+  order: number;
 }
 
 // ── certifications.types ───────────────────────────────────────────────────
@@ -119,6 +145,7 @@ export interface VelogPost {
 
 // ── portfolio.types ────────────────────────────────────────────────────────
 export type Theme = 'dark' | 'light';
+export type Variant = 'aurora' | 'editorial' | 'cosmic';
 export type Density = 'compact' | 'regular' | 'comfy';
 
 export interface PortfolioData {
