@@ -1,5 +1,5 @@
 {
-  "name": "@jejinni/portfolio",
+  "name": "@jinni/react",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@jejinni/types": "workspace:*",
-    "@jejinni/ui": "workspace:*",
+    "@jinni/types": "workspace:*",
+    "@jinni/ui": "workspace:*",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0"

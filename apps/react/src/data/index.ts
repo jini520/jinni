@@ -7,7 +7,7 @@ import type {
   ProjectDetail,
   Skills,
   VelogPost,
-} from '@jejinni/types';
+} from '@jinni/types';
 
 export type { PortfolioData };
 
