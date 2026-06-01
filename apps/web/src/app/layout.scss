@@ -1,6 +1,0 @@
-@reference 'tailwindcss';
-
-.layout {
-  @apply px-6 relative flex flex-col min-h-screen mx-auto w-full max-w-[1000px];
-  @apply sm:px-8;
-}
