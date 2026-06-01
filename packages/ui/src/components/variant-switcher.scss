@@ -1,3 +1,5 @@
+@use '../styles/tokens/colors' as c;
+
 .vs {
   position: fixed;
   left: 50%;
@@ -49,7 +51,7 @@
 
   &[data-active='1'] {
     background: rgba(255, 255, 255, 0.96);
-    color: #0a0612;
+    color: c.$color-text-on-light;
 
     .vs-sub {
       color: rgba(0, 0, 0, 0.5);

@@ -1,4 +1,4 @@
-import type { Variant } from '@jejinni/types';
+import type { Variant } from '@jinni/types';
 import './variant-switcher.scss';
 
 const VARIANTS: { id: Variant; label: string; sub: string }[] = [

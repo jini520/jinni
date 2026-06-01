@@ -1,4 +1,4 @@
-import type { ProjectStatus } from '@jejinni/types';
+import type { ProjectStatus } from '@jinni/types';
 
 export const STATUS_LABELS: Record<ProjectStatus, string> = {
   IN_PROGRESS: '진행 중',

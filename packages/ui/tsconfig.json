@@ -14,7 +14,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@jejinni/types": ["../types/src/index.ts"]
+      "@jinni/types": ["../types/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
