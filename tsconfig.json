@@ -4,7 +4,7 @@
     "skipLibCheck": true
   },
   "references": [
-    { "path": "./apps/web" },
-    { "path": "./apps/portfolio" }
+    { "path": "./apps/next" },
+    { "path": "./apps/react" }
   ]
 }
