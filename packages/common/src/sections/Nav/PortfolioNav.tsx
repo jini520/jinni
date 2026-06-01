@@ -2,7 +2,7 @@
 
 import { Nav, useTheme } from '@jinni/ui';
 import { PROFILE } from '../../data/profile';
-import styles from '../../styles/sections.module.scss';
+import styles from './nav.module.scss';
 
 const navLinks = [
   { label: 'About',   href: '#about' },

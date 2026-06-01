@@ -1,0 +1,97 @@
+@use '@jinni/ui/scss/mixins/responsive' as rsp;
+@use '../../styles/section-base' as base;
+
+.section { @include base.section; }
+.shead { @include base.shead; }
+.sheadTag { @include base.sheadTag; }
+.sheadTitle { @include base.sheadTitle; }
+.sheadSub { @include base.sheadSub; }
+
+.tech {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+
+.techRow {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 22px 28px;
+
+  & + & { border-top: 1px solid var(--line); }
+
+  @include rsp.max-width(720px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 20px;
+  }
+}
+
+.techRowLabel {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ko { font-size: 16px; font-weight: 600; color: var(--color-text); letter-spacing: -0.01em; }
+.en {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+.techChips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.techChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 13px 7px 7px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  letter-spacing: -0.003em;
+  transition: transform 0.25s, border-color 0.25s, background 0.25s, box-shadow 0.25s;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--chip-accent);
+    background: var(--surface-3);
+    box-shadow: 0 8px 24px color-mix(in oklch, var(--chip-accent), transparent 72%);
+  }
+}
+
+.sq {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: transparent;
+  color: var(--color-white);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &:not(:has(svg)) {
+    background: var(--chip-accent);
+  }
+
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+}

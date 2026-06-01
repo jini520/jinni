@@ -1,7 +1,7 @@
 import type { Skills } from '@jinni/types';
 import { getSkillIcon } from '../../data/SkillIcons';
 import { TECH_GROUPS_KO } from '../../data/content';
-import styles from '../../styles/sections.module.scss';
+import styles from './stack.module.scss';
 
 export function StackSection({ skills }: { skills: Skills }) {
   const sortedCategories = [...skills.categories].sort((a, b) => a.order - b.order);

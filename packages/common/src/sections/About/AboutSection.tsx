@@ -1,5 +1,5 @@
 import { QA_BLOCKS } from '../../data/content';
-import styles from '../../styles/sections.module.scss';
+import styles from './about.module.scss';
 
 export function AboutSection() {
   return (

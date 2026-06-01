@@ -1,5 +1,5 @@
 import { LINKS } from '../../data/profile';
-import styles from '../../styles/sections.module.scss';
+import styles from './contact.module.scss';
 
 export function ContactSection() {
   return (

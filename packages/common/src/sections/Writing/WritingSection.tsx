@@ -1,5 +1,5 @@
 import type { VelogPost } from '@jinni/types';
-import styles from '../../styles/sections.module.scss';
+import styles from './writing.module.scss';
 
 export function WritingSection({ posts }: { posts: VelogPost[] }) {
   if (posts.length === 0) return null;

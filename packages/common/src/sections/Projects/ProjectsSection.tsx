@@ -1,8 +1,8 @@
 'use client';
 
-import type { Project } from '@jinni/types';
 import { CARD_ACCENTS } from '../../data/content';
-import styles from '../../styles/sections.module.scss';
+import type { Project } from '@jinni/types';
+import styles from './projects.module.scss';
 
 interface ProjectsSectionProps {
   projects: Project[];
@@ -26,8 +26,11 @@ export function ProjectsSection({ projects, onProjectClick }: ProjectsSectionPro
         {projects.map((p, i) => {
           const accent = CARD_ACCENTS[i % CARD_ACCENTS.length];
           const idx = String(i + 1).padStart(2, '0');
-          const MAX = 3;
+          const MAX = 5;
           const showAll = p.skills.length <= MAX + 1;
+          // TODO: server API에 role 필드 추가되면 p.role로 교체
+          const role = 'FRONTEND';
+          const year = (p.startedAt ?? p.endedAt)?.slice(0, 4);
           return (
             <article
               key={p.id}
@@ -56,7 +59,9 @@ export function ProjectsSection({ projects, onProjectClick }: ProjectsSectionPro
                     )
                   }
                 </div>
-                <span className={styles.projCardArrow}>→</span>
+                <span className={styles.projCardMeta}>
+                  {year ? `${role}·${year}` : role}
+                </span>
               </div>
             </article>
           );

@@ -1,5 +1,5 @@
 import type { Careers } from '@jinni/types';
-import styles from '../../styles/sections.module.scss';
+import styles from './career.module.scss';
 
 export function CareerSection({ careers }: { careers: Careers }) {
   const careerList = careers.businesses.map((b, i) => ({

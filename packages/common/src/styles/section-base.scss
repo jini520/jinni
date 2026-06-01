@@ -1,0 +1,61 @@
+@use '@jinni/ui/scss/mixins/responsive' as rsp;
+
+// Shared section heading patterns. Included as locals by each section module
+// so every *.module.scss stays self-contained.
+
+@mixin section {
+  padding: var(--gy) 0;
+  position: relative;
+}
+
+@mixin shead {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: end;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+
+  @include rsp.max-width(760px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+}
+
+@mixin sheadTag {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--a1);
+}
+
+@mixin sheadTitle {
+  margin-top: 12px;
+  font-size: clamp(28px, 3.6vw, 48px);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.05;
+  white-space: nowrap;
+
+  em {
+    font-style: normal;
+    font-family: inherit;
+    font-weight: inherit;
+    color: var(--a1);
+  }
+
+  @include rsp.max-width(480px) { white-space: normal; }
+}
+
+@mixin sheadSub {
+  color: var(--fg-dim);
+  font-size: 14.5px;
+  line-height: 1.6;
+  max-width: 420px;
+  justify-self: end;
+
+  @include rsp.max-width(760px) { justify-self: start; }
+}

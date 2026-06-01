@@ -1,5 +1,5 @@
 import { PROFILE } from '../../data/profile';
-import styles from '../../styles/sections.module.scss';
+import styles from './hero.module.scss';
 
 export function HeroSection() {
   return (
