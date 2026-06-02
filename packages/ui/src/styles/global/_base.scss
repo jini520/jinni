@@ -18,7 +18,7 @@ body {
   line-height:  var(--leading-normal);
   min-height:   100dvh;
   overflow-x:   hidden;
-  padding-top:    env(safe-area-inset-top);
+  // 상단 inset은 Nav 바가 직접 처리(블러 바가 노치/다이나믹 아일랜드 밑까지 full-bleed)
   padding-bottom: env(safe-area-inset-bottom);
   padding-left:   env(safe-area-inset-left);
   padding-right:  env(safe-area-inset-right);
