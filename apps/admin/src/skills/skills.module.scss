@@ -1,113 +1,96 @@
 @use 'tokens/spacing' as sp;
 @use 'tokens/typography' as t;
-
-.headerActions {
-  display: flex;
-  align-items: center;
-  gap: sp.$space-2;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.count {
-  margin-left: sp.$space-2;
-  font-size: t.$text-sm;
-  font-weight: t.$weight-normal;
-  color: var(--color-text-faint);
-}
+@use 'tokens/shadows' as sh;
 
 .hint {
   font-size: t.$text-sm;
   color: var(--color-text-subtle);
 }
 
-// ── Accordion ────────────────────────────────────────────────────────────
-.accordion {
+// ── Kanban board ─────────────────────────────────────────────────────────
+.board {
+  display: flex;
+  align-items: flex-start;
+  gap: sp.$space-4;
+  overflow-x: auto;
+  padding-bottom: sp.$space-3;
+}
+
+.column {
+  flex: 0 0 290px;
+  width: 290px;
   display: flex;
   flex-direction: column;
-  gap: sp.$space-3;
-}
-
-.item {
   border: 1px solid var(--color-border);
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--color-bg-secondary);
-  overflow: hidden;
+  max-height: calc(100dvh - 220px);
 }
 
-.header {
+.uncategorized {
+  background: transparent;
+  border-style: dashed;
+}
+
+.columnHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: sp.$space-3;
+  gap: sp.$space-2;
   padding: sp.$space-3 sp.$space-4;
-  cursor: pointer;
-  transition: background 0.18s ease;
-
-  &:hover {
-    background: color-mix(in srgb, var(--color-text) 4%, transparent);
-  }
+  border-bottom: 1px solid var(--color-border);
 }
 
-.title {
+.columnTitle {
   display: flex;
   align-items: center;
   gap: sp.$space-2;
   min-width: 0;
 }
 
-.arrow {
-  font-size: t.$text-xs;
-  color: var(--color-text-subtle);
-  transition: transform 0.2s ease;
-}
-
-.arrowOpen {
-  transform: rotate(90deg);
-}
-
-.catName {
+.columnName {
   font-size: t.$text-md;
   font-weight: t.$weight-semibold;
   color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.skillCount {
+.columnCount {
+  flex-shrink: 0;
   font-size: t.$text-xs;
   color: var(--color-text-subtle);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  padding: 2px sp.$space-2;
+  padding: 1px sp.$space-2;
 }
 
-.order {
-  font-size: t.$text-xs;
-  color: var(--color-text-faint);
-}
-
-.actions {
+.columnActions {
   display: flex;
   gap: sp.$space-1;
+  flex-shrink: 0;
 }
 
 .iconBtn {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
-  color: var(--color-text-subtle);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-text-faint);
   font-size: t.$text-sm;
   cursor: pointer;
-  transition: border-color 0.18s ease, color 0.18s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
   &:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    background: var(--color-bg);
   }
 }
 
@@ -116,73 +99,152 @@
   color: var(--color-red);
 }
 
-.content {
-  padding: sp.$space-3 sp.$space-4 sp.$space-4;
-  border-top: 1px solid var(--color-border);
-}
-
-// ── Skill row ────────────────────────────────────────────────────────────
-.skillList {
+.columnBody {
   display: flex;
   flex-direction: column;
   gap: sp.$space-2;
+  padding: sp.$space-3;
+  min-height: 56px;
+  overflow-y: auto;
+  flex: 1;
+  transition: background 0.15s ease;
 }
 
-.skillRow {
+.columnBodyOver {
+  background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+}
+
+.empty {
+  padding: sp.$space-4 0;
+  text-align: center;
+  font-size: t.$text-xs;
+  color: var(--color-text-faint);
+}
+
+// ── Skill card ───────────────────────────────────────────────────────────
+.card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: sp.$space-3;
+  gap: sp.$space-2;
   padding: sp.$space-2 sp.$space-3;
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-bg);
-}
-
-.skillInfo {
-  display: flex;
-  align-items: center;
-  gap: sp.$space-2;
-  min-width: 0;
-}
-
-.handle {
   cursor: grab;
-  color: var(--color-text-faint);
-  user-select: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
 
   &:active {
     cursor: grabbing;
   }
 }
 
-.skillOrder {
-  min-width: 18px;
-  font-size: t.$text-xs;
-  color: var(--color-text-faint);
+.cardDragging {
+  opacity: 0.4;
+}
+
+.cardOverlay {
+  box-shadow: sh.$shadow-lg;
+  border-color: var(--color-accent);
+  cursor: grabbing;
 }
 
 .skillName {
+  flex: 1;
+  min-width: 0;
   font-size: t.$text-base;
   font-weight: t.$weight-medium;
   color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.emptyCategory {
+.cardActions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: sp.$space-2;
-  padding: sp.$space-4;
-  color: var(--color-text-subtle);
-  font-size: t.$text-sm;
+  gap: 2px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+
+  .card:hover & {
+    opacity: 1;
+  }
 }
 
-.danger.danger {
-  color: var(--color-red);
+.cardBtn {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-faint);
+  font-size: t.$text-xs;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
-    color: var(--color-red);
-    background: color-mix(in srgb, var(--color-red) 12%, transparent);
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+  }
+}
+
+.cardBtnDanger:hover {
+  color: var(--color-red);
+}
+
+// ── Inline add ───────────────────────────────────────────────────────────
+.footer {
+  padding: 0 sp.$space-3 sp.$space-3;
+}
+
+.addInput {
+  width: 100%;
+  padding: sp.$space-2 sp.$space-3;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: t.$text-sm;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: var(--color-text-faint);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+}
+
+// ── Add-category column ──────────────────────────────────────────────────
+.addColumn {
+  flex: 0 0 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: sp.$space-2;
+  min-height: 56px;
+  padding: sp.$space-4;
+  border: 1px dashed var(--color-border);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--color-text-subtle);
+  font-size: t.$text-sm;
+  font-weight: t.$weight-medium;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
   }
 }
