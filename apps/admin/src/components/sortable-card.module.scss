@@ -9,11 +9,12 @@
   padding: sp.$space-4 sp.$space-5;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg);
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 
   &:hover {
     border-color: var(--color-border-strong);
+    box-shadow: sh.$shadow-sm;
   }
 }
 
@@ -42,10 +43,22 @@
 }
 
 .handle {
+  display: flex;
+  align-items: center;
   color: var(--color-text-faint);
-  font-size: t.$text-md;
   line-height: 1;
   user-select: none;
+  transition: color 0.15s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+
+  .handleArea:hover & {
+    color: var(--color-accent);
+  }
 }
 
 .title {

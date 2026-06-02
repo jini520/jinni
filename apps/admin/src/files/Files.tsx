@@ -13,6 +13,8 @@ import {
   FileList,
   Pagination,
   Button,
+  FileTextIcon,
+  ImageIcon,
   type UploadAreaHandle,
 } from "../components";
 import styles from "./files.module.scss";
@@ -96,49 +98,15 @@ const Files = () => {
     return fileName.substring(lastDotIndex).toLowerCase();
   };
 
-  // 파일 타입 아이콘
-  const getFileIcon = (file: FileDto): string => {
-    // fileType이 IMAGE인 경우
-    if (file.fileType === "IMAGE") return "🖼️";
-
-    // contentType으로 판단
-    if (file.contentType) {
-      if (file.contentType.startsWith("image/")) return "🖼️";
-      if (file.contentType.startsWith("video/")) return "🎥";
-      if (file.contentType.startsWith("audio/")) return "🎵";
-      if (file.contentType.includes("pdf")) return "📄";
-      if (
-        file.contentType.includes("word") ||
-        file.contentType.includes("document")
-      )
-        return "📝";
-      if (
-        file.contentType.includes("excel") ||
-        file.contentType.includes("spreadsheet")
-      )
-        return "📊";
-      if (
-        file.contentType.includes("zip") ||
-        file.contentType.includes("archive")
-      )
-        return "📦";
-    }
-
-    // originalFileName에서 확장자 추출하여 판단
-    if (file.originalFileName) {
-      const ext = getFileExtension(file.originalFileName);
-      if ([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"].includes(ext))
-        return "🖼️";
-      if ([".mp4", ".avi", ".mov", ".wmv"].includes(ext)) return "🎥";
-      if ([".mp3", ".wav", ".flac"].includes(ext)) return "🎵";
-      if (ext === ".pdf") return "📄";
-      if ([".doc", ".docx"].includes(ext)) return "📝";
-      if ([".xls", ".xlsx"].includes(ext)) return "📊";
-      if ([".zip", ".rar", ".7z"].includes(ext)) return "📦";
-    }
-
-    return "📎";
+  // 이미지 여부
+  const isImage = (file: FileDto): boolean => {
+    if (file.fileType === "IMAGE") return true;
+    if (file.contentType?.startsWith("image/")) return true;
+    const ext = file.originalFileName ? getFileExtension(file.originalFileName) : "";
+    return [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"].includes(ext);
   };
+  const getFileIcon = (file: FileDto) =>
+    isImage(file) ? <ImageIcon /> : <FileTextIcon />;
 
   // 파일 업로드
   const handleFileUpload = async (fileList: FileList | null) => {
@@ -218,7 +186,6 @@ const Files = () => {
 
       <UploadArea
         ref={uploadRef}
-        icon="📤"
         text="파일을 드래그하여 여기에 놓거나 클릭하여 선택하세요"
         buttonLabel="파일 선택"
         uploading={uploading}

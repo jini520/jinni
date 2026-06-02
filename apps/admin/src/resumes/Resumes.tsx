@@ -13,6 +13,8 @@ import {
   FileList,
   Pagination,
   Button,
+  FileTextIcon,
+  DownloadIcon,
   type UploadAreaHandle,
 } from "../components";
 import styles from "./resumes.module.scss";
@@ -79,20 +81,6 @@ const Resumes = () => {
   // 파일명 가져오기
   const getFileName = (file: FileDto): string => {
     return file.originalFileName || "이력서";
-  };
-
-  // 파일 타입 아이콘
-  const getFileIcon = (file: FileDto): string => {
-    if (file.contentType) {
-      if (file.contentType.includes("pdf")) return "📄";
-      if (file.contentType.includes("word") || file.contentType.includes("document")) return "📝";
-    }
-    if (file.originalFileName) {
-      const ext = file.originalFileName.toLowerCase();
-      if (ext.endsWith(".pdf")) return "📄";
-      if (ext.endsWith(".doc") || ext.endsWith(".docx")) return "📝";
-    }
-    return "📄";
   };
 
   // 파일 업로드
@@ -176,7 +164,6 @@ const Resumes = () => {
 
       <UploadArea
         ref={uploadRef}
-        icon="📄"
         text="이력서 파일을 드래그하여 여기에 놓거나 클릭하여 선택하세요"
         buttonLabel="이력서 선택"
         uploading={uploading}
@@ -192,7 +179,8 @@ const Resumes = () => {
             <div className={styles.headerActions}>
               {totalElements > 0 && (
                 <Button variant="outline" onClick={handleDownloadLatest}>
-                  ⬇️ 최신 이력서 다운로드
+                  <DownloadIcon />
+                  최신 이력서 다운로드
                 </Button>
               )}
               <Button onClick={() => uploadRef.current?.open()} disabled={uploading}>
@@ -209,7 +197,7 @@ const Resumes = () => {
                 {files.map((file) => (
                   <FileRow
                     key={file.id}
-                    icon={getFileIcon(file)}
+                    icon={<FileTextIcon />}
                     name={getFileName(file)}
                     meta={[
                       file.fileSize && formatFileSize(file.fileSize),

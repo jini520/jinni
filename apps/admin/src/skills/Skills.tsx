@@ -37,6 +37,9 @@ import {
   FormField,
   FormActions,
   Button,
+  GripIcon,
+  EditIcon,
+  CloseIcon,
 } from "../components";
 import styles from "./skills.module.scss";
 
@@ -78,6 +81,9 @@ const SkillCard = ({
       {...attributes}
       {...listeners}
     >
+      <span className={styles.cardGrip}>
+        <GripIcon />
+      </span>
       <span className={styles.skillName}>{skill.name}</span>
       <div className={styles.cardActions}>
         <button
@@ -88,8 +94,9 @@ const SkillCard = ({
             onEdit(skill);
           }}
           title="수정"
+          aria-label="수정"
         >
-          ✎
+          <EditIcon />
         </button>
         <button
           className={`${styles.cardBtn} ${styles.cardBtnDanger}`}
@@ -99,8 +106,9 @@ const SkillCard = ({
             onDelete(skill.id);
           }}
           title="삭제"
+          aria-label="삭제"
         >
-          ✕
+          <CloseIcon />
         </button>
       </div>
     </div>
@@ -150,15 +158,17 @@ const Column = ({
               className={styles.iconBtn}
               onClick={() => onEditCategory(category)}
               title="카테고리 수정"
+              aria-label="카테고리 수정"
             >
-              ✎
+              <EditIcon />
             </button>
             <button
               className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
               onClick={() => onDeleteCategory(category.id)}
               title="카테고리 삭제"
+              aria-label="카테고리 삭제"
             >
-              ✕
+              <CloseIcon />
             </button>
           </div>
         )}

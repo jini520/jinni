@@ -4,8 +4,10 @@ import {
   useRef,
   useState,
   type DragEvent,
+  type ReactNode,
 } from "react";
 import { Button } from "@jinni/ui";
+import { UploadIcon, DownloadIcon } from "./icons";
 import styles from "./file-manager.module.scss";
 
 export interface UploadAreaHandle {
@@ -15,7 +17,6 @@ export interface UploadAreaHandle {
 export const UploadArea = forwardRef<
   UploadAreaHandle,
   {
-    icon: string;
     text: string;
     buttonLabel: string;
     uploading: boolean;
@@ -24,7 +25,7 @@ export const UploadArea = forwardRef<
     disabled?: boolean;
   }
 >(function UploadArea(
-  { icon, text, buttonLabel, uploading, uploadProgress, onUpload, disabled },
+  { text, buttonLabel, uploading, uploadProgress, onUpload, disabled },
   ref
 ) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -96,7 +97,9 @@ export const UploadArea = forwardRef<
           </>
         ) : (
           <>
-            <div className={styles.uploadIcon}>{icon}</div>
+            <div className={styles.uploadIcon}>
+              <UploadIcon />
+            </div>
             <p className={styles.uploadText}>{text}</p>
             <Button
               variant="outline"
@@ -120,7 +123,7 @@ export function FileRow({
   onDelete,
   downloadDisabled,
 }: {
-  icon: string;
+  icon: ReactNode;
   name: string;
   meta: (string | number | false | null | undefined)[];
   onDownload: () => void;
@@ -147,8 +150,9 @@ export function FileRow({
           onClick={onDownload}
           disabled={downloadDisabled}
           title="다운로드"
+          aria-label="다운로드"
         >
-          ⬇️
+          <DownloadIcon />
         </Button>
         <Button
           variant="ghost"

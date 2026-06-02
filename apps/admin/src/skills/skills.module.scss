@@ -92,6 +92,11 @@
     color: var(--color-text);
     background: var(--color-bg);
   }
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
 }
 
 .iconBtnDanger:hover {
@@ -152,6 +157,17 @@
   cursor: grabbing;
 }
 
+.cardGrip {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
 .skillName {
   flex: 1;
   min-width: 0;
@@ -192,6 +208,11 @@
   &:hover {
     background: var(--color-bg-secondary);
     color: var(--color-text);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
   }
 }
 

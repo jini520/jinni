@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@jinni/ui";
+import { GripIcon } from "./icons";
 import styles from "./sortable-card.module.scss";
 
 export function SortableCard({
@@ -45,7 +46,9 @@ export function SortableCard({
     >
       <div className={styles.header}>
         <div className={styles.handleArea} {...attributes} {...listeners}>
-          <span className={styles.handle}>⋮⋮</span>
+          <span className={styles.handle}>
+            <GripIcon />
+          </span>
           <span className={styles.title}>{title}</span>
           {aside && <span className={styles.aside}>{aside}</span>}
         </div>
