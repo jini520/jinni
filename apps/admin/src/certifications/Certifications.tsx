@@ -12,10 +12,8 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import {
   certificationsApi,
   certificationApi,
@@ -27,161 +25,22 @@ import type {
   CertificationRequestDto,
   AwardRequestDto,
 } from "../@types";
-import "./Certifications.css";
-
-// 드래그 가능한 자격증 아이템 컴포넌트
-interface SortableCertificationItemProps {
-  certification: CertificationDto;
-  onEdit: (certification: CertificationDto) => void;
-  onDelete: (id: string) => void;
-}
-
-const SortableCertificationItem = ({
-  certification,
-  onEdit,
-  onDelete,
-}: SortableCertificationItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: certification.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`certification-card ${isDragging ? "dragging" : ""}`}
-    >
-      <div className="certification-card-header">
-        <div className="certification-main-info" {...attributes} {...listeners}>
-          <span className="drag-handle">⋮⋮</span>
-          <h3 className="certification-name">{certification.name}</h3>
-          {certification.date && (
-            <span className="date">{certification.date}</span>
-          )}
-        </div>
-        <div className="certification-actions">
-          <button
-            className="btn-edit"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(certification);
-            }}
-          >
-            수정
-          </button>
-          <button
-            className="btn-delete"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(certification.id);
-            }}
-          >
-            삭제
-          </button>
-        </div>
-      </div>
-
-      <div className="certification-card-body">
-        <div className="certification-meta">
-          {certification.organization && (
-            <span className="meta-item">
-              <strong>발급 기관:</strong> {certification.organization}
-            </span>
-          )}
-          {certification.tier && (
-            <span className="meta-item">
-              <strong>등급:</strong> {certification.tier}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// 드래그 가능한 수상 아이템 컴포넌트
-interface SortableAwardItemProps {
-  award: AwardDto;
-  onEdit: (award: AwardDto) => void;
-  onDelete: (id: string) => void;
-}
-
-const SortableAwardItem = ({
-  award,
-  onEdit,
-  onDelete,
-}: SortableAwardItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: award.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`certification-card ${isDragging ? "dragging" : ""}`}
-    >
-      <div className="certification-card-header">
-        <div className="certification-main-info" {...attributes} {...listeners}>
-          <span className="drag-handle">⋮⋮</span>
-          <h3 className="certification-name">{award.name}</h3>
-          {award.date && <span className="date">{award.date}</span>}
-        </div>
-        <div className="certification-actions">
-          <button className="btn-edit" onClick={(e) => {
-            e.stopPropagation();
-            onEdit(award);
-          }}>
-            수정
-          </button>
-          <button className="btn-delete" onClick={(e) => {
-            e.stopPropagation();
-            onDelete(award.id);
-          }}>
-            삭제
-          </button>
-        </div>
-      </div>
-
-      <div className="certification-card-body">
-        <div className="certification-meta">
-          {award.organization && (
-            <span className="meta-item">
-              <strong>주최 기관:</strong> {award.organization}
-            </span>
-          )}
-          {award.tier && (
-            <span className="meta-item">
-              <strong>등급:</strong> {award.tier}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+import {
+  Page,
+  PageHeader,
+  Toolbar,
+  ErrorBanner,
+  Spinner,
+  EmptyState,
+  SortableCard,
+  Modal,
+  Form,
+  FormField,
+  FormRow,
+  FormActions,
+  Button,
+} from "../components";
+import styles from "./certifications.module.scss";
 
 type TabType = "certifications" | "awards";
 type ModalType = "certification" | "award" | null;
@@ -411,7 +270,7 @@ const Certifications = () => {
     const updatePromises = itemsToUpdate.map((certification, relativeIndex) => {
       const newOrderIndex = startIdx + relativeIndex;
       const oldOrderIndex = certificationList.findIndex((c) => c.id === certification.id);
-      
+
       // 순서가 실제로 변경된 경우만 업데이트
       if (oldOrderIndex !== newOrderIndex) {
         return certificationApi.updateCertification(certification.id, {
@@ -464,7 +323,7 @@ const Certifications = () => {
     const updatePromises = itemsToUpdate.map((award, relativeIndex) => {
       const newOrderIndex = startIdx + relativeIndex;
       const oldOrderIndex = awardList.findIndex((a) => a.id === award.id);
-      
+
       // 순서가 실제로 변경된 경우만 업데이트
       if (oldOrderIndex !== newOrderIndex) {
         return awardApi.updateAward(award.id, {
@@ -511,25 +370,27 @@ const Certifications = () => {
     return cleaned.substring(0, maxLength);
   };
 
-  return (
-    <div className="certifications-container">
-      <header className="certifications-header">
-        <h1>Certifications 관리</h1>
-        <p className="subtitle">자격증과 수상 내역을 관리합니다</p>
-      </header>
+  const isCert = activeTab === "certifications";
 
-      {error && <div className="error-banner">{error}</div>}
+  return (
+    <Page>
+      <PageHeader
+        title="Certifications 관리"
+        subtitle="자격증과 수상 내역을 관리합니다"
+      />
+
+      <ErrorBanner message={error} />
 
       {/* 탭 */}
-      <div className="tabs">
+      <div className={styles.tabs}>
         <button
-          className={`tab ${activeTab === "certifications" ? "active" : ""}`}
+          className={`${styles.tab} ${isCert ? styles.active : ""}`}
           onClick={() => setActiveTab("certifications")}
         >
           자격증 ({certificationList.length})
         </button>
         <button
-          className={`tab ${activeTab === "awards" ? "active" : ""}`}
+          className={`${styles.tab} ${!isCert ? styles.active : ""}`}
           onClick={() => setActiveTab("awards")}
         >
           수상 내역 ({awardList.length})
@@ -537,303 +398,284 @@ const Certifications = () => {
       </div>
 
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>로딩중...</p>
-        </div>
-      ) : (
-        <div className="content">
-          {/* Certifications 탭 */}
-          {activeTab === "certifications" && (
-            <div className="certifications-section">
-              <div className="section-header">
-                <h2>자격증 목록</h2>
-                <button
-                  className="btn-primary"
-                  onClick={handleAddCertification}
-                >
-                  + 자격증 추가
-                </button>
-              </div>
+        <Spinner />
+      ) : isCert ? (
+        <>
+          <Toolbar title="자격증 목록">
+            <Button onClick={handleAddCertification}>+ 자격증 추가</Button>
+          </Toolbar>
 
-              {certificationList.length === 0 ? (
-                <div className="empty-state">
-                  <p>등록된 자격증이 없습니다.</p>
-                  <button
-                    className="btn-primary"
-                    onClick={handleAddCertification}
-                  >
-                    첫 자격증 추가하기
-                  </button>
-                </div>
-              ) : (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleCertificationDragEnd}
-                >
-                  <SortableContext
-                    items={certificationList.map((c) => c.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                <div className="certification-list">
+          {certificationList.length === 0 ? (
+            <EmptyState
+              message="등록된 자격증이 없습니다."
+              action={
+                <Button onClick={handleAddCertification}>
+                  첫 자격증 추가하기
+                </Button>
+              }
+            />
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleCertificationDragEnd}
+            >
+              <SortableContext
+                items={certificationList.map((c) => c.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className={styles.list}>
                   {certificationList.map((certification) => (
-                        <SortableCertificationItem
-                          key={certification.id}
-                          certification={certification}
-                          onEdit={handleEditCertification}
-                          onDelete={handleDeleteCertification}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              )}
-            </div>
-          )}
-
-          {/* Awards 탭 */}
-          {activeTab === "awards" && (
-            <div className="certifications-section">
-              <div className="section-header">
-                <h2>수상 내역 목록</h2>
-                <button className="btn-primary" onClick={handleAddAward}>
-                  + 수상 내역 추가
-                </button>
-              </div>
-
-              {awardList.length === 0 ? (
-                <div className="empty-state">
-                  <p>등록된 수상 내역이 없습니다.</p>
-                  <button className="btn-primary" onClick={handleAddAward}>
-                    첫 수상 내역 추가하기
-                  </button>
+                    <SortableCard
+                      key={certification.id}
+                      id={certification.id}
+                      title={certification.name}
+                      aside={certification.date}
+                      onEdit={() => handleEditCertification(certification)}
+                      onDelete={() => handleDeleteCertification(certification.id)}
+                    >
+                      {(certification.organization || certification.tier) && (
+                        <div className={styles.meta}>
+                          {certification.organization && (
+                            <span>
+                              <strong>발급 기관:</strong>{" "}
+                              {certification.organization}
+                            </span>
+                          )}
+                          {certification.tier && (
+                            <span>
+                              <strong>등급:</strong> {certification.tier}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </SortableCard>
+                  ))}
                 </div>
-              ) : (
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleAwardDragEnd}
-                >
-                  <SortableContext
-                    items={awardList.map((a) => a.id)}
-                    strategy={verticalListSortingStrategy}
-                  >
-                <div className="certification-list">
-                  {awardList.map((award) => (
-                        <SortableAwardItem
-                          key={award.id}
-                          award={award}
-                          onEdit={handleEditAward}
-                          onDelete={handleDeleteAward}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
-              )}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
-        </div>
+        </>
+      ) : (
+        <>
+          <Toolbar title="수상 내역 목록">
+            <Button onClick={handleAddAward}>+ 수상 내역 추가</Button>
+          </Toolbar>
+
+          {awardList.length === 0 ? (
+            <EmptyState
+              message="등록된 수상 내역이 없습니다."
+              action={
+                <Button onClick={handleAddAward}>첫 수상 내역 추가하기</Button>
+              }
+            />
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleAwardDragEnd}
+            >
+              <SortableContext
+                items={awardList.map((a) => a.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className={styles.list}>
+                  {awardList.map((award) => (
+                    <SortableCard
+                      key={award.id}
+                      id={award.id}
+                      title={award.name}
+                      aside={award.date}
+                      onEdit={() => handleEditAward(award)}
+                      onDelete={() => handleDeleteAward(award.id)}
+                    >
+                      {(award.organization || award.tier) && (
+                        <div className={styles.meta}>
+                          {award.organization && (
+                            <span>
+                              <strong>주최 기관:</strong> {award.organization}
+                            </span>
+                          )}
+                          {award.tier && (
+                            <span>
+                              <strong>등급:</strong> {award.tier}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </SortableCard>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </>
       )}
 
       {/* 모달 */}
-      {modalType && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>
-                {modalType === "certification"
-                  ? editingCertification
-                    ? "자격증 수정"
-                    : "자격증 추가"
-                  : editingAward
-                  ? "수상 내역 수정"
-                  : "수상 내역 추가"}
-              </h2>
-              <button className="btn-close" onClick={closeModal}>
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              {modalType === "certification" ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSaveCertification();
-                  }}
-                >
-                  <div className="form-group">
-                    <label>자격증명 *</label>
-                    <input
-                      ref={nameInputRef}
-                      type="text"
-                      value={certificationForm.name}
-                      onChange={(e) =>
-                        setCertificationForm({
-                          ...certificationForm,
-                          name: e.target.value,
-                        })
-                      }
-                      placeholder="자격증명 입력"
-                      required
-                    />
-                  </div>
+      <Modal
+        open={modalType === "certification"}
+        onClose={closeModal}
+        title={editingCertification ? "자격증 수정" : "자격증 추가"}
+      >
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveCertification();
+          }}
+        >
+          <FormField label="자격증명" required>
+            <input
+              ref={modalType === "certification" ? nameInputRef : undefined}
+              type="text"
+              value={certificationForm.name}
+              onChange={(e) =>
+                setCertificationForm({
+                  ...certificationForm,
+                  name: e.target.value,
+                })
+              }
+              placeholder="자격증명 입력"
+              required
+            />
+          </FormField>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>취득일 * (YY.MM.)</label>
-                      <input
-                        type="text"
-                        value={certificationForm.date}
-                        onChange={(e) =>
-                          setCertificationForm({
-                            ...certificationForm,
-                            date: handleDateInput(e.target.value),
-                          })
-                        }
-                        placeholder="24.01."
-                        pattern="\d{2}\.\d{2}\."
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>등급</label>
-                      <input
-                        type="text"
-                        value={certificationForm.tier}
-                        onChange={(e) =>
-                          setCertificationForm({
-                            ...certificationForm,
-                            tier: e.target.value,
-                          })
-                        }
-                        placeholder="1급, 2급 등"
-                      />
-                    </div>
-                  </div>
+          <FormRow>
+            <FormField label="취득일 (YY.MM.)" required>
+              <input
+                type="text"
+                value={certificationForm.date}
+                onChange={(e) =>
+                  setCertificationForm({
+                    ...certificationForm,
+                    date: handleDateInput(e.target.value),
+                  })
+                }
+                placeholder="24.01."
+                pattern="\d{2}\.\d{2}\."
+                required
+              />
+            </FormField>
+            <FormField label="등급">
+              <input
+                type="text"
+                value={certificationForm.tier}
+                onChange={(e) =>
+                  setCertificationForm({
+                    ...certificationForm,
+                    tier: e.target.value,
+                  })
+                }
+                placeholder="1급, 2급 등"
+              />
+            </FormField>
+          </FormRow>
 
-                  <div className="form-group">
-                    <label>발급 기관</label>
-                    <input
-                      type="text"
-                      value={certificationForm.organization}
-                      onChange={(e) =>
-                        setCertificationForm({
-                          ...certificationForm,
-                          organization: e.target.value,
-                        })
-                      }
-                      placeholder="발급 기관명 입력"
-                    />
-                  </div>
+          <FormField label="발급 기관">
+            <input
+              type="text"
+              value={certificationForm.organization}
+              onChange={(e) =>
+                setCertificationForm({
+                  ...certificationForm,
+                  organization: e.target.value,
+                })
+              }
+              placeholder="발급 기관명 입력"
+            />
+          </FormField>
 
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      className="btn-cancel"
-                      onClick={closeModal}
-                    >
-                      취소
-                    </button>
-                    <button type="submit" className="btn-primary">
-                      저장
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSaveAward();
-                  }}
-                >
-                  <div className="form-group">
-                    <label>수상명 *</label>
-                    <input
-                      ref={nameInputRef}
-                      type="text"
-                      value={awardForm.name}
-                      onChange={(e) =>
-                        setAwardForm({
-                          ...awardForm,
-                          name: e.target.value,
-                        })
-                      }
-                      placeholder="수상명 입력"
-                      required
-                    />
-                  </div>
+          <FormActions>
+            <Button type="button" variant="ghost" onClick={closeModal}>
+              취소
+            </Button>
+            <Button type="submit">저장</Button>
+          </FormActions>
+        </Form>
+      </Modal>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label>수상일 * (YY.MM.)</label>
-                      <input
-                        type="text"
-                        value={awardForm.date}
-                        onChange={(e) =>
-                          setAwardForm({
-                            ...awardForm,
-                            date: handleDateInput(e.target.value),
-                          })
-                        }
-                        placeholder="24.01."
-                        pattern="\d{2}\.\d{2}\."
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>등급</label>
-                      <input
-                        type="text"
-                        value={awardForm.tier}
-                        onChange={(e) =>
-                          setAwardForm({
-                            ...awardForm,
-                            tier: e.target.value,
-                          })
-                        }
-                        placeholder="금상, 은상 등"
-                      />
-                    </div>
-                  </div>
+      <Modal
+        open={modalType === "award"}
+        onClose={closeModal}
+        title={editingAward ? "수상 내역 수정" : "수상 내역 추가"}
+      >
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveAward();
+          }}
+        >
+          <FormField label="수상명" required>
+            <input
+              ref={modalType === "award" ? nameInputRef : undefined}
+              type="text"
+              value={awardForm.name}
+              onChange={(e) =>
+                setAwardForm({
+                  ...awardForm,
+                  name: e.target.value,
+                })
+              }
+              placeholder="수상명 입력"
+              required
+            />
+          </FormField>
 
-                  <div className="form-group">
-                    <label>주최 기관</label>
-                    <input
-                      type="text"
-                      value={awardForm.organization}
-                      onChange={(e) =>
-                        setAwardForm({
-                          ...awardForm,
-                          organization: e.target.value,
-                        })
-                      }
-                      placeholder="주최 기관명 입력"
-                    />
-                  </div>
+          <FormRow>
+            <FormField label="수상일 (YY.MM.)" required>
+              <input
+                type="text"
+                value={awardForm.date}
+                onChange={(e) =>
+                  setAwardForm({
+                    ...awardForm,
+                    date: handleDateInput(e.target.value),
+                  })
+                }
+                placeholder="24.01."
+                pattern="\d{2}\.\d{2}\."
+                required
+              />
+            </FormField>
+            <FormField label="등급">
+              <input
+                type="text"
+                value={awardForm.tier}
+                onChange={(e) =>
+                  setAwardForm({
+                    ...awardForm,
+                    tier: e.target.value,
+                  })
+                }
+                placeholder="금상, 은상 등"
+              />
+            </FormField>
+          </FormRow>
 
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      className="btn-cancel"
-                      onClick={closeModal}
-                    >
-                      취소
-                    </button>
-                    <button type="submit" className="btn-primary">
-                      저장
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+          <FormField label="주최 기관">
+            <input
+              type="text"
+              value={awardForm.organization}
+              onChange={(e) =>
+                setAwardForm({
+                  ...awardForm,
+                  organization: e.target.value,
+                })
+              }
+              placeholder="주최 기관명 입력"
+            />
+          </FormField>
+
+          <FormActions>
+            <Button type="button" variant="ghost" onClick={closeModal}>
+              취소
+            </Button>
+            <Button type="submit">저장</Button>
+          </FormActions>
+        </Form>
+      </Modal>
+    </Page>
   );
 };
 
 export default Certifications;
-
