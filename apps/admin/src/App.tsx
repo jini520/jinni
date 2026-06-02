@@ -1,5 +1,5 @@
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import "./App.css";
+import styles from "./app.module.scss";
 import Home from "./home/Home";
 import Skills from "./skills/Skills";
 import Projects from "./projects/Projects";
@@ -10,79 +10,47 @@ import Educations from "./educations/Educations";
 import Resumes from "./resumes/Resumes";
 import Portfolios from "./portfolios/Portfolios";
 
+const NAV_LINKS = [
+  { to: "/skills", label: "Skills" },
+  { to: "/projects", label: "Projects", prefix: true },
+  { to: "/careers", label: "Careers" },
+  { to: "/certifications", label: "Certifications" },
+  { to: "/educations", label: "Educations" },
+  { to: "/resumes", label: "Resumes" },
+  { to: "/portfolios", label: "Portfolios" },
+];
+
 function App() {
   const location = useLocation();
   const isHome = location.pathname === "/";
 
+  const isActive = (to: string, prefix?: boolean) =>
+    prefix ? location.pathname.startsWith(to) : location.pathname === to;
+
   return (
-    <div className="app">
+    <div className={styles.app}>
       {!isHome && (
-        <nav className="main-nav">
-          <Link to="/" className="nav-brand">
+        <nav className={styles.nav}>
+          <Link to="/" className={styles.brand}>
             Admin
           </Link>
-          <div className="nav-links">
-            <Link
-              to="/skills"
-              className={`nav-link ${
-                location.pathname === "/skills" ? "active" : ""
-              }`}
-            >
-              Skills
-            </Link>
-            <Link
-              to="/projects"
-              className={`nav-link ${
-                location.pathname.startsWith("/projects") ? "active" : ""
-              }`}
-            >
-              Projects
-            </Link>
-            <Link
-              to="/careers"
-              className={`nav-link ${
-                location.pathname === "/careers" ? "active" : ""
-              }`}
-            >
-              Careers
-            </Link>
-            <Link
-              to="/certifications"
-              className={`nav-link ${
-                location.pathname === "/certifications" ? "active" : ""
-              }`}
-            >
-              Certifications
-            </Link>
-            <Link
-              to="/educations"
-              className={`nav-link ${
-                location.pathname === "/educations" ? "active" : ""
-              }`}
-            >
-              Educations
-            </Link>
-            <Link
-              to="/resumes"
-              className={`nav-link ${
-                location.pathname === "/resumes" ? "active" : ""
-              }`}
-            >
-              Resumes
-            </Link>
-            <Link
-              to="/portfolios"
-              className={`nav-link ${
-                location.pathname === "/portfolios" ? "active" : ""
-              }`}
-            >
-              Portfolios
-            </Link>
+          <div className={styles.links}>
+            {NAV_LINKS.map(({ to, label, prefix }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`${styles.link} ${
+                  isActive(to, prefix) ? styles.active : ""
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
           </div>
         </nav>
       )}
 
-      <main className="main-content">
+      <main className={styles.content}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/skills" element={<Skills />} />
