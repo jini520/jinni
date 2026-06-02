@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DndContext,
+  DragOverlay,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -63,8 +65,16 @@ const Svg = ({ children }: { children: React.ReactNode }) => (
     {children}
   </svg>
 );
-const ChevronUp = () => <Svg><path d="M6 15l6-6 6 6" /></Svg>;
-const ChevronDown = () => <Svg><path d="M6 9l6 6 6-6" /></Svg>;
+const GripIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <circle cx="9" cy="6" r="1.6" />
+    <circle cx="15" cy="6" r="1.6" />
+    <circle cx="9" cy="12" r="1.6" />
+    <circle cx="15" cy="12" r="1.6" />
+    <circle cx="9" cy="18" r="1.6" />
+    <circle cx="15" cy="18" r="1.6" />
+  </svg>
+);
 const CalendarIcon = () => (
   <Svg>
     <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -107,72 +117,77 @@ const SortableSkillTag = ({ id, skill, onRemove }: SortableSkillTagProps) => {
   );
 };
 
-interface ProjectItemProps {
-  project: ProjectListItemDto;
-  index: number;
-  total: number;
-  onOpen: () => void;
-  onMove: (index: number, dir: -1 | 1) => void;
-}
-
-const ProjectItem = ({ project, index, total, onOpen, onMove }: ProjectItemProps) => {
+const ProjectCardBody = ({ project }: { project: ProjectListItemDto }) => {
   const start = formatDate(project.startedAt);
   const end = formatDate(project.endedAt);
   const period = start ? `${start} ~ ${end ?? ""}` : null;
 
   return (
-    <div className={styles.card}>
-      <div className={styles.moveBtns}>
-        <button
-          type="button"
-          className={styles.moveBtn}
-          disabled={index === 0}
-          onClick={() => onMove(index, -1)}
-          title="위로"
-        >
-          <ChevronUp />
-        </button>
-        <button
-          type="button"
-          className={styles.moveBtn}
-          disabled={index === total - 1}
-          onClick={() => onMove(index, 1)}
-          title="아래로"
-        >
-          <ChevronDown />
-        </button>
+    <>
+      <h3 className={styles.title}>{project.title}</h3>
+      {project.description && (
+        <p className={styles.desc}>{project.description}</p>
+      )}
+      <div className={styles.meta}>
+        {period && (
+          <span className={styles.period}>
+            <CalendarIcon />
+            {period}
+          </span>
+        )}
+        {project.status && (
+          <span
+            className={`${styles.status} ${STATUS_STYLE[project.status] ?? ""}`}
+          >
+            {STATUS_LABELS[project.status]}
+          </span>
+        )}
       </div>
-      <div className={styles.content} onClick={onOpen}>
-        <h3 className={styles.title}>{project.title}</h3>
-        {project.description && (
-          <p className={styles.desc}>{project.description}</p>
-        )}
-        <div className={styles.meta}>
-          {period && (
-            <span className={styles.period}>
-              <CalendarIcon />
-              {period}
+      {project.skills && project.skills.length > 0 && (
+        <div className={styles.skills}>
+          {project.skills.map((skill, idx) => (
+            <span key={idx} className={styles.skillTag}>
+              {skill}
             </span>
-          )}
-          {project.status && (
-            <span
-              className={`${styles.status} ${
-                STATUS_STYLE[project.status] ?? ""
-              }`}
-            >
-              {STATUS_LABELS[project.status]}
-            </span>
-          )}
+          ))}
         </div>
-        {project.skills && project.skills.length > 0 && (
-          <div className={styles.skills}>
-            {project.skills.map((skill, idx) => (
-              <span key={idx} className={styles.skillTag}>
-                {skill}
-              </span>
-            ))}
-          </div>
-        )}
+      )}
+    </>
+  );
+};
+
+const SortableProjectItem = ({
+  project,
+  onOpen,
+}: {
+  project: ProjectListItemDto;
+  onOpen: () => void;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: project.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`${styles.card} ${isDragging ? styles.cardDragging : ""}`}
+    >
+      <button
+        type="button"
+        className={styles.handle}
+        aria-label="드래그하여 순서 변경"
+        {...attributes}
+        {...listeners}
+      >
+        <GripIcon />
+      </button>
+      <div className={styles.content} onClick={onOpen}>
+        <ProjectCardBody project={project} />
       </div>
     </div>
   );
@@ -212,6 +227,7 @@ const Projects = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [projectForm, setProjectForm] = useState<ProjectRequestDto>(emptyForm());
@@ -353,31 +369,42 @@ const Projects = () => {
     }
   };
 
-  // 위/아래 버튼으로 순서 변경 (인접 항목과 교환)
-  const handleMove = async (index: number, dir: -1 | 1) => {
-    const target = index + dir;
-    if (target < 0 || target >= projects.length) return;
+  const handleDragStart = (event: DragStartEvent) =>
+    setActiveId(String(event.active.id));
 
-    const reordered = arrayMove(projects, index, target).map((p, i) => ({
+  const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveId(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = projects.findIndex((p) => p.id === active.id);
+    const newIndex = projects.findIndex((p) => p.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const reordered = arrayMove(projects, oldIndex, newIndex).map((p, i) => ({
       ...p,
       order: i,
     }));
     setProjects(reordered);
 
-    const persist = (p: ProjectListItemDto, order: number) =>
-      projectsApi.updateProject(p.id, {
-        title: p.title,
-        startedAt: p.startedAt,
-        endedAt: p.endedAt,
-        status: p.status as ProjectStatus | undefined,
-        order,
-      });
-
+    // 변경된 범위만 업데이트
+    const start = Math.min(oldIndex, newIndex);
+    const end = Math.max(oldIndex, newIndex);
+    const updates = [];
+    for (let i = start; i <= end; i++) {
+      const p = reordered[i];
+      updates.push(
+        projectsApi.updateProject(p.id, {
+          title: p.title,
+          startedAt: p.startedAt,
+          endedAt: p.endedAt,
+          status: p.status as ProjectStatus | undefined,
+          order: i,
+        })
+      );
+    }
     try {
-      await Promise.all([
-        persist(reordered[index], index),
-        persist(reordered[target], target),
-      ]);
+      await Promise.all(updates);
     } catch (err) {
       setError("순서 변경에 실패했습니다.");
       console.error(err);
@@ -408,18 +435,42 @@ const Projects = () => {
             />
           ) : (
             <>
-              <div className={styles.grid}>
-                {projects.map((project, index) => (
-                  <ProjectItem
-                    key={project.id}
-                    project={project}
-                    index={index}
-                    total={projects.length}
-                    onOpen={() => navigate(`/projects/${project.id}`)}
-                    onMove={handleMove}
-                  />
-                ))}
-              </div>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={projects.map((p) => p.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className={styles.grid}>
+                    {projects.map((project) => (
+                      <SortableProjectItem
+                        key={project.id}
+                        project={project}
+                        onOpen={() => navigate(`/projects/${project.id}`)}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+
+                <DragOverlay>
+                  {activeId ? (
+                    <div className={`${styles.card} ${styles.cardOverlay}`}>
+                      <span className={styles.handle}>
+                        <GripIcon />
+                      </span>
+                      <div className={styles.content}>
+                        <ProjectCardBody
+                          project={projects.find((p) => p.id === activeId)!}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
 
               <Pagination
                 page={page}

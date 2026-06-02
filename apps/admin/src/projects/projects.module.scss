@@ -25,40 +25,45 @@
   }
 }
 
-// 순서 이동 버튼 (드래그 대체)
-.moveBtns {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex-shrink: 0;
+.cardDragging {
+  opacity: 0.4;
 }
 
-.moveBtn {
-  width: 26px;
-  height: 22px;
+.cardOverlay {
+  box-shadow: sh.$shadow-lg;
+  border-color: var(--color-accent);
+  cursor: grabbing;
+}
+
+// 드래그 핸들 (그립 점 아이콘) — 카드 좌측 스트립
+.handle {
+  align-self: stretch;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-bg);
-  color: var(--color-text-subtle);
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  width: 30px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: grab;
+  touch-action: none;
+  transition: color 0.15s ease, background 0.15s ease;
 
   svg {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
   }
 
-  &:hover:not(:disabled) {
-    border-color: var(--color-accent);
+  &:hover {
     color: var(--color-accent);
+    background: var(--color-bg-secondary);
   }
 
-  &:disabled {
-    opacity: 0.35;
-    cursor: default;
+  &:active {
+    cursor: grabbing;
   }
 }
 
