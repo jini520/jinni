@@ -4,7 +4,7 @@
 @use 'tokens/breakpoints' as bp;
 
 .container {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: sp.$space-16 sp.$space-6 sp.$space-12;
   display: flex;
@@ -13,7 +13,9 @@
 }
 
 .header {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
 }
 
 .title {
@@ -24,14 +26,13 @@
 }
 
 .subtitle {
-  margin-top: sp.$space-2;
   font-size: t.$text-md;
   color: var(--color-text-subtle);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: sp.$space-4;
 }
 
@@ -39,49 +40,99 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: sp.$space-2;
+  gap: sp.$space-3;
   padding: sp.$space-6;
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--color-bg-secondary);
   text-decoration: none;
-  transition: transform 0.18s ease, border-color 0.18s ease,
-    box-shadow 0.18s ease;
+  overflow: hidden;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+
+  // 우상단 강조색 글로우
+  &::after {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.06;
+    transition: opacity 0.18s ease;
+    pointer-events: none;
+  }
 
   &:hover {
     transform: translateY(-3px);
-    border-color: var(--color-accent);
+    border-color: var(--accent);
     box-shadow: sh.$shadow-md;
+
+    &::after {
+      opacity: 0.12;
+    }
   }
 }
 
-.icon {
-  font-size: t.$text-3xl;
-  line-height: 1;
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.cardTitle {
+.iconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.count {
+  font-size: t.$text-4xl;
+  font-weight: t.$weight-bold;
+  line-height: 1;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
   font-size: t.$text-lg;
   font-weight: t.$weight-semibold;
   color: var(--color-text);
 }
 
-.cardDesc {
+.sub {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-2;
   font-size: t.$text-sm;
   color: var(--color-text-subtle);
 }
 
 .arrow {
-  position: absolute;
-  top: sp.$space-6;
-  right: sp.$space-6;
-  font-size: t.$text-lg;
+  margin-left: auto;
   color: var(--color-text-faint);
   transition: transform 0.18s ease, color 0.18s ease;
 
+  svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
   .card:hover & {
-    color: var(--color-accent);
-    transform: translateX(3px);
+    color: var(--accent);
+    transform: translate(2px, -2px);
   }
 }
 
