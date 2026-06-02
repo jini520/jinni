@@ -6,11 +6,13 @@ export function Modal({
   open,
   onClose,
   title,
+  size = "md",
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title?: ReactNode;
+  size?: "md" | "lg";
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -27,7 +29,7 @@ export function Modal({
   return createPortal(
     <div className={styles.overlay} onClick={onClose}>
       <div
-        className={styles.modal}
+        className={`${styles.modal} ${size === "lg" ? styles.lg : ""}`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal
