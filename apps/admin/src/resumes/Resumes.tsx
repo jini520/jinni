@@ -1,7 +1,21 @@
 import { useState, useEffect, useRef } from "react";
 import { resumesApi } from "../api/resumes";
 import type { FileDto } from "../@types";
-import "./Resumes.css";
+import {
+  Page,
+  PageHeader,
+  Toolbar,
+  ErrorBanner,
+  Spinner,
+  EmptyState,
+  UploadArea,
+  FileRow,
+  FileList,
+  Pagination,
+  Button,
+  type UploadAreaHandle,
+} from "../components";
+import styles from "./resumes.module.scss";
 
 const Resumes = () => {
   const [files, setFiles] = useState<FileDto[]>([]);
@@ -9,15 +23,13 @@ const Resumes = () => {
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   // 페이지네이션
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounterRef = useRef(0);
-  const [isDragging, setIsDragging] = useState(false);
+
+  const uploadRef = useRef<UploadAreaHandle>(null);
 
   // 파일 목록 로드
   const loadFiles = async (pageNum = 0) => {
@@ -48,7 +60,7 @@ const Resumes = () => {
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
   // 날짜 포맷팅
@@ -97,7 +109,7 @@ const Resumes = () => {
       formData.append("file", file);
 
       const res = await resumesApi.uploadResume(formData);
-      
+
       if (res.data.data) {
         await loadFiles(page);
         setUploadProgress(100);
@@ -113,24 +125,16 @@ const Resumes = () => {
     }
   };
 
-  // 파일 선택 핸들러
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFileUpload(e.target.files);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
   // 파일 삭제
   const handleDeleteFile = async (file: FileDto) => {
     const fileName = getFileName(file);
     if (!confirm(`정말 "${fileName}" 이력서를 삭제하시겠습니까?`)) return;
-    
+
     if (!file.id) {
       setError("파일 정보가 올바르지 않습니다.");
       return;
     }
-    
+
     try {
       await resumesApi.deleteResume(file.id);
       await loadFiles(page);
@@ -147,48 +151,13 @@ const Resumes = () => {
     }
   };
 
-  // 드래그 앤 드롭 핸들러
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current++;
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      setIsDragging(true);
-    }
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current--;
-    if (dragCounterRef.current === 0) {
-      setIsDragging(false);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    dragCounterRef.current = 0;
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files);
-    }
-  };
-
   // 파일 다운로드
   const handleDownload = (file: FileDto) => {
     if (!file.id) {
       setError("파일 정보가 올바르지 않습니다.");
       return;
     }
-    
+
     const downloadUrl = resumesApi.getDownloadUrl(file.id);
     window.open(downloadUrl, "_blank");
   };
@@ -200,183 +169,70 @@ const Resumes = () => {
   };
 
   return (
-    <div className="resumes-container">
-      <header className="resumes-header">
-        <h1>이력서 관리</h1>
-        <p className="subtitle">이력서 파일을 관리합니다</p>
-      </header>
+    <Page>
+      <PageHeader title="이력서 관리" subtitle="이력서 파일을 관리합니다" />
 
-      {error && <div className="error-banner">{error}</div>}
+      <ErrorBanner message={error} />
 
-      {/* 파일 업로드 영역 */}
-      <div className="upload-section">
-        <div
-          className={`upload-area ${isDragging ? "dragging" : ""} ${uploading ? "uploading" : ""}`}
-          onDragEnter={handleDragEnter}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            id="resume-upload"
-            onChange={handleFileSelect}
-            style={{ display: "none" }}
-            disabled={uploading}
-          />
-          <div className="upload-content">
-            {uploading ? (
-              <>
-                <div className="upload-spinner"></div>
-                <p>업로드 중... {uploadProgress > 0 && `${uploadProgress}%`}</p>
-              </>
-            ) : (
-              <>
-                <div className="upload-icon">📄</div>
-                <p className="upload-text">
-                  이력서 파일을 드래그하여 여기에 놓거나 클릭하여 선택하세요
-                </p>
-                <button
-                  className="btn-upload"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                >
-                  이력서 선택
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+      <UploadArea
+        ref={uploadRef}
+        icon="📄"
+        text="이력서 파일을 드래그하여 여기에 놓거나 클릭하여 선택하세요"
+        buttonLabel="이력서 선택"
+        uploading={uploading}
+        uploadProgress={uploadProgress}
+        onUpload={handleFileUpload}
+      />
 
-      {/* 파일 목록 */}
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>로딩중...</p>
-        </div>
+        <Spinner />
       ) : (
-        <div className="files-section">
-          <div className="section-header">
-            <h2>이력서 목록 ({totalElements})</h2>
-            <div className="header-actions">
+        <>
+          <Toolbar title={`이력서 목록 (${totalElements})`}>
+            <div className={styles.headerActions}>
               {totalElements > 0 && (
-                <button
-                  className="btn-secondary"
-                  onClick={handleDownloadLatest}
-                  title="최신 이력서 다운로드"
-                >
+                <Button variant="outline" onClick={handleDownloadLatest}>
                   ⬇️ 최신 이력서 다운로드
-                </button>
+                </Button>
               )}
-              <button
-                className="btn-primary"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-              >
+              <Button onClick={() => uploadRef.current?.open()} disabled={uploading}>
                 + 이력서 업로드
-              </button>
+              </Button>
             </div>
-          </div>
+          </Toolbar>
 
           {files.length === 0 ? (
-            <div className="empty-state">
-              <p>등록된 이력서가 없습니다.</p>
-              <p className="empty-hint">
-                위의 업로드 영역을 사용하여 이력서를 추가하세요.
-              </p>
-            </div>
+            <EmptyState message="등록된 이력서가 없습니다. 위의 업로드 영역을 사용하여 이력서를 추가하세요." />
           ) : (
             <>
-              <div className="files-list">
+              <FileList>
                 {files.map((file) => (
-                  <div key={file.id} className="file-item">
-                    <div className="file-info">
-                      <span className="file-icon">{getFileIcon(file)}</span>
-                      <div className="file-details">
-                        <div className="file-name">{getFileName(file)}</div>
-                        <div className="file-meta">
-                          {file.fileSize && (
-                            <>
-                              <span className="file-size">{formatFileSize(file.fileSize)}</span>
-                              <span className="file-separator">•</span>
-                            </>
-                          )}
-                          {file.updatedAt && (
-                            <>
-                              <span className="file-date">{formatDate(file.updatedAt)}</span>
-                              <span className="file-separator">•</span>
-                            </>
-                          )}
-                          {file.contentType && (
-                            <span className="file-type">{file.contentType}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="file-actions">
-                      <button
-                        className="btn-download"
-                        onClick={() => handleDownload(file)}
-                        title="다운로드"
-                        disabled={!file.exists}
-                      >
-                        ⬇️
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDeleteFile(file)}
-                        title="삭제"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </div>
+                  <FileRow
+                    key={file.id}
+                    icon={getFileIcon(file)}
+                    name={getFileName(file)}
+                    meta={[
+                      file.fileSize && formatFileSize(file.fileSize),
+                      file.updatedAt && formatDate(file.updatedAt),
+                      file.contentType,
+                    ]}
+                    onDownload={() => handleDownload(file)}
+                    onDelete={() => handleDeleteFile(file)}
+                    downloadDisabled={!file.exists}
+                  />
                 ))}
-              </div>
+              </FileList>
 
-              {/* 페이지네이션 */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(0)}
-                    disabled={page === 0}
-                  >
-                    ««
-                  </button>
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 0}
-                  >
-                    «
-                  </button>
-                  <span className="page-info">
-                    {page + 1} / {totalPages}
-                  </span>
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages - 1}
-                  >
-                    »
-                  </button>
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(totalPages - 1)}
-                    disabled={page === totalPages - 1}
-                  >
-                    »»
-                  </button>
-                </div>
-              )}
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={handlePageChange}
+              />
             </>
           )}
-        </div>
+        </>
       )}
-    </div>
+    </Page>
   );
 };
 

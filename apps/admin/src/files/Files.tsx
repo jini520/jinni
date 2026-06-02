@@ -1,7 +1,21 @@
 import { useState, useEffect, useRef } from "react";
 import { filesApi } from "../api/files";
 import type { FileDto, FileType } from "../@types";
-import "./Files.css";
+import {
+  Page,
+  PageHeader,
+  Toolbar,
+  ErrorBanner,
+  Spinner,
+  EmptyState,
+  UploadArea,
+  FileRow,
+  FileList,
+  Pagination,
+  Button,
+  type UploadAreaHandle,
+} from "../components";
+import styles from "./files.module.scss";
 
 const Files = () => {
   const [files, setFiles] = useState<FileDto[]>([]);
@@ -18,9 +32,7 @@ const Files = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounterRef = useRef(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const uploadRef = useRef<UploadAreaHandle>(null);
 
   // 파일 목록 로드
   const loadFiles = async (pageNum = 0) => {
@@ -141,7 +153,6 @@ const Files = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      // 업로드 진행률 시뮬레이션 (실제로는 axios interceptor에서 처리 가능)
       const res = await filesApi.uploadFile(formData, fileType);
 
       if (res.data.data) {
@@ -156,14 +167,6 @@ const Files = () => {
       console.error(err);
     } finally {
       setUploading(false);
-    }
-  };
-
-  // 파일 선택 핸들러
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFileUpload(e.target.files);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 
@@ -193,41 +196,6 @@ const Files = () => {
     }
   };
 
-  // 드래그 앤 드롭 핸들러
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current++;
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-      setIsDragging(true);
-    }
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current--;
-    if (dragCounterRef.current === 0) {
-      setIsDragging(false);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-    dragCounterRef.current = 0;
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files);
-    }
-  };
-
   // 파일 다운로드
   const handleDownload = (file: FileDto) => {
     if (!file.id) {
@@ -243,198 +211,84 @@ const Files = () => {
   };
 
   return (
-    <div className="files-container">
-      <header className="files-header">
-        <h1>Files 관리</h1>
-        <p className="subtitle">업로드된 파일을 관리합니다</p>
-      </header>
+    <Page>
+      <PageHeader title="Files 관리" subtitle="업로드된 파일을 관리합니다" />
 
-      {error && <div className="error-banner">{error}</div>}
+      <ErrorBanner message={error} />
 
-      {/* 파일 업로드 영역 */}
-      <div className="upload-section">
-        <div
-          className={`upload-area ${isDragging ? "dragging" : ""} ${
-            uploading ? "uploading" : ""
-          }`}
-          onDragEnter={handleDragEnter}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            id="file-upload"
-            onChange={handleFileSelect}
-            style={{ display: "none" }}
-            disabled={uploading}
-          />
-          <div className="upload-content">
-            {uploading ? (
-              <>
-                <div className="upload-spinner"></div>
-                <p>업로드 중... {uploadProgress > 0 && `${uploadProgress}%`}</p>
-              </>
-            ) : (
-              <>
-                <div className="upload-icon">📤</div>
-                <p className="upload-text">
-                  파일을 드래그하여 여기에 놓거나 클릭하여 선택하세요
-                </p>
-                <button
-                  className="btn-upload"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                >
-                  파일 선택
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+      <UploadArea
+        ref={uploadRef}
+        icon="📤"
+        text="파일을 드래그하여 여기에 놓거나 클릭하여 선택하세요"
+        buttonLabel="파일 선택"
+        uploading={uploading}
+        uploadProgress={uploadProgress}
+        onUpload={handleFileUpload}
+      />
 
-      {/* 파일 목록 */}
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>로딩중...</p>
-        </div>
+        <Spinner />
       ) : (
-        <div className="files-section">
-          <div className="section-header">
-            <div className="section-header-left">
-              <h2>파일 목록 ({totalElements})</h2>
-              <div className="file-type-selector">
+        <>
+          <Toolbar>
+            <div className={styles.headerLeft}>
+              <h2 className={styles.title}>파일 목록 ({totalElements})</h2>
+              <div className={styles.typeSelector}>
                 <button
-                  className={`btn-type ${
-                    fileType === "DOCUMENT" ? "active" : ""
+                  className={`${styles.typeBtn} ${
+                    fileType === "DOCUMENT" ? styles.active : ""
                   }`}
                   onClick={() => setFileType("DOCUMENT")}
                 >
                   문서
                 </button>
                 <button
-                  className={`btn-type ${fileType === "IMAGE" ? "active" : ""}`}
+                  className={`${styles.typeBtn} ${
+                    fileType === "IMAGE" ? styles.active : ""
+                  }`}
                   onClick={() => setFileType("IMAGE")}
                 >
                   이미지
                 </button>
               </div>
             </div>
-            <button
-              className="btn-primary"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-            >
+            <Button onClick={() => uploadRef.current?.open()} disabled={uploading}>
               + 파일 업로드
-            </button>
-          </div>
+            </Button>
+          </Toolbar>
 
           {files.length === 0 ? (
-            <div className="empty-state">
-              <p>등록된 파일이 없습니다.</p>
-              <p className="empty-hint">
-                위의 업로드 영역을 사용하여 파일을 추가하세요.
-              </p>
-            </div>
+            <EmptyState message="등록된 파일이 없습니다. 위의 업로드 영역을 사용하여 파일을 추가하세요." />
           ) : (
             <>
-              <div className="files-list">
+              <FileList>
                 {files.map((file) => (
-                  <div key={file.id} className="file-item">
-                    <div className="file-info">
-                      <span className="file-icon">{getFileIcon(file)}</span>
-                      <div className="file-details">
-                        <div className="file-name">{getFileName(file)}</div>
-                        <div className="file-meta">
-                          {file.fileSize && (
-                            <>
-                              <span className="file-size">
-                                {formatFileSize(file.fileSize)}
-                              </span>
-                              <span className="file-separator">•</span>
-                            </>
-                          )}
-                          {file.updatedAt && (
-                            <>
-                              <span className="file-date">
-                                {formatDate(file.updatedAt)}
-                              </span>
-                              <span className="file-separator">•</span>
-                            </>
-                          )}
-                          {file.contentType && (
-                            <span className="file-type">
-                              {file.contentType}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="file-actions">
-                      <button
-                        className="btn-download"
-                        onClick={() => handleDownload(file)}
-                        title="다운로드"
-                        disabled={!file.exists}
-                      >
-                        ⬇️
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDeleteFile(file)}
-                        title="삭제"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  </div>
+                  <FileRow
+                    key={file.id}
+                    icon={getFileIcon(file)}
+                    name={getFileName(file)}
+                    meta={[
+                      file.fileSize && formatFileSize(file.fileSize),
+                      file.updatedAt && formatDate(file.updatedAt),
+                      file.contentType,
+                    ]}
+                    onDownload={() => handleDownload(file)}
+                    onDelete={() => handleDeleteFile(file)}
+                    downloadDisabled={!file.exists}
+                  />
                 ))}
-              </div>
+              </FileList>
 
-              {/* 페이지네이션 */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(0)}
-                    disabled={page === 0}
-                  >
-                    ««
-                  </button>
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 0}
-                  >
-                    «
-                  </button>
-                  <span className="page-info">
-                    {page + 1} / {totalPages}
-                  </span>
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages - 1}
-                  >
-                    »
-                  </button>
-                  <button
-                    className="btn-page"
-                    onClick={() => handlePageChange(totalPages - 1)}
-                    disabled={page === totalPages - 1}
-                  >
-                    »»
-                  </button>
-                </div>
-              )}
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={handlePageChange}
+              />
             </>
           )}
-        </div>
+        </>
       )}
-    </div>
+    </Page>
   );
 };
 
