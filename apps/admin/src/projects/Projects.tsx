@@ -58,6 +58,20 @@ const STATUS_STYLE: Record<string, string> = {
 
 const formatDate = (d?: string) => (d ? d.slice(0, 7).replace("-", ".") : null);
 
+const Svg = ({ children }: { children: React.ReactNode }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+const ChevronUp = () => <Svg><path d="M6 15l6-6 6 6" /></Svg>;
+const ChevronDown = () => <Svg><path d="M6 9l6 6 6-6" /></Svg>;
+const CalendarIcon = () => (
+  <Svg>
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </Svg>
+);
+
 interface SortableSkillTagProps {
   id: number;
   skill: string;
@@ -93,46 +107,53 @@ const SortableSkillTag = ({ id, skill, onRemove }: SortableSkillTagProps) => {
   );
 };
 
-interface SortableProjectItemProps {
+interface ProjectItemProps {
   project: ProjectListItemDto;
-  onClick: () => void;
+  index: number;
+  total: number;
+  onOpen: () => void;
+  onMove: (index: number, dir: -1 | 1) => void;
 }
 
-const SortableProjectItem = ({
-  project,
-  onClick,
-}: SortableProjectItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: project.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
+const ProjectItem = ({ project, index, total, onOpen, onMove }: ProjectItemProps) => {
   const start = formatDate(project.startedAt);
   const end = formatDate(project.endedAt);
   const period = start ? `${start} ~ ${end ?? ""}` : null;
 
   return (
-    <div ref={setNodeRef} style={style} className={styles.card}>
-      <span className={styles.handle} {...attributes} {...listeners}>
-        ⋮⋮
-      </span>
-      <div className={styles.content} onClick={onClick}>
+    <div className={styles.card}>
+      <div className={styles.moveBtns}>
+        <button
+          type="button"
+          className={styles.moveBtn}
+          disabled={index === 0}
+          onClick={() => onMove(index, -1)}
+          title="위로"
+        >
+          <ChevronUp />
+        </button>
+        <button
+          type="button"
+          className={styles.moveBtn}
+          disabled={index === total - 1}
+          onClick={() => onMove(index, 1)}
+          title="아래로"
+        >
+          <ChevronDown />
+        </button>
+      </div>
+      <div className={styles.content} onClick={onOpen}>
         <h3 className={styles.title}>{project.title}</h3>
         {project.description && (
           <p className={styles.desc}>{project.description}</p>
         )}
         <div className={styles.meta}>
-          {period && <span className={styles.period}>📅 {period}</span>}
+          {period && (
+            <span className={styles.period}>
+              <CalendarIcon />
+              {period}
+            </span>
+          )}
           {project.status && (
             <span
               className={`${styles.status} ${
@@ -142,21 +163,16 @@ const SortableProjectItem = ({
               {STATUS_LABELS[project.status]}
             </span>
           )}
-          {project.skills && project.skills.length > 0 && (
-            <div className={styles.skills}>
-              {project.skills.slice(0, 3).map((skill, idx) => (
-                <span key={idx} className={styles.skillTag}>
-                  {skill}
-                </span>
-              ))}
-              {project.skills.length > 3 && (
-                <span className={styles.skillTag}>
-                  +{project.skills.length - 3}
-                </span>
-              )}
-            </div>
-          )}
         </div>
+        {project.skills && project.skills.length > 0 && (
+          <div className={styles.skills}>
+            {project.skills.map((skill, idx) => (
+              <span key={idx} className={styles.skillTag}>
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -337,38 +353,31 @@ const Projects = () => {
     }
   };
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  // 위/아래 버튼으로 순서 변경 (인접 항목과 교환)
+  const handleMove = async (index: number, dir: -1 | 1) => {
+    const target = index + dir;
+    if (target < 0 || target >= projects.length) return;
 
-    const oldIndex = projects.findIndex((item) => item.id === active.id);
-    const newIndex = projects.findIndex((item) => item.id === over.id);
-    if (oldIndex === -1 || newIndex === -1) return;
+    const reordered = arrayMove(projects, index, target).map((p, i) => ({
+      ...p,
+      order: i,
+    }));
+    setProjects(reordered);
 
-    const reordered = arrayMove(projects, oldIndex, newIndex);
-    const startIdx = Math.min(oldIndex, newIndex);
-    const endIdx = Math.max(oldIndex, newIndex);
-    const itemsToUpdate = reordered.slice(startIdx, endIdx + 1);
-
-    const updatePromises = itemsToUpdate.map((project, relativeIndex) => {
-      const newOrder = startIdx + relativeIndex;
-      const oldOrder = projects.findIndex((p) => p.id === project.id);
-      if (oldOrder !== newOrder) {
-        return projectsApi.updateProject(project.id, {
-          title: project.title,
-          startedAt: project.startedAt,
-          endedAt: project.endedAt,
-          status: project.status as ProjectStatus | undefined,
-          order: newOrder,
-        });
-      }
-      return Promise.resolve();
-    });
-
-    setProjects(reordered.map((p, index) => ({ ...p, order: index })));
+    const persist = (p: ProjectListItemDto, order: number) =>
+      projectsApi.updateProject(p.id, {
+        title: p.title,
+        startedAt: p.startedAt,
+        endedAt: p.endedAt,
+        status: p.status as ProjectStatus | undefined,
+        order,
+      });
 
     try {
-      await Promise.all(updatePromises);
+      await Promise.all([
+        persist(reordered[index], index),
+        persist(reordered[target], target),
+      ]);
     } catch (err) {
       setError("순서 변경에 실패했습니다.");
       console.error(err);
@@ -399,26 +408,18 @@ const Projects = () => {
             />
           ) : (
             <>
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext
-                  items={projects.map((p) => p.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className={styles.grid}>
-                    {projects.map((project) => (
-                      <SortableProjectItem
-                        key={project.id}
-                        project={project}
-                        onClick={() => navigate(`/projects/${project.id}`)}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
+              <div className={styles.grid}>
+                {projects.map((project, index) => (
+                  <ProjectItem
+                    key={project.id}
+                    project={project}
+                    index={index}
+                    total={projects.length}
+                    onOpen={() => navigate(`/projects/${project.id}`)}
+                    onMove={handleMove}
+                  />
+                ))}
+              </div>
 
               <Pagination
                 page={page}

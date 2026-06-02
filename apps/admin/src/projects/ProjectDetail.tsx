@@ -421,8 +421,8 @@ const ProjectDetail = () => {
           <p className={styles.detailDesc}>{project.description}</p>
         )}
         <div className={styles.detailMeta}>
-          {project.order !== undefined && <span>🔢 순서: {project.order}</span>}
-          {period && <span>📅 {period}</span>}
+          {project.order !== undefined && <span>순서 {project.order}</span>}
+          {period && <span>{period}</span>}
           {project.status && (
             <span
               className={`${styles.status} ${STATUS_STYLE[project.status] ?? ""}`}
@@ -430,8 +430,8 @@ const ProjectDetail = () => {
               {STATUS_LABELS[project.status]}
             </span>
           )}
-          {project.participants && <span>👥 {project.participants}</span>}
-          {project.company && <span>🏢 {project.company}</span>}
+          {project.participants && <span>참여 {project.participants}</span>}
+          {project.company && <span>{project.company}</span>}
         </div>
         {project.skills && project.skills.length > 0 && (
           <div className={styles.detailSkills}>
@@ -497,7 +497,7 @@ const ProjectDetail = () => {
                 rel="noopener noreferrer"
                 className={styles.link}
               >
-                🔗 {l.label}
+                {l.label}
               </a>
             ))}
           </div>
@@ -789,7 +789,7 @@ const ProjectDetail = () => {
                   onClick={() => imageInputRef.current?.click()}
                   disabled={imageUploading}
                 >
-                  {imageUploading ? "업로드 중…" : "🖼️ 이미지 추가"}
+                  {imageUploading ? "업로드 중…" : "이미지 추가"}
                 </Button>
               </div>
               {projectForm.contentImageUrls && projectForm.contentImageUrls.length > 0 && (

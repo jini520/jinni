@@ -1,5 +1,6 @@
 @use 'tokens/spacing' as sp;
 @use 'tokens/typography' as t;
+@use 'tokens/shadows' as sh;
 
 // ── Project list ─────────────────────────────────────────────────────────
 .grid {
@@ -15,22 +16,49 @@
   padding: sp.$space-4 sp.$space-5;
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg);
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 
   &:hover {
     border-color: var(--color-border-strong);
+    box-shadow: sh.$shadow-sm;
   }
 }
 
-.handle {
-  cursor: grab;
-  color: var(--color-text-faint);
-  padding-top: 2px;
-  user-select: none;
+// 순서 이동 버튼 (드래그 대체)
+.moveBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+}
 
-  &:active {
-    cursor: grabbing;
+.moveBtn {
+  width: 26px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text-subtle);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
   }
 }
 
@@ -62,8 +90,16 @@
 }
 
 .period {
+  display: inline-flex;
+  align-items: center;
+  gap: sp.$space-1;
   font-size: t.$text-xs;
   color: var(--color-text-faint);
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
 }
 
 .status {
@@ -300,7 +336,7 @@
   padding: sp.$space-3 sp.$space-4;
   border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg);
 }
 
 .featureName {
@@ -366,6 +402,50 @@
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     font-size: 0.9em;
+  }
+
+  // 이미지가 컨텐츠 너비를 넘지 않도록
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: sp.$space-3 0;
+  }
+
+  // 표 디자인
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: sp.$space-4 0;
+    font-size: t.$text-sm;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+
+  thead {
+    background: var(--color-bg-secondary);
+  }
+
+  th,
+  td {
+    padding: sp.$space-2 sp.$space-3;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: t.$weight-semibold;
+    color: var(--color-text);
+  }
+
+  td {
+    color: var(--color-text-subtle);
+  }
+
+  tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--color-bg-secondary) 50%, transparent);
   }
 }
 
