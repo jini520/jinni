@@ -23,11 +23,24 @@ import type {
   SkillRequestDto,
   CategoryRequestDto,
 } from "../@types";
-import "./Skills.css";
+import {
+  Page,
+  PageHeader,
+  Toolbar,
+  ErrorBanner,
+  Spinner,
+  EmptyState,
+  Modal,
+  Form,
+  FormField,
+  FormActions,
+  Button,
+} from "../components";
+import styles from "./skills.module.scss";
 
 type ModalType = "skill" | "category" | null;
 
-// 드래그 가능한 스킬 아이템 컴포넌트
+// 드래그 가능한 스킬 행
 interface SortableSkillItemProps {
   skill: SkillDto;
   onEdit: (skill: SkillDto) => void;
@@ -55,25 +68,26 @@ const SortableSkillItem = ({
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`skill-item ${isDragging ? "dragging" : ""}`}
-    >
-      <div className="skill-info">
-        <span className="drag-handle" {...attributes} {...listeners}>
+    <div ref={setNodeRef} style={style} className={styles.skillRow}>
+      <div className={styles.skillInfo}>
+        <span className={styles.handle} {...attributes} {...listeners}>
           ⋮⋮
         </span>
-        <span className="skill-order">{skill.order ?? 0}</span>
-        <span className="skill-name">{skill.name}</span>
+        <span className={styles.skillOrder}>{skill.order ?? 0}</span>
+        <span className={styles.skillName}>{skill.name}</span>
       </div>
-      <div className="skill-actions">
-        <button className="btn-edit" onClick={() => onEdit(skill)}>
+      <div className={styles.actions}>
+        <Button variant="ghost" size="sm" onClick={() => onEdit(skill)}>
           수정
-        </button>
-        <button className="btn-delete" onClick={() => onDelete(skill.id)}>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={styles.danger}
+          onClick={() => onDelete(skill.id)}
+        >
           삭제
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -383,7 +397,7 @@ const Skills = () => {
           items={categorySkills.map((s) => s.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="skills-list">
+          <div className={styles.skillList}>
             {categorySkills.map((skill) => (
               <SortableSkillItem
                 key={skill.id}
@@ -399,341 +413,281 @@ const Skills = () => {
   };
 
   return (
-    <div className="skills-container">
-      <header className="skills-header">
-        <h1>Skills 관리</h1>
-        <p className="subtitle">스킬과 카테고리를 관리합니다</p>
-      </header>
+    <Page>
+      <PageHeader title="Skills 관리" subtitle="스킬과 카테고리를 관리합니다" />
 
-      {error && <div className="error-banner">{error}</div>}
+      <ErrorBanner message={error} />
 
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>로딩중...</p>
-        </div>
+        <Spinner />
       ) : (
-        <div className="content">
-          <div className="skills-section">
-            <div className="section-header">
-              <h2>
+        <>
+          <Toolbar
+            title={
+              <>
                 스킬 목록 ({skills.length})
-                <span className="category-count">
+                <span className={styles.count}>
                   · 카테고리 {categories.length}개
                 </span>
-              </h2>
-              <div className="header-actions">
-                <button className="btn-secondary" onClick={expandAll}>
-                  모두 펼치기
-                </button>
-                <button className="btn-secondary" onClick={collapseAll}>
-                  모두 접기
-                </button>
-                <button className="btn-category" onClick={handleAddCategory}>
-                  + 카테고리
-                </button>
-                <button
-                  className="btn-primary"
-                  onClick={() => handleAddSkill()}
-                >
-                  + 스킬 추가
-                </button>
-              </div>
+              </>
+            }
+          >
+            <div className={styles.headerActions}>
+              <Button variant="ghost" onClick={expandAll}>
+                모두 펼치기
+              </Button>
+              <Button variant="ghost" onClick={collapseAll}>
+                모두 접기
+              </Button>
+              <Button variant="outline" onClick={handleAddCategory}>
+                + 카테고리
+              </Button>
+              <Button onClick={() => handleAddSkill()}>+ 스킬 추가</Button>
             </div>
+          </Toolbar>
 
-            <p className="drag-hint">
-              💡 스킬을 드래그하여 순서를 변경할 수 있습니다
-            </p>
+          <p className={styles.hint}>
+            💡 스킬을 드래그하여 순서를 변경할 수 있습니다
+          </p>
 
-            {categories.length === 0 && skills.length === 0 ? (
-              <div className="empty-state">
-                <p>등록된 스킬이 없습니다.</p>
-                <p className="empty-hint">먼저 카테고리를 추가해보세요!</p>
-                <button className="btn-primary" onClick={handleAddCategory}>
-                  카테고리 추가하기
-                </button>
-              </div>
-            ) : (
-              <div className="accordion-container">
-                {/* 카테고리별 스킬 */}
-                {sortedCategories.map((category) => {
-                  const categorySkills = skillsByCategory[category.id] || [];
-                  const isExpanded = expandedCategories.has(category.id);
+          {categories.length === 0 && skills.length === 0 ? (
+            <EmptyState
+              message="등록된 스킬이 없습니다. 먼저 카테고리를 추가해보세요!"
+              action={
+                <Button onClick={handleAddCategory}>카테고리 추가하기</Button>
+              }
+            />
+          ) : (
+            <div className={styles.accordion}>
+              {/* 카테고리별 스킬 */}
+              {sortedCategories.map((category) => {
+                const categorySkills = skillsByCategory[category.id] || [];
+                const isExpanded = expandedCategories.has(category.id);
 
-                  return (
-                    <div key={category.id} className="accordion-item">
-                      <div
-                        className={`accordion-header ${
-                          isExpanded ? "expanded" : ""
-                        }`}
-                        onClick={() => toggleCategory(category.id)}
-                      >
-                        <div className="accordion-title">
-                          <span
-                            className={`accordion-arrow ${
-                              isExpanded ? "expanded" : ""
-                            }`}
-                          >
-                            ▶
-                          </span>
-                          <h3>{category.name}</h3>
-                          <span className="skill-count">
-                            {categorySkills.length}개
-                          </span>
-                          <span className="category-order">
-                            순서: {category.order ?? 0}
-                          </span>
-                        </div>
-                        <div
-                          className="accordion-actions"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <button
-                            className="btn-add-small"
-                            onClick={() => handleAddSkill(category.id)}
-                            title="스킬 추가"
-                          >
-                            +
-                          </button>
-                          <button
-                            className="btn-edit-small"
-                            onClick={() => handleEditCategory(category)}
-                            title="카테고리 수정"
-                          >
-                            ✎
-                          </button>
-                          <button
-                            className="btn-delete-small"
-                            onClick={() => handleDeleteCategory(category.id)}
-                            title="카테고리 삭제"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
-
-                      {isExpanded && (
-                        <div className="accordion-content">
-                          {categorySkills.length === 0 ? (
-                            <div className="empty-category">
-                              <p>스킬이 없습니다</p>
-                              <button
-                                className="btn-add-skill"
-                                onClick={() => handleAddSkill(category.id)}
-                              >
-                                + 스킬 추가
-                              </button>
-                            </div>
-                          ) : (
-                            renderSortableSkillsList(
-                              categorySkills,
-                              category.id
-                            )
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-
-                {/* 미분류 스킬 */}
-                {skillsByCategory["uncategorized"]?.length > 0 && (
-                  <div className="accordion-item uncategorized">
+                return (
+                  <div key={category.id} className={styles.item}>
                     <div
-                      className={`accordion-header ${
-                        expandedCategories.has("uncategorized")
-                          ? "expanded"
-                          : ""
-                      }`}
-                      onClick={() => toggleCategory("uncategorized")}
+                      className={styles.header}
+                      onClick={() => toggleCategory(category.id)}
                     >
-                      <div className="accordion-title">
+                      <div className={styles.title}>
                         <span
-                          className={`accordion-arrow ${
-                            expandedCategories.has("uncategorized")
-                              ? "expanded"
-                              : ""
+                          className={`${styles.arrow} ${
+                            isExpanded ? styles.arrowOpen : ""
                           }`}
                         >
                           ▶
                         </span>
-                        <h3>미분류</h3>
-                        <span className="skill-count">
-                          {skillsByCategory["uncategorized"].length}개
+                        <h3 className={styles.catName}>{category.name}</h3>
+                        <span className={styles.skillCount}>
+                          {categorySkills.length}개
                         </span>
+                        <span className={styles.order}>
+                          순서: {category.order ?? 0}
+                        </span>
+                      </div>
+                      <div
+                        className={styles.actions}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          className={styles.iconBtn}
+                          onClick={() => handleAddSkill(category.id)}
+                          title="스킬 추가"
+                        >
+                          +
+                        </button>
+                        <button
+                          className={styles.iconBtn}
+                          onClick={() => handleEditCategory(category)}
+                          title="카테고리 수정"
+                        >
+                          ✎
+                        </button>
+                        <button
+                          className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                          onClick={() => handleDeleteCategory(category.id)}
+                          title="카테고리 삭제"
+                        >
+                          ✕
+                        </button>
                       </div>
                     </div>
 
-                    {expandedCategories.has("uncategorized") && (
-                      <div className="accordion-content">
-                        {renderSortableSkillsList(
-                          skillsByCategory["uncategorized"],
-                          "uncategorized"
+                    {isExpanded && (
+                      <div className={styles.content}>
+                        {categorySkills.length === 0 ? (
+                          <div className={styles.emptyCategory}>
+                            <p>스킬이 없습니다</p>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleAddSkill(category.id)}
+                            >
+                              + 스킬 추가
+                            </Button>
+                          </div>
+                        ) : (
+                          renderSortableSkillsList(categorySkills, category.id)
                         )}
                       </div>
                     )}
                   </div>
-                )}
+                );
+              })}
 
-                {/* 카테고리가 없을 때 안내 */}
-                {categories.length === 0 && (
-                  <div className="add-category-hint">
-                    <p>카테고리를 추가하여 스킬을 분류해보세요</p>
-                    <button
-                      className="btn-add-skill"
-                      onClick={handleAddCategory}
-                    >
-                      + 첫 카테고리 추가
-                    </button>
+              {/* 미분류 스킬 */}
+              {skillsByCategory["uncategorized"]?.length > 0 && (
+                <div className={styles.item}>
+                  <div
+                    className={styles.header}
+                    onClick={() => toggleCategory("uncategorized")}
+                  >
+                    <div className={styles.title}>
+                      <span
+                        className={`${styles.arrow} ${
+                          expandedCategories.has("uncategorized")
+                            ? styles.arrowOpen
+                            : ""
+                        }`}
+                      >
+                        ▶
+                      </span>
+                      <h3 className={styles.catName}>미분류</h3>
+                      <span className={styles.skillCount}>
+                        {skillsByCategory["uncategorized"].length}개
+                      </span>
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* 모달 */}
-      {modalType && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>
-                {modalType === "skill"
-                  ? editingSkill
-                    ? "스킬 수정"
-                    : "스킬 추가"
-                  : editingCategory
-                  ? "카테고리 수정"
-                  : "카테고리 추가"}
-              </h2>
-              <button className="btn-close" onClick={closeModal}>
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              {modalType === "skill" ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSaveSkill();
-                  }}
-                >
-                  <div className="form-group">
-                    <label>스킬 이름</label>
-                    <input
-                      ref={nameInputRef}
-                      type="text"
-                      value={skillForm.name}
-                      onChange={(e) =>
-                        setSkillForm({ ...skillForm, name: e.target.value })
-                      }
-                      placeholder="React, TypeScript 등"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>카테고리</label>
-                    <select
-                      value={skillForm.categoryId}
-                      onChange={(e) =>
-                        setSkillForm({
-                          ...skillForm,
-                          categoryId: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">선택 안함</option>
-                      {sortedCategories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>표시 순서</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={skillForm.order}
-                      onChange={(e) =>
-                        setSkillForm({
-                          ...skillForm,
-                          order: parseInt(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      className="btn-cancel"
-                      onClick={closeModal}
-                    >
-                      취소
-                    </button>
-                    <button type="submit" className="btn-primary">
-                      저장
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSaveCategory();
-                  }}
-                >
-                  <div className="form-group">
-                    <label>카테고리 이름</label>
-                    <input
-                      ref={nameInputRef}
-                      type="text"
-                      value={categoryForm.name}
-                      onChange={(e) =>
-                        setCategoryForm({
-                          ...categoryForm,
-                          name: e.target.value,
-                        })
-                      }
-                      placeholder="Frontend, Backend 등"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>표시 순서</label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={categoryForm.order}
-                      onChange={(e) =>
-                        setCategoryForm({
-                          ...categoryForm,
-                          order: parseInt(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="modal-actions">
-                    <button
-                      type="button"
-                      className="btn-cancel"
-                      onClick={closeModal}
-                    >
-                      취소
-                    </button>
-                    <button type="submit" className="btn-primary">
-                      저장
-                    </button>
-                  </div>
-                </form>
+                  {expandedCategories.has("uncategorized") && (
+                    <div className={styles.content}>
+                      {renderSortableSkillsList(
+                        skillsByCategory["uncategorized"],
+                        "uncategorized"
+                      )}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
-    </div>
+
+      {/* 스킬 모달 */}
+      <Modal
+        open={modalType === "skill"}
+        onClose={closeModal}
+        title={editingSkill ? "스킬 수정" : "스킬 추가"}
+      >
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveSkill();
+          }}
+        >
+          <FormField label="스킬 이름" required>
+            <input
+              ref={modalType === "skill" ? nameInputRef : undefined}
+              type="text"
+              value={skillForm.name}
+              onChange={(e) =>
+                setSkillForm({ ...skillForm, name: e.target.value })
+              }
+              placeholder="React, TypeScript 등"
+              required
+            />
+          </FormField>
+          <FormField label="카테고리">
+            <select
+              value={skillForm.categoryId}
+              onChange={(e) =>
+                setSkillForm({
+                  ...skillForm,
+                  categoryId: e.target.value,
+                })
+              }
+            >
+              <option value="">선택 안함</option>
+              {sortedCategories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </FormField>
+          <FormField label="표시 순서">
+            <input
+              type="number"
+              min="0"
+              value={skillForm.order}
+              onChange={(e) =>
+                setSkillForm({
+                  ...skillForm,
+                  order: parseInt(e.target.value),
+                })
+              }
+            />
+          </FormField>
+          <FormActions>
+            <Button type="button" variant="ghost" onClick={closeModal}>
+              취소
+            </Button>
+            <Button type="submit">저장</Button>
+          </FormActions>
+        </Form>
+      </Modal>
+
+      {/* 카테고리 모달 */}
+      <Modal
+        open={modalType === "category"}
+        onClose={closeModal}
+        title={editingCategory ? "카테고리 수정" : "카테고리 추가"}
+      >
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveCategory();
+          }}
+        >
+          <FormField label="카테고리 이름" required>
+            <input
+              ref={modalType === "category" ? nameInputRef : undefined}
+              type="text"
+              value={categoryForm.name}
+              onChange={(e) =>
+                setCategoryForm({
+                  ...categoryForm,
+                  name: e.target.value,
+                })
+              }
+              placeholder="Frontend, Backend 등"
+              required
+            />
+          </FormField>
+          <FormField label="표시 순서">
+            <input
+              type="number"
+              min="0"
+              value={categoryForm.order}
+              onChange={(e) =>
+                setCategoryForm({
+                  ...categoryForm,
+                  order: parseInt(e.target.value),
+                })
+              }
+            />
+          </FormField>
+          <FormActions>
+            <Button type="button" variant="ghost" onClick={closeModal}>
+              취소
+            </Button>
+            <Button type="submit">저장</Button>
+          </FormActions>
+        </Form>
+      </Modal>
+    </Page>
   );
 };
 
