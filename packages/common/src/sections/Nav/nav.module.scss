@@ -1,13 +1,12 @@
 @use '@jinni/ui/scss/mixins/responsive' as rsp;
 
 // Nav organism wraps itself — we only provide positioning via className
+// 풀폭 바 ↔ 떠있는 필 모프는 Nav organism(.wrap/.nav)에서 처리.
+// wrap은 화면 폭 전체를 차지하는 sticky 컨테이너로만 둔다.
 .nav {
   position: sticky;
-  top: 14px;
+  top: 0;
   z-index: 50;
-  max-width: 1280px;
-  margin: 14px auto 0;
-  padding: 0 var(--gx, 32px);
 }
 
 .dot {

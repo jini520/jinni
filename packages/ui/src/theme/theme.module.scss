@@ -25,7 +25,6 @@
   letter-spacing: -0.011em;
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
 
   &[data-theme='light'] {
     --a1: #{c.$color-aurora-a1-light};

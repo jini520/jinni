@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import styles from './nav.module.scss';
 
 export interface NavLink {
@@ -21,9 +22,17 @@ export function Nav({ links, brand, cta, theme = 'dark', onToggleTheme, renderLi
   const linkEl = (href: string, children: React.ReactNode) =>
     renderLink ? renderLink(href, children) : <a href={href}>{children}</a>;
 
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', fn, { passive: true });
+    fn();
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
   return (
-    <div className={[styles.wrap, className].filter(Boolean).join(' ')}>
-      <nav className={styles.nav}>
+    <div className={[styles.wrap, className].filter(Boolean).join(' ')} data-scrolled={scrolled}>
+      <nav className={styles.nav} data-scrolled={scrolled}>
         {brand && <div className={styles.brand}>{brand}</div>}
 
         <ul className={styles.links}>
