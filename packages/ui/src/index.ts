@@ -1,5 +1,8 @@
 /// <reference path="./types/css-modules.d.ts" />
 
+// ── Icons ─────────────────────────────────────────────────────────────────────
+export * from './icons';
+
 // ── Atoms ────────────────────────────────────────────────────────────────────
 export * from './atoms/Button';
 export * from './atoms/Tag';
