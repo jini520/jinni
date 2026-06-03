@@ -1,4 +1,4 @@
-import { IconNames } from "@/constants/iconRegistry";
+import type { SkillName } from '@jinni/ui';
 
 export interface Careers {
   businesses: Business[];
@@ -12,7 +12,7 @@ export interface Career {
   company: string;
   department: string;
   position: string;
-  skills: IconNames[];
+  skills: SkillName[];
 }
 
 export interface Business extends Career {

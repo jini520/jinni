@@ -1,4 +1,4 @@
-import { IconNames } from "@/constants/iconRegistry";
+import type { SkillName } from '@jinni/ui';
 
 export interface Category {
   id: string;
@@ -11,7 +11,7 @@ export interface Skill {
   name: string;
   order: number;
   categoryId: string;
-  iconKey: IconNames;
+  iconKey: SkillName;
 }
 
 export interface Skills {
