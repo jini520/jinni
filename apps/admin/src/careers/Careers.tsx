@@ -12,10 +12,8 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { careersApi, businessApi, careerProjectApi } from "../api/careers";
 import type {
   BusinessDto,
@@ -43,44 +41,9 @@ import {
   CalendarIcon,
   BriefcaseIcon,
   UserIcon,
+  SortableTag,
 } from "../components";
 import styles from "./careers.module.scss";
-
-// 드래그 가능한 스킬 태그 컴포넌트
-interface SortableSkillTagProps {
-  id: number;
-  skill: string;
-  onRemove: () => void;
-}
-
-const SortableSkillTag = ({ id, skill, onRemove }: SortableSkillTagProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <span ref={setNodeRef} style={style} className={styles.tag}>
-      <span className={styles.tagHandle} {...attributes} {...listeners}>
-        ⋮⋮
-      </span>
-      {skill}
-      <button type="button" className={styles.tagRemove} onClick={onRemove}>
-        ×
-      </button>
-    </span>
-  );
-};
 
 type TabType = "business" | "projects";
 type ModalType = "business" | "careerProject" | null;
@@ -545,10 +508,10 @@ const Careers = () => {
           >
             <div className={styles.tagsDisplay}>
               {skills.map((skill, index) => (
-                <SortableSkillTag
+                <SortableTag
                   key={index}
                   id={index}
-                  skill={skill}
+                  label={skill}
                   onRemove={() => handleRemoveSkill(index)}
                 />
               ))}

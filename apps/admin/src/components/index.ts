@@ -4,6 +4,7 @@ export { Form, FormField, FormRow, FormActions } from "./Form";
 export { Modal } from "./Modal";
 export { Tabs } from "./Tabs";
 export { SortableCard } from "./SortableCard";
+export { SortableTag } from "./SortableTag";
 export {
   UploadArea,
   FileRow,

@@ -42,6 +42,7 @@ import {
   FormRow,
   FormActions,
   Button,
+  SortableTag,
 } from "../components";
 import styles from "./projects.module.scss";
 import "@uiw/react-md-editor/markdown-editor.css";
@@ -82,40 +83,6 @@ const CalendarIcon = () => (
   </Svg>
 );
 
-interface SortableSkillTagProps {
-  id: number;
-  skill: string;
-  onRemove: () => void;
-}
-
-const SortableSkillTag = ({ id, skill, onRemove }: SortableSkillTagProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <span ref={setNodeRef} style={style} className={styles.tag}>
-      <span className={styles.tagHandle} {...attributes} {...listeners}>
-        ⋮⋮
-      </span>
-      {skill}
-      <button type="button" className={styles.tagRemove} onClick={onRemove}>
-        ×
-      </button>
-    </span>
-  );
-};
 
 const ProjectCardBody = ({ project }: { project: ProjectListItemDto }) => {
   const start = formatDate(project.startedAt);
@@ -702,7 +669,7 @@ const Projects = () => {
                   <SortableContext items={projectForm.skills.map((_, index) => index)} strategy={verticalListSortingStrategy}>
                     <div className={styles.tagsEdit}>
                       {projectForm.skills.map((skill, idx) => (
-                        <SortableSkillTag key={idx} id={idx} skill={skill} onRemove={() => removeSkill(idx)} />
+                        <SortableTag key={idx} id={idx} label={skill} onRemove={() => removeSkill(idx)} />
                       ))}
                     </div>
                   </SortableContext>

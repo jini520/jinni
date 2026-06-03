@@ -207,43 +207,6 @@
   gap: sp.$space-2;
 }
 
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: sp.$space-1;
-  padding: 4px sp.$space-2 4px sp.$space-1;
-  border-radius: 999px;
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  font-size: t.$text-sm;
-  color: var(--color-text);
-}
-
-.tagHandle {
-  cursor: grab;
-  color: var(--color-text-faint);
-  font-size: t.$text-xs;
-  user-select: none;
-
-  &:active {
-    cursor: grabbing;
-  }
-}
-
-.tagRemove {
-  border: none;
-  background: transparent;
-  color: var(--color-text-faint);
-  cursor: pointer;
-  font-size: t.$text-base;
-  line-height: 1;
-  padding: 0 2px;
-
-  &:hover {
-    color: var(--color-red);
-  }
-}
-
 .hint {
   font-size: t.$text-xs;
   color: var(--color-text-faint);
