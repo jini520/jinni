@@ -1,7 +1,6 @@
 // ── Data ─────────────────────────────────────────────────────────────────────
 export { PROFILE, LINKS } from './data/profile';
 export type { ContactLink } from './data/profile';
-export { getSkillIcon } from './data/SkillIcons';
 export { QA_BLOCKS, CARD_ACCENTS, TECH_GROUPS_KO } from './data/content';
 
 // ── Sections ───────────────────────────────────────────────────────────────

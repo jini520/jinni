@@ -1,5 +1,5 @@
 import type { Skills } from '@jinni/types';
-import { getSkillIcon } from '../../data/SkillIcons';
+import { getSkillIcon } from '@jinni/ui';
 import { TECH_GROUPS_KO } from '../../data/content';
 import styles from './stack.module.scss';
 
