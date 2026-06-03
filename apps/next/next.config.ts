@@ -10,14 +10,6 @@ const nextConfig: NextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, '../../packages/ui/src/styles')],
   },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-  },
 };
 
 export default nextConfig;
