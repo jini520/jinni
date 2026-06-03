@@ -50,6 +50,17 @@ $color-gray-800: #3A3A3C;
 $color-gray-900: #2C2C2E;
 $color-gray-950: #1C1C1E;
 
+// Slate scale (blue-tinted neutrals) — light 테마 중립.
+// 순수 gray 대신 accent(blue)와 어울리는 쿨 슬레이트. (채도 ↑ — 확실한 블루 틴트)
+$color-slate-25:  #f4f7fd;
+$color-slate-50:  #e9f0fb;
+$color-slate-100: #dbe6f8;
+$color-slate-200: #cbdaf2;
+$color-slate-300: #b1c6e8;
+$color-slate-400: #8193b3;
+$color-slate-500: #505d78;
+$color-slate-900: #141d30;
+
 // Background
 $color-bg-dark:  #0b0a14;
 $color-bg-light: #FFFFFF;

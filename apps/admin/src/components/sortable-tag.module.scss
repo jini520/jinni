@@ -1,0 +1,61 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: sp.$space-1;
+  padding: 4px sp.$space-2 4px 4px;
+  border-radius: 999px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  font-size: t.$text-sm;
+  color: var(--color-text);
+}
+
+.handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: grab;
+  touch-action: none;
+  transition: color 0.15s ease;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:hover {
+    color: var(--color-accent);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  &:hover {
+    color: var(--color-red);
+  }
+}

@@ -1,0 +1,72 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/breakpoints' as bp;
+
+.page {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: sp.$space-10 sp.$space-6 sp.$space-16;
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-6;
+}
+
+// 칸반 등 넓은 레이아웃 — 전체 너비 사용(좌우 패딩만 유지)
+.wide {
+  max-width: none;
+  padding-left: sp.$space-8;
+  padding-right: sp.$space-8;
+}
+
+// 뷰포트 높이를 꽉 채우는 레이아웃(칸반 등) — 마지막 자식이 남은 높이 차지
+.fill {
+  flex: 1;
+  min-height: 0;
+  padding-bottom: sp.$space-8;
+}
+
+// ── PageHeader ───────────────────────────────────────────────────────────
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: sp.$space-4;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: t.$text-3xl;
+  font-weight: t.$weight-bold;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin-top: sp.$space-1;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+// ── Toolbar (섹션 헤더) ────────────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: sp.$space-3;
+}
+
+.toolbarTitle {
+  font-size: t.$text-lg;
+  font-weight: t.$weight-semibold;
+  color: var(--color-text);
+}
+
+@media (max-width: bp.$bp-sm) {
+  .page {
+    padding: sp.$space-6 sp.$space-4 sp.$space-10;
+  }
+  .title {
+    font-size: t.$text-2xl;
+  }
+}

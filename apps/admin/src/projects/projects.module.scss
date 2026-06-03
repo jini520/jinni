@@ -1,0 +1,452 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/shadows' as sh;
+
+// ── Project list ─────────────────────────────────────────────────────────
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: sp.$space-3;
+  padding: sp.$space-4 sp.$space-5;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-bg);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: sh.$shadow-sm;
+  }
+}
+
+.cardDragging {
+  opacity: 0.4;
+}
+
+.cardOverlay {
+  box-shadow: sh.$shadow-lg;
+  border-color: var(--color-accent);
+  cursor: grabbing;
+}
+
+// 드래그 핸들 (그립 점 아이콘) — 카드 좌측 스트립
+.handle {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: grab;
+  touch-action: none;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: var(--color-accent);
+    background: var(--color-bg-secondary);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
+}
+
+.title {
+  font-size: t.$text-md;
+  font-weight: t.$weight-semibold;
+  color: var(--color-text);
+}
+
+.desc {
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: sp.$space-2;
+}
+
+.period {
+  display: inline-flex;
+  align-items: center;
+  gap: sp.$space-1;
+  font-size: t.$text-xs;
+  color: var(--color-text-faint);
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+.status {
+  font-size: t.$text-xs;
+  font-weight: t.$weight-medium;
+  padding: 2px sp.$space-2;
+  border-radius: 999px;
+}
+
+.inProgress {
+  background: color-mix(in srgb, var(--color-blue) 14%, transparent);
+  color: var(--color-blue);
+}
+
+.live {
+  background: color-mix(in srgb, var(--color-green) 16%, transparent);
+  color: var(--color-green);
+}
+
+.completed {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-1;
+}
+
+.skillTag {
+  font-size: t.$text-xs;
+  padding: 2px sp.$space-2;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
+}
+
+// ── Modal array/tag fields ───────────────────────────────────────────────
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: sp.$space-2;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: sp.$space-2;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-1;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: sp.$space-2;
+  padding: sp.$space-2 sp.$space-3;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  font-size: t.$text-sm;
+  color: var(--color-text);
+}
+
+.itemRemove {
+  border: none;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  font-size: t.$text-base;
+  line-height: 1;
+
+  &:hover {
+    color: var(--color-red);
+  }
+}
+
+.tagsEdit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-2;
+}
+
+.hint {
+  font-size: t.$text-xs;
+  color: var(--color-text-faint);
+}
+
+.danger.danger {
+  color: var(--color-red);
+
+  &:hover {
+    color: var(--color-red);
+    background: color-mix(in srgb, var(--color-red) 12%, transparent);
+  }
+}
+
+// ── Detail view ──────────────────────────────────────────────────────────
+.detailHeader {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+  padding-bottom: sp.$space-5;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detailHeaderTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: sp.$space-3;
+  flex-wrap: wrap;
+}
+
+.detailTitle {
+  font-size: t.$text-2xl;
+  font-weight: t.$weight-bold;
+  color: var(--color-text);
+}
+
+.detailActions {
+  display: flex;
+  gap: sp.$space-2;
+}
+
+.detailDesc {
+  font-size: t.$text-md;
+  color: var(--color-text-subtle);
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: sp.$space-3;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.detailSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-2;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+}
+
+.sectionTitle {
+  font-size: t.$text-lg;
+  font-weight: t.$weight-semibold;
+  color: var(--color-text);
+}
+
+.detailText {
+  font-size: t.$text-base;
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-subtle);
+}
+
+.detailList {
+  margin: 0;
+  padding-left: sp.$space-5;
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-1;
+
+  li {
+    font-size: t.$text-base;
+    color: var(--color-text-subtle);
+  }
+}
+
+.feature {
+  padding: sp.$space-3 sp.$space-4;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+}
+
+.featureName {
+  font-size: t.$text-base;
+  font-weight: t.$weight-medium;
+  color: var(--color-text);
+}
+
+.featureNote {
+  margin-top: 2px;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-2;
+}
+
+.link {
+  font-size: t.$text-sm;
+  padding: sp.$space-2 sp.$space-3;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}
+
+.contentMarkdown {
+  font-size: t.$text-base;
+  line-height: var(--leading-relaxed);
+  color: var(--color-text);
+
+  h1, h2, h3 {
+    margin: sp.$space-4 0 sp.$space-2;
+    color: var(--color-text);
+  }
+
+  p {
+    margin: sp.$space-2 0;
+    color: var(--color-text-subtle);
+  }
+
+  ul, ol {
+    padding-left: sp.$space-5;
+    color: var(--color-text-subtle);
+  }
+
+  a {
+    color: var(--color-accent);
+  }
+
+  :not(pre) > code {
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    font-size: 0.9em;
+  }
+
+  // 이미지가 컨텐츠 너비를 넘지 않도록
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: sp.$space-3 0;
+  }
+
+  // 표 디자인
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: sp.$space-4 0;
+    font-size: t.$text-sm;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+
+  thead {
+    background: var(--color-bg-secondary);
+  }
+
+  th,
+  td {
+    padding: sp.$space-2 sp.$space-3;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: t.$weight-semibold;
+    color: var(--color-text);
+  }
+
+  td {
+    color: var(--color-text-subtle);
+  }
+
+  tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--color-bg-secondary) 50%, transparent);
+  }
+}
+
+// ── Detail modal image section ───────────────────────────────────────────
+.imageList {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-1;
+  list-style: none;
+}
+
+.imageItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: sp.$space-2;
+  padding: sp.$space-2 sp.$space-3;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+}
+
+.imageUrl {
+  font-size: t.$text-xs;
+  color: var(--color-text-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.imageUrlActions {
+  display: flex;
+  gap: sp.$space-1;
+  flex-shrink: 0;
+}

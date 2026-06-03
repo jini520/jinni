@@ -5,18 +5,18 @@
 // 직접 사용 금지 — theme/index.scss 경유
 
 $theme-light: (
-  // Background
+  // Background — 페이지는 화이트, 카드/패널만 블루 틴트 슬레이트
   --color-bg:               #{c.$color-bg-light},
-  --color-bg-secondary:     #{c.$color-gray-50},
+  --color-bg-secondary:     #{c.$color-slate-50},
 
-  // Text
-  --color-text:             #{c.$color-gray-950},
-  --color-text-subtle:      #{c.$color-gray-500},
-  --color-text-faint:       #{c.$color-gray-400},
+  // Text — 슬레이트(블루 언더톤)
+  --color-text:             #{c.$color-slate-900},
+  --color-text-subtle:      #{c.$color-slate-500},
+  --color-text-faint:       #{c.$color-slate-400},
 
-  // Border
-  --color-border:           #{c.$color-gray-300},
-  --color-border-strong:    #{c.$color-gray-200},
+  // Border — 블루 틴트
+  --color-border:           #{c.$color-slate-200},
+  --color-border-strong:    #{c.$color-slate-300},
 
   // Accent
   --color-accent:           #{c.$color-blue-500},

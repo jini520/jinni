@@ -12,98 +12,30 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { educationsApi, educationApi } from "../api/educations";
 import type { EducationDto, EducationRequestDto } from "../@types";
-import "./Educations.css";
-
-// 드래그 가능한 교육 아이템 컴포넌트
-interface SortableEducationItemProps {
-  education: EducationDto;
-  onEdit: (education: EducationDto) => void;
-  onDelete: (id: string) => void;
-  formatPeriod: (startDate?: string, endDate?: string) => string;
-}
-
-const SortableEducationItem = ({
-  education,
-  onEdit,
-  onDelete,
-  formatPeriod,
-}: SortableEducationItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: education.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`education-card ${isDragging ? "dragging" : ""}`}
-    >
-      <div className="education-card-header">
-        <div className="education-main-info" {...attributes} {...listeners}>
-          <span className="drag-handle">⋮⋮</span>
-          <h3 className="education-name">{education.education}</h3>
-          <span className="period">
-            {formatPeriod(education.startDate, education.endDate)}
-          </span>
-        </div>
-        <div className="education-actions">
-          <button
-            className="btn-edit"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(education);
-            }}
-          >
-            수정
-          </button>
-          <button
-            className="btn-delete"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(education.id);
-            }}
-          >
-            삭제
-          </button>
-        </div>
-      </div>
-
-      <div className="education-card-body">
-        <div className="education-meta">
-          {education.status && (
-            <span className="meta-item">
-              <strong>상태:</strong> {education.status}
-            </span>
-          )}
-        </div>
-
-        {education.description && (
-          <div className="education-description">
-            <strong>설명:</strong>
-            <p>{education.description}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+import {
+  Page,
+  PageHeader,
+  Toolbar,
+  ErrorBanner,
+  Spinner,
+  EmptyState,
+  SortableCard,
+  Modal,
+  Form,
+  FormField,
+  FormRow,
+  FormActions,
+  Button,
+  MetaRow,
+  MetaItem,
+  CalendarIcon,
+  AwardIcon,
+} from "../components";
+import styles from "./educations.module.scss";
 
 const Educations = () => {
   const [educationList, setEducationList] = useState<EducationDto[]>([]);
@@ -319,181 +251,169 @@ const Educations = () => {
   };
 
   return (
-    <div className="educations-container">
-      <header className="educations-header">
-        <h1>Education 관리</h1>
-        <p className="subtitle">교육 이력을 관리합니다</p>
-      </header>
+    <Page>
+      <PageHeader title="Education 관리" subtitle="교육 이력을 관리합니다" />
 
-      {error && <div className="error-banner">{error}</div>}
+      <ErrorBanner message={error} />
 
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>로딩중...</p>
-        </div>
+        <Spinner />
       ) : (
-        <div className="content">
-          <div className="educations-section">
-            <div className="section-header">
-              <h2>교육 이력 목록</h2>
-              <button className="btn-primary" onClick={handleAddEducation}>
-                + 교육 추가
-              </button>
-            </div>
+        <>
+          <Toolbar title="교육 이력 목록">
+            <Button onClick={handleAddEducation}>+ 교육 추가</Button>
+          </Toolbar>
 
-            {educationList.length === 0 ? (
-              <div className="empty-state">
-                <p>등록된 교육 이력이 없습니다.</p>
-                <button className="btn-primary" onClick={handleAddEducation}>
-                  첫 교육 추가하기
-                </button>
-              </div>
-            ) : (
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragEnd={handleDragEnd}
+          {educationList.length === 0 ? (
+            <EmptyState
+              message="등록된 교육 이력이 없습니다."
+              action={
+                <Button onClick={handleAddEducation}>첫 교육 추가하기</Button>
+              }
+            />
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={educationList.map((edu) => edu.id)}
+                strategy={verticalListSortingStrategy}
               >
-                <SortableContext
-                  items={educationList.map((edu) => edu.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="education-list">
-                    {educationList.map((education) => (
-                      <SortableEducationItem
-                        key={education.id}
-                        education={education}
-                        onEdit={handleEditEducation}
-                        onDelete={handleDeleteEducation}
-                        formatPeriod={formatPeriod}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            )}
-          </div>
-        </div>
+                <div className={styles.list}>
+                  {educationList.map((education) => (
+                    <SortableCard
+                      key={education.id}
+                      id={education.id}
+                      title={education.education}
+                      onEdit={() => handleEditEducation(education)}
+                      onDelete={() => handleDeleteEducation(education.id)}
+                    >
+                      {education.description && (
+                        <p className={styles.desc}>{education.description}</p>
+                      )}
+                      <MetaRow>
+                        {education.startDate && (
+                          <MetaItem icon={<CalendarIcon />}>
+                            {formatPeriod(
+                              education.startDate,
+                              education.endDate
+                            )}
+                          </MetaItem>
+                        )}
+                        {education.status && (
+                          <MetaItem icon={<AwardIcon />}>
+                            {education.status}
+                          </MetaItem>
+                        )}
+                      </MetaRow>
+                    </SortableCard>
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </>
       )}
 
-      {/* 모달 */}
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>{editingEducation ? "교육 수정" : "교육 추가"}</h2>
-              <button className="btn-close" onClick={closeModal}>
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSaveEducation();
-                }}
-              >
-                <div className="form-group">
-                  <label>교육명 *</label>
-                  <input
-                    ref={educationInputRef}
-                    type="text"
-                    value={educationForm.education}
-                    onChange={(e) =>
-                      setEducationForm({
-                        ...educationForm,
-                        education: e.target.value,
-                      })
-                    }
-                    placeholder="교육명 입력"
-                    required
-                  />
-                </div>
+      <Modal
+        open={isModalOpen}
+        onClose={closeModal}
+        title={editingEducation ? "교육 수정" : "교육 추가"}
+      >
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveEducation();
+          }}
+        >
+          <FormField label="교육명" required>
+            <input
+              ref={educationInputRef}
+              type="text"
+              value={educationForm.education}
+              onChange={(e) =>
+                setEducationForm({
+                  ...educationForm,
+                  education: e.target.value,
+                })
+              }
+              placeholder="교육명 입력"
+              required
+            />
+          </FormField>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>시작일 * (YY.MM.)</label>
-                    <input
-                      type="text"
-                      value={educationForm.startDate}
-                      onChange={(e) =>
-                        setEducationForm({
-                          ...educationForm,
-                          startDate: handleDateInput(e.target.value),
-                        })
-                      }
-                      placeholder="24.01."
-                      pattern="\d{2}\.\d{2}\."
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>종료일 (YY.MM.)</label>
-                    <input
-                      type="text"
-                      value={educationForm.endDate}
-                      onChange={(e) =>
-                        setEducationForm({
-                          ...educationForm,
-                          endDate: handleDateInput(e.target.value),
-                        })
-                      }
-                      placeholder="24.12. (비워두면 현재)"
-                      pattern="\d{2}\.\d{2}\."
-                    />
-                  </div>
-                </div>
+          <FormRow>
+            <FormField label="시작일 (YY.MM.)" required>
+              <input
+                type="text"
+                value={educationForm.startDate}
+                onChange={(e) =>
+                  setEducationForm({
+                    ...educationForm,
+                    startDate: handleDateInput(e.target.value),
+                  })
+                }
+                placeholder="24.01."
+                pattern="\d{2}\.\d{2}\."
+                required
+              />
+            </FormField>
+            <FormField label="종료일 (YY.MM.)">
+              <input
+                type="text"
+                value={educationForm.endDate}
+                onChange={(e) =>
+                  setEducationForm({
+                    ...educationForm,
+                    endDate: handleDateInput(e.target.value),
+                  })
+                }
+                placeholder="24.12. (비워두면 현재)"
+                pattern="\d{2}\.\d{2}\."
+              />
+            </FormField>
+          </FormRow>
 
-                <div className="form-group">
-                  <label>상태 *</label>
-                  <input
-                    type="text"
-                    value={educationForm.status}
-                    onChange={(e) =>
-                      setEducationForm({
-                        ...educationForm,
-                        status: e.target.value,
-                      })
-                    }
-                    placeholder="예: 재학중, 졸업, 수료 등"
-                    required
-                  />
-                </div>
+          <FormField label="상태" required>
+            <input
+              type="text"
+              value={educationForm.status}
+              onChange={(e) =>
+                setEducationForm({
+                  ...educationForm,
+                  status: e.target.value,
+                })
+              }
+              placeholder="예: 재학중, 졸업, 수료 등"
+              required
+            />
+          </FormField>
 
-                <div className="form-group">
-                  <label>설명</label>
-                  <textarea
-                    value={educationForm.description}
-                    onChange={(e) =>
-                      setEducationForm({
-                        ...educationForm,
-                        description: e.target.value,
-                      })
-                    }
-                    placeholder="교육에 대한 설명을 입력하세요"
-                    rows={4}
-                  />
-                </div>
+          <FormField label="설명">
+            <textarea
+              value={educationForm.description}
+              onChange={(e) =>
+                setEducationForm({
+                  ...educationForm,
+                  description: e.target.value,
+                })
+              }
+              placeholder="교육에 대한 설명을 입력하세요"
+              rows={4}
+            />
+          </FormField>
 
-                <div className="modal-actions">
-                  <button
-                    type="button"
-                    className="btn-cancel"
-                    onClick={closeModal}
-                  >
-                    취소
-                  </button>
-                  <button type="submit" className="btn-primary">
-                    저장
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+          <FormActions>
+            <Button type="button" variant="ghost" onClick={closeModal}>
+              취소
+            </Button>
+            <Button type="submit">저장</Button>
+          </FormActions>
+        </Form>
+      </Modal>
+    </Page>
   );
 };
 

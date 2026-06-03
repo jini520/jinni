@@ -1,0 +1,35 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/shadows' as sh;
+
+.tabs {
+  display: inline-flex;
+  gap: sp.$space-1;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-secondary);
+  align-self: flex-start;
+}
+
+.tab {
+  padding: sp.$space-2 sp.$space-4;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  color: var(--color-text-subtle);
+  font-size: t.$text-sm;
+  font-weight: t.$weight-medium;
+  cursor: pointer;
+  transition: color 0.18s ease;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.active {
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: sh.$shadow-sm;
+}

@@ -1,0 +1,7 @@
+@use 'tokens/spacing' as sp;
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-2;
+}

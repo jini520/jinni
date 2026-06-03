@@ -1,0 +1,46 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/shadows' as sh;
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-4;
+}
+
+.title {
+  font-size: t.$text-lg;
+  font-weight: t.$weight-semibold;
+  color: var(--color-text);
+}
+
+.typeSelector {
+  display: inline-flex;
+  gap: sp.$space-1;
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-secondary);
+}
+
+.typeBtn {
+  padding: sp.$space-1 sp.$space-3;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  color: var(--color-text-subtle);
+  font-size: t.$text-sm;
+  font-weight: t.$weight-medium;
+  cursor: pointer;
+  transition: color 0.18s ease;
+
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.active {
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: sh.$shadow-sm;
+}

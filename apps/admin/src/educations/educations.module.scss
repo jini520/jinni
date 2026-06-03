@@ -1,0 +1,13 @@
+@use 'tokens/spacing' as sp;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+}
+
+.desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+  line-height: var(--leading-normal);
+}

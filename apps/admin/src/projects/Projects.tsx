@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   DndContext,
+  DragOverlay,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
+  type DragStartEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -26,8 +28,23 @@ import type {
   ProjectLink,
   ProjectStatus,
 } from "../@types";
-import { Button } from "@jinni/ui";
-import "./Projects.css";
+import {
+  Page,
+  PageHeader,
+  Toolbar,
+  ErrorBanner,
+  Spinner,
+  EmptyState,
+  Pagination,
+  Modal,
+  Form,
+  FormField,
+  FormRow,
+  FormActions,
+  Button,
+  SortableTag,
+} from "../components";
+import styles from "./projects.module.scss";
 import "@uiw/react-md-editor/markdown-editor.css";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -36,119 +53,108 @@ const STATUS_LABELS: Record<string, string> = {
   COMPLETED: "완료",
 };
 
-const STATUS_CLASS: Record<string, string> = {
-  IN_PROGRESS: "in-progress",
-  LIVE: "live",
-  COMPLETED: "completed",
+const STATUS_STYLE: Record<string, string> = {
+  IN_PROGRESS: styles.inProgress,
+  LIVE: styles.live,
+  COMPLETED: styles.completed,
 };
 
 const formatDate = (d?: string) => (d ? d.slice(0, 7).replace("-", ".") : null);
 
-interface SortableSkillTagProps {
-  id: number;
-  skill: string;
-  onRemove: () => void;
-}
+const Svg = ({ children }: { children: React.ReactNode }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+const GripIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <circle cx="9" cy="6" r="1.6" />
+    <circle cx="15" cy="6" r="1.6" />
+    <circle cx="9" cy="12" r="1.6" />
+    <circle cx="15" cy="12" r="1.6" />
+    <circle cx="9" cy="18" r="1.6" />
+    <circle cx="15" cy="18" r="1.6" />
+  </svg>
+);
+const CalendarIcon = () => (
+  <Svg>
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </Svg>
+);
 
-const SortableSkillTag = ({ id, skill, onRemove }: SortableSkillTagProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <span
-      ref={setNodeRef}
-      style={style}
-      className={`skill-tag-edit ${isDragging ? "dragging" : ""}`}
-    >
-      <span className="drag-handle-small" {...attributes} {...listeners}>
-        ⋮⋮
-      </span>
-      {skill}
-      <button type="button" className="skill-remove" onClick={onRemove}>
-        ×
-      </button>
-    </span>
-  );
-};
-
-interface SortableProjectItemProps {
-  project: ProjectListItemDto;
-  onClick: () => void;
-}
-
-const SortableProjectItem = ({
-  project,
-  onClick,
-}: SortableProjectItemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: project.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
+const ProjectCardBody = ({ project }: { project: ProjectListItemDto }) => {
   const start = formatDate(project.startedAt);
   const end = formatDate(project.endedAt);
   const period = start ? `${start} ~ ${end ?? ""}` : null;
 
   return (
+    <>
+      <h3 className={styles.title}>{project.title}</h3>
+      {project.description && (
+        <p className={styles.desc}>{project.description}</p>
+      )}
+      <div className={styles.meta}>
+        {period && (
+          <span className={styles.period}>
+            <CalendarIcon />
+            {period}
+          </span>
+        )}
+        {project.status && (
+          <span
+            className={`${styles.status} ${STATUS_STYLE[project.status] ?? ""}`}
+          >
+            {STATUS_LABELS[project.status]}
+          </span>
+        )}
+      </div>
+      {project.skills && project.skills.length > 0 && (
+        <div className={styles.skills}>
+          {project.skills.map((skill, idx) => (
+            <span key={idx} className={styles.skillTag}>
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
+const SortableProjectItem = ({
+  project,
+  onOpen,
+}: {
+  project: ProjectListItemDto;
+  onOpen: () => void;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: project.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`project-card ${isDragging ? "dragging" : ""}`}
+      className={`${styles.card} ${isDragging ? styles.cardDragging : ""}`}
     >
-      <span className="drag-handle" {...attributes} {...listeners}>
-        ⋮⋮
-      </span>
-      <div className="project-content" onClick={onClick}>
-        <h3 className="project-title">{project.title}</h3>
-        {project.description && (
-          <p className="project-description">{project.description}</p>
-        )}
-        <div className="project-meta">
-          {period && (
-            <span className="project-period">📅 {period}</span>
-          )}
-          {project.status && (
-            <span className={`status-badge ${STATUS_CLASS[project.status] ?? ""}`}>
-              {STATUS_LABELS[project.status]}
-            </span>
-          )}
-          {project.skills && project.skills.length > 0 && (
-            <div className="project-skills">
-              {project.skills.slice(0, 3).map((skill, idx) => (
-                <span key={idx} className="skill-tag">
-                  {skill}
-                </span>
-              ))}
-              {project.skills.length > 3 && (
-                <span className="skill-tag more">
-                  +{project.skills.length - 3}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
+      <button
+        type="button"
+        className={styles.handle}
+        aria-label="드래그하여 순서 변경"
+        {...attributes}
+        {...listeners}
+      >
+        <GripIcon />
+      </button>
+      <div className={styles.content} onClick={onOpen}>
+        <ProjectCardBody project={project} />
       </div>
     </div>
   );
@@ -188,6 +194,7 @@ const Projects = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [projectForm, setProjectForm] = useState<ProjectRequestDto>(emptyForm());
@@ -329,38 +336,42 @@ const Projects = () => {
     }
   };
 
+  const handleDragStart = (event: DragStartEvent) =>
+    setActiveId(String(event.active.id));
+
   const handleDragEnd = async (event: DragEndEvent) => {
+    setActiveId(null);
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = projects.findIndex((item) => item.id === active.id);
-    const newIndex = projects.findIndex((item) => item.id === over.id);
+    const oldIndex = projects.findIndex((p) => p.id === active.id);
+    const newIndex = projects.findIndex((p) => p.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
 
-    const reordered = arrayMove(projects, oldIndex, newIndex);
-    const startIdx = Math.min(oldIndex, newIndex);
-    const endIdx = Math.max(oldIndex, newIndex);
-    const itemsToUpdate = reordered.slice(startIdx, endIdx + 1);
+    const reordered = arrayMove(projects, oldIndex, newIndex).map((p, i) => ({
+      ...p,
+      order: i,
+    }));
+    setProjects(reordered);
 
-    const updatePromises = itemsToUpdate.map((project, relativeIndex) => {
-      const newOrder = startIdx + relativeIndex;
-      const oldOrder = projects.findIndex((p) => p.id === project.id);
-      if (oldOrder !== newOrder) {
-        return projectsApi.updateProject(project.id, {
-          title: project.title,
-          startedAt: project.startedAt,
-          endedAt: project.endedAt,
-          status: project.status as ProjectStatus | undefined,
-          order: newOrder,
-        });
-      }
-      return Promise.resolve();
-    });
-
-    setProjects(reordered.map((p, index) => ({ ...p, order: index })));
-
+    // 변경된 범위만 업데이트
+    const start = Math.min(oldIndex, newIndex);
+    const end = Math.max(oldIndex, newIndex);
+    const updates = [];
+    for (let i = start; i <= end; i++) {
+      const p = reordered[i];
+      updates.push(
+        projectsApi.updateProject(p.id, {
+          title: p.title,
+          startedAt: p.startedAt,
+          endedAt: p.endedAt,
+          status: p.status as ProjectStatus | undefined,
+          order: i,
+        })
+      );
+    }
     try {
-      await Promise.all(updatePromises);
+      await Promise.all(updates);
     } catch (err) {
       setError("순서 변경에 실패했습니다.");
       console.error(err);
@@ -369,338 +380,336 @@ const Projects = () => {
   };
 
   return (
-    <div className="projects-container">
-      <header className="projects-header">
-        <h1>Projects 관리</h1>
-        <p className="subtitle">프로젝트 상세 내용을 관리합니다</p>
-      </header>
+    <Page>
+      <PageHeader title="Projects 관리" subtitle="프로젝트 상세 내용을 관리합니다" />
 
-      {error && <div className="error-banner">{error}</div>}
+      <ErrorBanner message={error} />
 
       {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>로딩중...</p>
-        </div>
+        <Spinner />
       ) : (
-        <div className="projects-list-view">
-          <div className="section-header">
-            <h2>프로젝트 목록 ({totalElements})</h2>
-            <Button onClick={handleAddProject}>
-              + 프로젝트 추가
-            </Button>
-          </div>
+        <>
+          <Toolbar title={`프로젝트 목록 (${totalElements})`}>
+            <Button onClick={handleAddProject}>+ 프로젝트 추가</Button>
+          </Toolbar>
 
           {projects.length === 0 ? (
-            <div className="empty-state">
-              <p>등록된 프로젝트가 없습니다.</p>
-              <Button onClick={handleAddProject}>
-                첫 프로젝트 추가하기
-              </Button>
-            </div>
+            <EmptyState
+              message="등록된 프로젝트가 없습니다."
+              action={
+                <Button onClick={handleAddProject}>첫 프로젝트 추가하기</Button>
+              }
+            />
           ) : (
             <>
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
               >
                 <SortableContext
                   items={projects.map((p) => p.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="projects-grid">
+                  <div className={styles.grid}>
                     {projects.map((project) => (
                       <SortableProjectItem
                         key={project.id}
                         project={project}
-                        onClick={() => navigate(`/projects/${project.id}`)}
+                        onOpen={() => navigate(`/projects/${project.id}`)}
                       />
                     ))}
                   </div>
                 </SortableContext>
+
+                <DragOverlay>
+                  {activeId ? (
+                    <div className={`${styles.card} ${styles.cardOverlay}`}>
+                      <span className={styles.handle}>
+                        <GripIcon />
+                      </span>
+                      <div className={styles.content}>
+                        <ProjectCardBody
+                          project={projects.find((p) => p.id === activeId)!}
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                </DragOverlay>
               </DndContext>
 
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button className="btn-page" onClick={() => handlePageChange(0)} disabled={page === 0}>««</button>
-                  <button className="btn-page" onClick={() => handlePageChange(page - 1)} disabled={page === 0}>«</button>
-                  <span className="page-info">{page + 1} / {totalPages}</span>
-                  <button className="btn-page" onClick={() => handlePageChange(page + 1)} disabled={page === totalPages - 1}>»</button>
-                  <button className="btn-page" onClick={() => handlePageChange(totalPages - 1)} disabled={page === totalPages - 1}>»»</button>
-                </div>
-              )}
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onChange={handlePageChange}
+              />
             </>
           )}
-        </div>
+        </>
       )}
 
-      {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal modal-large" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>프로젝트 추가</h2>
-              <button className="btn-close" onClick={() => setShowModal(false)}>×</button>
+      <Modal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="프로젝트 추가"
+        size="lg"
+      >
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSaveProject();
+          }}
+        >
+          <FormField label="제목" required>
+            <input
+              ref={titleInputRef}
+              type="text"
+              value={projectForm.title}
+              onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
+              placeholder="프로젝트 제목"
+              required
+            />
+          </FormField>
+
+          <FormField label="설명">
+            <textarea
+              value={projectForm.description}
+              onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
+              placeholder="프로젝트 설명"
+              rows={2}
+            />
+          </FormField>
+
+          <FormRow>
+            <FormField label="시작일">
+              <input
+                type="date"
+                value={projectForm.startedAt || ""}
+                onChange={(e) => setProjectForm({ ...projectForm, startedAt: e.target.value || undefined })}
+              />
+            </FormField>
+            <FormField label="종료일">
+              <input
+                type="date"
+                value={projectForm.endedAt || ""}
+                onChange={(e) => setProjectForm({ ...projectForm, endedAt: e.target.value || undefined })}
+              />
+            </FormField>
+          </FormRow>
+
+          <FormRow>
+            <FormField label="상태">
+              <select
+                value={projectForm.status || ""}
+                onChange={(e) => setProjectForm({ ...projectForm, status: (e.target.value as ProjectStatus) || undefined })}
+              >
+                <option value="">선택 안함</option>
+                <option value="IN_PROGRESS">진행 중</option>
+                <option value="LIVE">운영 중</option>
+                <option value="COMPLETED">완료</option>
+              </select>
+            </FormField>
+            <FormField label="참여 인원">
+              <input
+                type="text"
+                value={projectForm.participants || ""}
+                onChange={(e) => setProjectForm({ ...projectForm, participants: e.target.value || undefined })}
+                placeholder="예: 3명, 1인 개인 프로젝트"
+              />
+            </FormField>
+          </FormRow>
+
+          <FormField label="회사 / 소속">
+            <input
+              type="text"
+              value={projectForm.company || ""}
+              onChange={(e) => setProjectForm({ ...projectForm, company: e.target.value || undefined })}
+              placeholder="회사 또는 소속 (선택)"
+            />
+          </FormField>
+
+          <FormField label="개요">
+            <textarea
+              value={projectForm.overview || ""}
+              onChange={(e) => setProjectForm({ ...projectForm, overview: e.target.value || undefined })}
+              placeholder="프로젝트 개요"
+              rows={3}
+            />
+          </FormField>
+
+          <FormField label="주요 성과 / 하이라이트">
+            <div className={styles.fieldGroup}>
+              <div className={styles.inputRow}>
+                <input
+                  type="text"
+                  value={highlightInput}
+                  onChange={(e) => setHighlightInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addHighlight(); }}}
+                  placeholder="항목 입력 후 Enter"
+                />
+                <Button type="button" variant="outline" onClick={addHighlight}>추가</Button>
+              </div>
+              {(projectForm.highlights?.length ?? 0) > 0 && (
+                <ul className={styles.itemList}>
+                  {projectForm.highlights!.map((item, idx) => (
+                    <li key={idx} className={styles.item}>
+                      <span>{item}</span>
+                      <button type="button" className={styles.itemRemove} onClick={() => removeHighlight(idx)}>×</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            <div className="modal-body">
-              <form onSubmit={(e) => { e.preventDefault(); handleSaveProject(); }}>
-                <div className="form-group">
-                  <label>제목</label>
-                  <input
-                    ref={titleInputRef}
-                    type="text"
-                    value={projectForm.title}
-                    onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
-                    placeholder="프로젝트 제목"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>설명</label>
-                  <textarea
-                    value={projectForm.description}
-                    onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
-                    placeholder="프로젝트 설명"
-                    rows={2}
-                  />
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>시작일</label>
-                    <input
-                      type="date"
-                      value={projectForm.startedAt || ""}
-                      onChange={(e) => setProjectForm({ ...projectForm, startedAt: e.target.value || undefined })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>종료일</label>
-                    <input
-                      type="date"
-                      value={projectForm.endedAt || ""}
-                      onChange={(e) => setProjectForm({ ...projectForm, endedAt: e.target.value || undefined })}
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>상태</label>
-                    <select
-                      value={projectForm.status || ""}
-                      onChange={(e) => setProjectForm({ ...projectForm, status: (e.target.value as ProjectStatus) || undefined })}
-                    >
-                      <option value="">선택 안함</option>
-                      <option value="IN_PROGRESS">진행 중</option>
-                      <option value="LIVE">운영 중</option>
-                      <option value="COMPLETED">완료</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>참여 인원</label>
-                    <input
-                      type="text"
-                      value={projectForm.participants || ""}
-                      onChange={(e) => setProjectForm({ ...projectForm, participants: e.target.value || undefined })}
-                      placeholder="예: 3명, 1인 개인 프로젝트"
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>회사 / 소속</label>
-                  <input
-                    type="text"
-                    value={projectForm.company || ""}
-                    onChange={(e) => setProjectForm({ ...projectForm, company: e.target.value || undefined })}
-                    placeholder="회사 또는 소속 (선택)"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>개요</label>
-                  <textarea
-                    value={projectForm.overview || ""}
-                    onChange={(e) => setProjectForm({ ...projectForm, overview: e.target.value || undefined })}
-                    placeholder="프로젝트 개요"
-                    rows={3}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>주요 성과 / 하이라이트</label>
-                  <div className="skill-input-wrapper">
-                    <input
-                      type="text"
-                      value={highlightInput}
-                      onChange={(e) => setHighlightInput(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addHighlight(); }}}
-                      placeholder="항목 입력 후 Enter"
-                    />
-                    <button type="button" className="btn-add-skill" onClick={addHighlight}>추가</button>
-                  </div>
-                  {(projectForm.highlights?.length ?? 0) > 0 && (
-                    <ul className="array-item-list">
-                      {projectForm.highlights!.map((item, idx) => (
-                        <li key={idx} className="array-item">
-                          <span>{item}</span>
-                          <button type="button" className="skill-remove" onClick={() => removeHighlight(idx)}>×</button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>담당 역할</label>
-                  <div className="skill-input-wrapper">
-                    <input
-                      type="text"
-                      value={responsibilityInput}
-                      onChange={(e) => setResponsibilityInput(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addResponsibility(); }}}
-                      placeholder="항목 입력 후 Enter"
-                    />
-                    <button type="button" className="btn-add-skill" onClick={addResponsibility}>추가</button>
-                  </div>
-                  {(projectForm.responsibilities?.length ?? 0) > 0 && (
-                    <ul className="array-item-list">
-                      {projectForm.responsibilities!.map((item, idx) => (
-                        <li key={idx} className="array-item">
-                          <span>{item}</span>
-                          <button type="button" className="skill-remove" onClick={() => removeResponsibility(idx)}>×</button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>주요 기능</label>
-                  <div className="form-row">
-                    <input
-                      type="text"
-                      value={featureInput.name}
-                      onChange={(e) => setFeatureInput({ ...featureInput, name: e.target.value })}
-                      placeholder="기능명"
-                    />
-                    <input
-                      type="text"
-                      value={featureInput.note}
-                      onChange={(e) => setFeatureInput({ ...featureInput, note: e.target.value })}
-                      placeholder="설명 (선택)"
-                    />
-                  </div>
-                  <button type="button" className="btn-add-skill" style={{ marginTop: "0.5rem" }} onClick={addFeature}>기능 추가</button>
-                  {(projectForm.features?.length ?? 0) > 0 && (
-                    <ul className="array-item-list" style={{ marginTop: "0.5rem" }}>
-                      {projectForm.features!.map((f, idx) => (
-                        <li key={idx} className="array-item">
-                          <span><strong>{f.name}</strong>{f.note && ` — ${f.note}`}</span>
-                          <button type="button" className="skill-remove" onClick={() => removeFeature(idx)}>×</button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>링크</label>
-                  <div className="form-row">
-                    <input
-                      type="text"
-                      value={linkInput.label}
-                      onChange={(e) => setLinkInput({ ...linkInput, label: e.target.value })}
-                      placeholder="링크 라벨 (예: GitHub)"
-                    />
-                    <input
-                      type="text"
-                      value={linkInput.href}
-                      onChange={(e) => setLinkInput({ ...linkInput, href: e.target.value })}
-                      placeholder="URL"
-                    />
-                  </div>
-                  <button type="button" className="btn-add-skill" style={{ marginTop: "0.5rem" }} onClick={addLink}>링크 추가</button>
-                  {(projectForm.links?.length ?? 0) > 0 && (
-                    <ul className="array-item-list" style={{ marginTop: "0.5rem" }}>
-                      {projectForm.links!.map((l, idx) => (
-                        <li key={idx} className="array-item">
-                          <span>{l.label} — {l.href}</span>
-                          <button type="button" className="skill-remove" onClick={() => removeLink(idx)}>×</button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>기술 스택</label>
-                  <div className="skill-input-wrapper">
-                    <input
-                      type="text"
-                      value={skillInput}
-                      onChange={(e) => setSkillInput(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSkill(); }}}
-                      placeholder="스킬 입력 후 Enter"
-                    />
-                    <button type="button" className="btn-add-skill" onClick={addSkill}>추가</button>
-                  </div>
-                  {projectForm.skills && projectForm.skills.length > 0 ? (
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSkillsDragEnd}>
-                      <SortableContext items={projectForm.skills.map((_, index) => index)} strategy={verticalListSortingStrategy}>
-                        <div className="skill-tags-edit">
-                          {projectForm.skills.map((skill, idx) => (
-                            <SortableSkillTag key={idx} id={idx} skill={skill} onRemove={() => removeSkill(idx)} />
-                          ))}
-                        </div>
-                      </SortableContext>
-                    </DndContext>
-                  ) : (
-                    <div className="skill-tags-edit"></div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <label>표시 순서</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={projectForm.order ?? 0}
-                    onChange={(e) => setProjectForm({ ...projectForm, order: parseInt(e.target.value) || 0 })}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>내용 (Markdown)</label>
-                  <div data-color-mode="dark" className="md-editor-wrapper" style={{ color: "#fff" }}>
-                    <style>{`
-                      .md-editor-wrapper textarea,
-                      .md-editor-wrapper .w-md-editor textarea,
-                      .md-editor-wrapper .w-md-editor-text textarea,
-                      .md-editor-wrapper .w-md-editor-text-textarea textarea,
-                      .md-editor-wrapper textarea[class*="w-md"],
-                      .md-editor-wrapper textarea[class*="editor"] {
-                        color: #ffffff !important;
-                        background-color: #1a1a2e !important;
-                        caret-color: #ffffff !important;
-                        -webkit-text-fill-color: #ffffff !important;
-                      }
-                      .md-editor-wrapper textarea::placeholder {
-                        color: #888888 !important;
-                        opacity: 1 !important;
-                      }
-                    `}</style>
-                    <MDEditor
-                      value={projectForm.contents || ""}
-                      onChange={(value) => setProjectForm({ ...projectForm, contents: value || "" })}
-                      preview="edit"
-                      hideToolbar={false}
-                      visibleDragbar={false}
-                      height={400}
-                    />
-                  </div>
-                  <p className="form-hint">Markdown 문법을 사용하여 작성할 수 있습니다. (예: # 제목, **굵게**, `코드`)</p>
-                </div>
-                <div className="modal-actions">
-                  <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>취소</Button>
-                  <Button type="submit">저장</Button>
-                </div>
-              </form>
+          </FormField>
+
+          <FormField label="담당 역할">
+            <div className={styles.fieldGroup}>
+              <div className={styles.inputRow}>
+                <input
+                  type="text"
+                  value={responsibilityInput}
+                  onChange={(e) => setResponsibilityInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addResponsibility(); }}}
+                  placeholder="항목 입력 후 Enter"
+                />
+                <Button type="button" variant="outline" onClick={addResponsibility}>추가</Button>
+              </div>
+              {(projectForm.responsibilities?.length ?? 0) > 0 && (
+                <ul className={styles.itemList}>
+                  {projectForm.responsibilities!.map((item, idx) => (
+                    <li key={idx} className={styles.item}>
+                      <span>{item}</span>
+                      <button type="button" className={styles.itemRemove} onClick={() => removeResponsibility(idx)}>×</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          </div>
-        </div>
-      )}
-    </div>
+          </FormField>
+
+          <FormField label="주요 기능">
+            <div className={styles.fieldGroup}>
+              <div className={styles.twoCol}>
+                <input
+                  type="text"
+                  value={featureInput.name}
+                  onChange={(e) => setFeatureInput({ ...featureInput, name: e.target.value })}
+                  placeholder="기능명"
+                />
+                <input
+                  type="text"
+                  value={featureInput.note}
+                  onChange={(e) => setFeatureInput({ ...featureInput, note: e.target.value })}
+                  placeholder="설명 (선택)"
+                />
+              </div>
+              <div>
+                <Button type="button" variant="outline" onClick={addFeature}>기능 추가</Button>
+              </div>
+              {(projectForm.features?.length ?? 0) > 0 && (
+                <ul className={styles.itemList}>
+                  {projectForm.features!.map((f, idx) => (
+                    <li key={idx} className={styles.item}>
+                      <span><strong>{f.name}</strong>{f.note && ` — ${f.note}`}</span>
+                      <button type="button" className={styles.itemRemove} onClick={() => removeFeature(idx)}>×</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </FormField>
+
+          <FormField label="링크">
+            <div className={styles.fieldGroup}>
+              <div className={styles.twoCol}>
+                <input
+                  type="text"
+                  value={linkInput.label}
+                  onChange={(e) => setLinkInput({ ...linkInput, label: e.target.value })}
+                  placeholder="링크 라벨 (예: GitHub)"
+                />
+                <input
+                  type="text"
+                  value={linkInput.href}
+                  onChange={(e) => setLinkInput({ ...linkInput, href: e.target.value })}
+                  placeholder="URL"
+                />
+              </div>
+              <div>
+                <Button type="button" variant="outline" onClick={addLink}>링크 추가</Button>
+              </div>
+              {(projectForm.links?.length ?? 0) > 0 && (
+                <ul className={styles.itemList}>
+                  {projectForm.links!.map((l, idx) => (
+                    <li key={idx} className={styles.item}>
+                      <span>{l.label} — {l.href}</span>
+                      <button type="button" className={styles.itemRemove} onClick={() => removeLink(idx)}>×</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </FormField>
+
+          <FormField label="기술 스택">
+            <div className={styles.fieldGroup}>
+              <div className={styles.inputRow}>
+                <input
+                  type="text"
+                  value={skillInput}
+                  onChange={(e) => setSkillInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSkill(); }}}
+                  placeholder="스킬 입력 후 Enter"
+                />
+                <Button type="button" variant="outline" onClick={addSkill}>추가</Button>
+              </div>
+              {projectForm.skills && projectForm.skills.length > 0 && (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSkillsDragEnd}>
+                  <SortableContext items={projectForm.skills.map((_, index) => index)} strategy={verticalListSortingStrategy}>
+                    <div className={styles.tagsEdit}>
+                      {projectForm.skills.map((skill, idx) => (
+                        <SortableTag key={idx} id={idx} label={skill} onRemove={() => removeSkill(idx)} />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              )}
+            </div>
+          </FormField>
+
+          <FormField label="표시 순서">
+            <input
+              type="number"
+              min="0"
+              value={projectForm.order ?? 0}
+              onChange={(e) => setProjectForm({ ...projectForm, order: parseInt(e.target.value) || 0 })}
+            />
+          </FormField>
+
+          <FormField label="내용 (Markdown)">
+            <div data-color-mode="dark" className="md-editor-wrapper">
+              <MDEditor
+                value={projectForm.contents || ""}
+                onChange={(value) => setProjectForm({ ...projectForm, contents: value || "" })}
+                preview="edit"
+                hideToolbar={false}
+                visibleDragbar={false}
+                height={400}
+              />
+            </div>
+            <p className={styles.hint}>
+              Markdown 문법을 사용하여 작성할 수 있습니다. (예: # 제목, **굵게**, `코드`)
+            </p>
+          </FormField>
+
+          <FormActions>
+            <Button type="button" variant="ghost" onClick={() => setShowModal(false)}>취소</Button>
+            <Button type="submit">저장</Button>
+          </FormActions>
+        </Form>
+      </Modal>
+    </Page>
   );
 };
 

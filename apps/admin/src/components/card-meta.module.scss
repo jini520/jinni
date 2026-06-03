@@ -1,0 +1,25 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: sp.$space-2 sp.$space-4;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: sp.$space-1;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+  min-width: 0;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--color-text-faint);
+  }
+}

@@ -1,0 +1,25 @@
+// admin 전역 보강
+// reset / base / typography / theme(light 기본)는 @jinni/ui/styles 가 제공.
+// 이 파일은 admin 전용 추가분만 담는다.
+
+// MDEditor(@uiw/react-md-editor)는 light 테마에서도 다크 면 유지.
+// 라이브러리 내부 클래스라 토큰 대신 직접 지정한다.
+.w-md-editor textarea,
+.w-md-editor-text textarea,
+.w-md-editor-text-textarea textarea,
+.w-md-editor-text-input textarea,
+[data-color-mode='dark'] .w-md-editor textarea,
+[data-color-mode='dark'] .w-md-editor-text textarea,
+.md-editor-wrapper textarea,
+.md-editor-wrapper .w-md-editor textarea {
+  color: #ffffff !important;
+  background-color: #1a1a2e !important;
+  caret-color: #ffffff !important;
+}
+
+.w-md-editor textarea::placeholder,
+.w-md-editor-text textarea::placeholder,
+[data-color-mode='dark'] .w-md-editor textarea::placeholder {
+  color: #888888 !important;
+  opacity: 1 !important;
+}
