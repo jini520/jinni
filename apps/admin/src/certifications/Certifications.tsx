@@ -40,6 +40,11 @@ import {
   FormRow,
   FormActions,
   Button,
+  MetaRow,
+  MetaItem,
+  CalendarIcon,
+  BuildingIcon,
+  AwardIcon,
 } from "../components";
 import styles from "./certifications.module.scss";
 
@@ -425,25 +430,26 @@ const Certifications = () => {
                       key={certification.id}
                       id={certification.id}
                       title={certification.name}
-                      aside={certification.date}
                       onEdit={() => handleEditCertification(certification)}
                       onDelete={() => handleDeleteCertification(certification.id)}
                     >
-                      {(certification.organization || certification.tier) && (
-                        <div className={styles.meta}>
-                          {certification.organization && (
-                            <span>
-                              <strong>발급 기관:</strong>{" "}
-                              {certification.organization}
-                            </span>
-                          )}
-                          {certification.tier && (
-                            <span>
-                              <strong>등급:</strong> {certification.tier}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      <MetaRow>
+                        {certification.date && (
+                          <MetaItem icon={<CalendarIcon />}>
+                            {certification.date}
+                          </MetaItem>
+                        )}
+                        {certification.organization && (
+                          <MetaItem icon={<BuildingIcon />}>
+                            {certification.organization}
+                          </MetaItem>
+                        )}
+                        {certification.tier && (
+                          <MetaItem icon={<AwardIcon />}>
+                            {certification.tier}
+                          </MetaItem>
+                        )}
+                      </MetaRow>
                     </SortableCard>
                   ))}
                 </div>
@@ -480,24 +486,24 @@ const Certifications = () => {
                       key={award.id}
                       id={award.id}
                       title={award.name}
-                      aside={award.date}
                       onEdit={() => handleEditAward(award)}
                       onDelete={() => handleDeleteAward(award.id)}
                     >
-                      {(award.organization || award.tier) && (
-                        <div className={styles.meta}>
-                          {award.organization && (
-                            <span>
-                              <strong>주최 기관:</strong> {award.organization}
-                            </span>
-                          )}
-                          {award.tier && (
-                            <span>
-                              <strong>등급:</strong> {award.tier}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      <MetaRow>
+                        {award.date && (
+                          <MetaItem icon={<CalendarIcon />}>
+                            {award.date}
+                          </MetaItem>
+                        )}
+                        {award.organization && (
+                          <MetaItem icon={<BuildingIcon />}>
+                            {award.organization}
+                          </MetaItem>
+                        )}
+                        {award.tier && (
+                          <MetaItem icon={<AwardIcon />}>{award.tier}</MetaItem>
+                        )}
+                      </MetaRow>
                     </SortableCard>
                   ))}
                 </div>

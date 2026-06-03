@@ -100,6 +100,9 @@
 }
 
 .body {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
   font-size: t.$text-sm;
   color: var(--color-text-subtle);
 }

@@ -38,6 +38,11 @@ import {
   FormRow,
   FormActions,
   Button,
+  MetaRow,
+  MetaItem,
+  CalendarIcon,
+  BriefcaseIcon,
+  UserIcon,
 } from "../components";
 import styles from "./careers.module.scss";
 
@@ -615,24 +620,26 @@ const Careers = () => {
                       key={business.id}
                       id={business.id}
                       title={business.company}
-                      aside={formatPeriod(business.startDate, business.endDate)}
                       onEdit={() => handleEditBusiness(business)}
                       onDelete={() => handleDeleteBusiness(business.id)}
                     >
-                      {(business.department || business.position) && (
-                        <div className={styles.meta}>
-                          {business.department && (
-                            <span>
-                              <strong>부서:</strong> {business.department}
-                            </span>
-                          )}
-                          {business.position && (
-                            <span>
-                              <strong>직책:</strong> {business.position}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      <MetaRow>
+                        {business.startDate && (
+                          <MetaItem icon={<CalendarIcon />}>
+                            {formatPeriod(business.startDate, business.endDate)}
+                          </MetaItem>
+                        )}
+                        {business.department && (
+                          <MetaItem icon={<BriefcaseIcon />}>
+                            {business.department}
+                          </MetaItem>
+                        )}
+                        {business.position && (
+                          <MetaItem icon={<UserIcon />}>
+                            {business.position}
+                          </MetaItem>
+                        )}
+                      </MetaRow>
 
                       {business.skills && business.skills.length > 0 && (
                         <div className={styles.skills}>
@@ -688,24 +695,26 @@ const Careers = () => {
                       key={project.id}
                       id={project.id}
                       title={project.company}
-                      aside={formatPeriod(project.startDate, project.endDate)}
                       onEdit={() => handleEditProject(project)}
                       onDelete={() => handleDeleteProject(project.id)}
                     >
-                      {(project.department || project.position) && (
-                        <div className={styles.meta}>
-                          {project.department && (
-                            <span>
-                              <strong>부서:</strong> {project.department}
-                            </span>
-                          )}
-                          {project.position && (
-                            <span>
-                              <strong>직책:</strong> {project.position}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      <MetaRow>
+                        {project.startDate && (
+                          <MetaItem icon={<CalendarIcon />}>
+                            {formatPeriod(project.startDate, project.endDate)}
+                          </MetaItem>
+                        )}
+                        {project.department && (
+                          <MetaItem icon={<BriefcaseIcon />}>
+                            {project.department}
+                          </MetaItem>
+                        )}
+                        {project.position && (
+                          <MetaItem icon={<UserIcon />}>
+                            {project.position}
+                          </MetaItem>
+                        )}
+                      </MetaRow>
 
                       {project.skills && project.skills.length > 0 && (
                         <div className={styles.skills}>

@@ -12,6 +12,7 @@ export {
   type UploadAreaHandle,
 } from "./FileManager";
 
+export { MetaRow, MetaItem } from "./CardMeta";
 export {
   GripIcon,
   DownloadIcon,
@@ -20,6 +21,11 @@ export {
   ImageIcon,
   EditIcon,
   CloseIcon,
+  CalendarIcon,
+  BuildingIcon,
+  BriefcaseIcon,
+  UserIcon,
+  AwardIcon,
 } from "./icons";
 
 // 공용 디자인시스템 Button 재노출 (admin 전역에서 동일 import 경로 사용)

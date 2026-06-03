@@ -6,13 +6,8 @@
   gap: sp.$space-3;
 }
 
-.meta {
-  display: flex;
-  flex-direction: column;
-  gap: sp.$space-1;
-
-  strong {
-    color: var(--color-text);
-    font-weight: var(--weight-medium);
-  }
+.desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+  line-height: var(--leading-normal);
 }

@@ -72,3 +72,39 @@ export const CloseIcon = () => (
     <path d="M18 6L6 18M6 6l12 12" />
   </Stroke>
 );
+
+// ── 메타 아이콘 ────────────────────────────────────────────────────────────
+export const CalendarIcon = () => (
+  <Stroke>
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </Stroke>
+);
+
+export const BuildingIcon = () => (
+  <Stroke>
+    <rect x="4" y="3" width="16" height="18" rx="1.5" />
+    <path d="M9 7h.01M15 7h.01M9 11h.01M15 11h.01M9 21v-4h6v4" />
+  </Stroke>
+);
+
+export const BriefcaseIcon = () => (
+  <Stroke>
+    <rect x="2" y="7" width="20" height="14" rx="2" />
+    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+  </Stroke>
+);
+
+export const UserIcon = () => (
+  <Stroke>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 21a8 8 0 0 1 16 0" />
+  </Stroke>
+);
+
+export const AwardIcon = () => (
+  <Stroke>
+    <circle cx="12" cy="8" r="6" />
+    <path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5" />
+  </Stroke>
+);

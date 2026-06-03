@@ -8,17 +8,6 @@
 }
 
 // ── Card body ────────────────────────────────────────────────────────────
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: sp.$space-4;
-
-  strong {
-    color: var(--color-text);
-    font-weight: var(--weight-medium);
-  }
-}
-
 .skills {
   display: flex;
   flex-wrap: wrap;

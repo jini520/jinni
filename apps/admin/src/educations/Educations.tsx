@@ -30,6 +30,10 @@ import {
   FormRow,
   FormActions,
   Button,
+  MetaRow,
+  MetaItem,
+  CalendarIcon,
+  AwardIcon,
 } from "../components";
 import styles from "./educations.module.scss";
 
@@ -283,26 +287,26 @@ const Educations = () => {
                       key={education.id}
                       id={education.id}
                       title={education.education}
-                      aside={formatPeriod(
-                        education.startDate,
-                        education.endDate
-                      )}
                       onEdit={() => handleEditEducation(education)}
                       onDelete={() => handleDeleteEducation(education.id)}
                     >
-                      {(education.status || education.description) && (
-                        <div className={styles.meta}>
-                          {education.status && (
-                            <span>
-                              <strong>상태:</strong> {education.status}
-                            </span>
-                          )}
-                          {education.description && (
-                            <span>
-                              <strong>설명:</strong> {education.description}
-                            </span>
-                          )}
-                        </div>
+                      <MetaRow>
+                        {education.startDate && (
+                          <MetaItem icon={<CalendarIcon />}>
+                            {formatPeriod(
+                              education.startDate,
+                              education.endDate
+                            )}
+                          </MetaItem>
+                        )}
+                        {education.status && (
+                          <MetaItem icon={<AwardIcon />}>
+                            {education.status}
+                          </MetaItem>
+                        )}
+                      </MetaRow>
+                      {education.description && (
+                        <p className={styles.desc}>{education.description}</p>
                       )}
                     </SortableCard>
                   ))}
