@@ -36,6 +36,7 @@ import {
 import styles from "./skills.module.scss";
 import { SkillCardOverlay } from "./components/SkillCard";
 import { SkillColumn } from "./components/SkillColumn";
+import { SkillFormModal } from "./components/SkillFormModal";
 
 const UNCAT = "__uncategorized__";
 type ModalType = "skill" | "category" | null;
@@ -54,7 +55,6 @@ const Skills = () => {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [editingSkill, setEditingSkill] = useState<SkillDto | null>(null);
   const [editingCategory, setEditingCategory] = useState<CategoryDto | null>(null);
-  const [skillForm, setSkillForm] = useState<SkillRequestDto>({ name: "", order: 0, categoryId: "" });
   const [categoryForm, setCategoryForm] = useState<CategoryRequestDto>({ name: "", order: 0 });
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -218,18 +218,13 @@ const Skills = () => {
   // ── 스킬 모달 ────────────────────────────────────────────────────────────
   const handleEditSkill = (skill: SkillDto) => {
     setEditingSkill(skill);
-    setSkillForm({
-      name: skill.name,
-      order: skill.order || 0,
-      categoryId: skill.categoryId || "",
-    });
     setModalType("skill");
   };
 
-  const handleSaveSkill = async () => {
+  const handleSaveSkill = async (data: SkillRequestDto) => {
     if (!editingSkill) return;
     try {
-      await skillsApi.updateSkill(editingSkill.id, skillForm);
+      await skillsApi.updateSkill(editingSkill.id, data);
       closeModal();
       loadData();
     } catch (err) {
@@ -360,49 +355,13 @@ const Skills = () => {
         </DndContext>
       )}
 
-      {/* 스킬 수정 모달 */}
-      <Modal
+      <SkillFormModal
         open={modalType === "skill"}
+        skill={editingSkill}
+        categories={sortedCategories}
+        onSubmit={handleSaveSkill}
         onClose={closeModal}
-        title="스킬 수정"
-      >
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSaveSkill();
-          }}
-        >
-          <FormField label="스킬 이름" required>
-            <input
-              ref={modalType === "skill" ? nameInputRef : undefined}
-              type="text"
-              value={skillForm.name}
-              onChange={(e) => setSkillForm({ ...skillForm, name: e.target.value })}
-              placeholder="React, TypeScript 등"
-              required
-            />
-          </FormField>
-          <FormField label="카테고리">
-            <select
-              value={skillForm.categoryId}
-              onChange={(e) => setSkillForm({ ...skillForm, categoryId: e.target.value })}
-            >
-              <option value="">미분류</option>
-              {sortedCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </FormField>
-          <FormActions>
-            <Button type="button" variant="ghost" onClick={closeModal}>
-              취소
-            </Button>
-            <Button type="submit">저장</Button>
-          </FormActions>
-        </Form>
-      </Modal>
+      />
 
       {/* 카테고리 모달 */}
       <Modal
