@@ -16,10 +16,8 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { skillsApi, categoriesApi } from "../api/skills";
 import type {
   SkillDto,
@@ -37,87 +35,14 @@ import {
   FormField,
   FormActions,
   Button,
-  GripIcon,
   EditIcon,
   CloseIcon,
 } from "../components";
 import styles from "./skills.module.scss";
+import { SkillCard, SkillCardOverlay } from "./components/SkillCard";
 
 const UNCAT = "__uncategorized__";
 type ModalType = "skill" | "category" | null;
-
-// ── 스킬 카드 (드래그) ───────────────────────────────────────────────────
-const SkillCard = ({
-  skill,
-  onEdit,
-  onDelete,
-}: {
-  skill: SkillDto;
-  onEdit: (skill: SkillDto) => void;
-  onDelete: (id: string) => void;
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: skill.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  const stop = (e: React.PointerEvent | React.MouseEvent) =>
-    e.stopPropagation();
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`${styles.card} ${isDragging ? styles.cardDragging : ""}`}
-    >
-      <button
-        type="button"
-        className={styles.cardGrip}
-        aria-label="드래그하여 순서 변경"
-        {...attributes}
-        {...listeners}
-      >
-        <GripIcon />
-      </button>
-      <span className={styles.skillName}>{skill.name}</span>
-      <div className={styles.cardActions}>
-        <button
-          className={styles.cardBtn}
-          onPointerDown={stop}
-          onClick={(e) => {
-            stop(e);
-            onEdit(skill);
-          }}
-          title="수정"
-          aria-label="수정"
-        >
-          <EditIcon />
-        </button>
-        <button
-          className={`${styles.cardBtn} ${styles.cardBtnDanger}`}
-          onPointerDown={stop}
-          onClick={(e) => {
-            stop(e);
-            onDelete(skill.id);
-          }}
-          title="삭제"
-          aria-label="삭제"
-        >
-          <CloseIcon />
-        </button>
-      </div>
-    </div>
-  );
-};
 
 // ── 카테고리 컬럼 ────────────────────────────────────────────────────────
 const Column = ({
@@ -533,11 +458,7 @@ const Skills = () => {
           </div>
 
           <DragOverlay>
-            {activeSkill ? (
-              <div className={`${styles.card} ${styles.cardOverlay}`}>
-                <span className={styles.skillName}>{activeSkill.name}</span>
-              </div>
-            ) : null}
+            {activeSkill ? <SkillCardOverlay name={activeSkill.name} /> : null}
           </DragOverlay>
         </DndContext>
       )}
