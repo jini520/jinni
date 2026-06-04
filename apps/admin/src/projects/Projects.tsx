@@ -688,7 +688,12 @@ const Projects = () => {
           </FormField>
 
           <FormField label="내용 (Markdown)">
-            <div data-color-mode="dark" className="md-editor-wrapper">
+            <div
+              data-color-mode={
+                document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"
+              }
+              className="md-editor-wrapper"
+            >
               <MDEditor
                 value={projectForm.contents || ""}
                 onChange={(value) => setProjectForm({ ...projectForm, contents: value || "" })}
