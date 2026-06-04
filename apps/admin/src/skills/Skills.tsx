@@ -1,28 +1,15 @@
 import { useState } from "react";
-import {
-  DndContext,
-  DragOverlay,
-  closestCorners,
-} from "@dnd-kit/core";
 import type {
   SkillDto,
   CategoryDto,
   SkillRequestDto,
   CategoryRequestDto,
 } from "../@types";
-import {
-  Page,
-  PageHeader,
-  ErrorBanner,
-  Spinner,
-  Button,
-} from "../components";
-import { useSkillBoard, UNCAT } from "./useSkillBoard";
-import { SkillColumn } from "./components/SkillColumn";
-import { SkillCardOverlay } from "./components/SkillCard";
+import { Page, PageHeader, ErrorBanner, Spinner, Button } from "../components";
+import { useSkillBoard } from "./useSkillBoard";
+import { SkillBoard } from "./components/SkillBoard";
 import { SkillFormModal } from "./components/SkillFormModal";
 import { CategoryFormModal } from "./components/CategoryFormModal";
-import styles from "./skills.module.scss";
 
 type ModalType = "skill" | "category" | null;
 
@@ -74,46 +61,24 @@ const Skills = () => {
       {board.loading ? (
         <Spinner />
       ) : (
-        <DndContext
+        <SkillBoard
+          columns={board.columns}
+          items={board.items}
+          skillMap={board.skillMap}
           sensors={board.sensors}
-          collisionDetection={closestCorners}
+          activeSkill={board.activeSkill}
+          addInputs={board.addInputs}
           onDragStart={board.onDragStart}
           onDragOver={board.onDragOver}
           onDragEnd={board.onDragEnd}
-        >
-          <div className={styles.board}>
-            {board.columns.map((col) => (
-              <SkillColumn
-                key={col.id}
-                id={col.id}
-                name={col.name}
-                category={col.category}
-                isUncategorized={col.id === UNCAT}
-                count={(board.items[col.id] || []).length}
-                skills={(board.items[col.id] || [])
-                  .map((sid) => board.skillMap[sid])
-                  .filter(Boolean)}
-                addValue={board.addInputs[col.id] || ""}
-                onAddChange={(v) => board.setAddInput(col.id, v)}
-                onAddSubmit={() => board.submitAdd(col.id)}
-                onEditCategory={openEditCategory}
-                onDeleteCategory={board.deleteCategory}
-                onEditSkill={openSkillModal}
-                onDeleteSkill={board.deleteSkill}
-              />
-            ))}
-
-            <button className={styles.addColumn} onClick={openAddCategory}>
-              + 카테고리 추가
-            </button>
-          </div>
-
-          <DragOverlay>
-            {board.activeSkill ? (
-              <SkillCardOverlay name={board.activeSkill.name} />
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+          onAddChange={board.setAddInput}
+          onAddSubmit={board.submitAdd}
+          onAddCategory={openAddCategory}
+          onEditCategory={openEditCategory}
+          onDeleteCategory={board.deleteCategory}
+          onEditSkill={openSkillModal}
+          onDeleteSkill={board.deleteSkill}
+        />
       )}
 
       <SkillFormModal
