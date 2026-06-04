@@ -27,16 +27,13 @@ import {
   PageHeader,
   ErrorBanner,
   Spinner,
-  Modal,
-  Form,
-  FormField,
-  FormActions,
   Button,
 } from "../components";
 import styles from "./skills.module.scss";
 import { SkillCardOverlay } from "./components/SkillCard";
 import { SkillColumn } from "./components/SkillColumn";
 import { SkillFormModal } from "./components/SkillFormModal";
+import { CategoryFormModal } from "./components/CategoryFormModal";
 
 const UNCAT = "__uncategorized__";
 type ModalType = "skill" | "category" | null;
@@ -55,9 +52,6 @@ const Skills = () => {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [editingSkill, setEditingSkill] = useState<SkillDto | null>(null);
   const [editingCategory, setEditingCategory] = useState<CategoryDto | null>(null);
-  const [categoryForm, setCategoryForm] = useState<CategoryRequestDto>({ name: "", order: 0 });
-  const nameInputRef = useRef<HTMLInputElement>(null);
-
   const itemsRef = useRef(items);
   useEffect(() => {
     itemsRef.current = items;
@@ -67,13 +61,6 @@ const Skills = () => {
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
-
-  useEffect(() => {
-    if (modalType) {
-      const timer = setTimeout(() => nameInputRef.current?.focus(), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [modalType]);
 
   const loadData = async () => {
     setLoading(true);
@@ -247,22 +234,20 @@ const Skills = () => {
   // ── 카테고리 모달 ────────────────────────────────────────────────────────
   const handleAddCategory = () => {
     setEditingCategory(null);
-    setCategoryForm({ name: "", order: categories.length });
     setModalType("category");
   };
 
   const handleEditCategory = (category: CategoryDto) => {
     setEditingCategory(category);
-    setCategoryForm({ name: category.name, order: category.order || 0 });
     setModalType("category");
   };
 
-  const handleSaveCategory = async () => {
+  const handleSaveCategory = async (data: CategoryRequestDto) => {
     try {
       if (editingCategory) {
-        await categoriesApi.updateCategory(editingCategory.id, categoryForm);
+        await categoriesApi.updateCategory(editingCategory.id, data);
       } else {
-        await categoriesApi.createCategory(categoryForm);
+        await categoriesApi.createCategory(data);
       }
       closeModal();
       loadData();
@@ -363,44 +348,13 @@ const Skills = () => {
         onClose={closeModal}
       />
 
-      {/* 카테고리 모달 */}
-      <Modal
+      <CategoryFormModal
         open={modalType === "category"}
+        category={editingCategory}
+        defaultOrder={categories.length}
+        onSubmit={handleSaveCategory}
         onClose={closeModal}
-        title={editingCategory ? "카테고리 수정" : "카테고리 추가"}
-      >
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSaveCategory();
-          }}
-        >
-          <FormField label="카테고리 이름" required>
-            <input
-              ref={modalType === "category" ? nameInputRef : undefined}
-              type="text"
-              value={categoryForm.name}
-              onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-              placeholder="Frontend, Backend 등"
-              required
-            />
-          </FormField>
-          <FormField label="표시 순서">
-            <input
-              type="number"
-              min="0"
-              value={categoryForm.order}
-              onChange={(e) => setCategoryForm({ ...categoryForm, order: parseInt(e.target.value) || 0 })}
-            />
-          </FormField>
-          <FormActions>
-            <Button type="button" variant="ghost" onClick={closeModal}>
-              취소
-            </Button>
-            <Button type="submit">저장</Button>
-          </FormActions>
-        </Form>
-      </Modal>
+      />
     </Page>
   );
 };
