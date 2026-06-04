@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
-import {
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { type DragEndEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { careersApi, businessApi, careerProjectApi } from "../api/careers";
+import { useSortableSensors } from "../shared/useSortableSensors";
+import { useResourceMutations } from "../shared/useResourceMutations";
 import type {
   CareerDto,
   BusinessDto,
@@ -25,10 +21,7 @@ export const useCareers = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
+  const sensors = useSortableSensors();
 
   const loadData = async () => {
     setLoading(true);
@@ -115,65 +108,34 @@ export const useCareers = () => {
       })
     );
 
-  const saveBusiness = async (
-    editing: BusinessDto | null,
-    data: BusinessRequestDto
-  ): Promise<boolean> => {
-    try {
-      if (editing) {
-        await businessApi.updateBusiness(editing.id, data);
-      } else {
-        await businessApi.createBusiness(data);
-      }
-      loadData();
-      return true;
-    } catch (err) {
-      setError("저장에 실패했습니다.");
-      console.error(err);
-      return false;
-    }
-  };
+  const { runSave, runDelete } = useResourceMutations(loadData, setError);
 
-  const deleteBusiness = async (id: string) => {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-    try {
-      await businessApi.deleteBusiness(id);
-      loadData();
-    } catch (err) {
-      setError("삭제에 실패했습니다.");
-      console.error(err);
-    }
-  };
+  const saveBusiness = (editing: BusinessDto | null, data: BusinessRequestDto) =>
+    runSave(
+      () =>
+        editing
+          ? businessApi.updateBusiness(editing.id, data)
+          : businessApi.createBusiness(data),
+      "저장에 실패했습니다."
+    );
 
-  const saveProject = async (
+  const deleteBusiness = (id: string) =>
+    runDelete(() => businessApi.deleteBusiness(id), "삭제에 실패했습니다.");
+
+  const saveProject = (
     editing: CareerProjectDto | null,
     data: CareerProjectRequestDto
-  ): Promise<boolean> => {
-    try {
-      if (editing) {
-        await careerProjectApi.updateCareerProject(editing.id, data);
-      } else {
-        await careerProjectApi.createCareerProject(data);
-      }
-      loadData();
-      return true;
-    } catch (err) {
-      setError("저장에 실패했습니다.");
-      console.error(err);
-      return false;
-    }
-  };
+  ) =>
+    runSave(
+      () =>
+        editing
+          ? careerProjectApi.updateCareerProject(editing.id, data)
+          : careerProjectApi.createCareerProject(data),
+      "저장에 실패했습니다."
+    );
 
-  const deleteProject = async (id: string) => {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-    try {
-      await careerProjectApi.deleteCareerProject(id);
-      loadData();
-    } catch (err) {
-      setError("삭제에 실패했습니다.");
-      console.error(err);
-    }
-  };
+  const deleteProject = (id: string) =>
+    runDelete(() => careerProjectApi.deleteCareerProject(id), "삭제에 실패했습니다.");
 
   return {
     businessList,

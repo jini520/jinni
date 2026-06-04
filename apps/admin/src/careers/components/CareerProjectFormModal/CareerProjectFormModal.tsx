@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import type {
   CareerProjectDto,
   CareerProjectRequestDto,
@@ -10,6 +9,7 @@ import {
   FormActions,
   Button,
 } from "../../../components";
+import { useModalForm } from "../../../shared/useModalForm";
 import { CareerFields } from "../CareerFields";
 import { SkillTagsInput } from "../SkillTagsInput";
 
@@ -36,12 +36,9 @@ export const CareerProjectFormModal = ({
   onSubmit: (data: CareerProjectRequestDto) => void;
   onClose: () => void;
 }) => {
-  const [form, setForm] = useState<CareerProjectRequestDto>(emptyForm(0));
-  const companyRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    setForm(
+  const { form, setForm, focusRef } = useModalForm<CareerProjectRequestDto>(
+    open,
+    () =>
       project
         ? {
             startDate: project.startDate || "",
@@ -53,15 +50,7 @@ export const CareerProjectFormModal = ({
             orderIndex: 0,
           }
         : emptyForm(defaultOrderIndex)
-    );
-  }, [open, project, defaultOrderIndex]);
-
-  useEffect(() => {
-    if (open) {
-      const timer = setTimeout(() => companyRef.current?.focus(), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
+  );
 
   return (
     <Modal
@@ -76,7 +65,7 @@ export const CareerProjectFormModal = ({
         }}
       >
         <CareerFields
-          ref={companyRef}
+          ref={focusRef}
           value={form}
           onChange={(patch) => setForm({ ...form, ...patch })}
         />

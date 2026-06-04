@@ -2,19 +2,15 @@ import { useState } from "react";
 import {
   DndContext,
   closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Button, SortableTag } from "../../../components";
+import { useSortableSensors } from "../../../shared/useSortableSensors";
 import styles from "./skill-tags-input.module.scss";
 
 export const SkillTagsInput = ({
@@ -25,10 +21,7 @@ export const SkillTagsInput = ({
   onChange: (next: string[]) => void;
 }) => {
   const [input, setInput] = useState("");
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
+  const sensors = useSortableSensors();
 
   const addSkill = () => {
     const trimmed = input.trim();

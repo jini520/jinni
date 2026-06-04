@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import type { BusinessDto, BusinessRequestDto } from "../../../@types";
 import {
   Modal,
@@ -7,6 +6,7 @@ import {
   FormActions,
   Button,
 } from "../../../components";
+import { useModalForm } from "../../../shared/useModalForm";
 import { CareerFields } from "../CareerFields";
 import { SkillTagsInput } from "../SkillTagsInput";
 import { DetailsInput } from "../DetailsInput";
@@ -35,33 +35,20 @@ export const BusinessFormModal = ({
   onSubmit: (data: BusinessRequestDto) => void;
   onClose: () => void;
 }) => {
-  const [form, setForm] = useState<BusinessRequestDto>(emptyForm(0));
-  const companyRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    setForm(
-      business
-        ? {
-            startDate: business.startDate || "",
-            endDate: business.endDate || "",
-            company: business.company || "",
-            department: business.department || "",
-            position: business.position || "",
-            skills: business.skills || [],
-            orderIndex: 0,
-            details: business.details || [],
-          }
-        : emptyForm(defaultOrderIndex)
-    );
-  }, [open, business, defaultOrderIndex]);
-
-  useEffect(() => {
-    if (open) {
-      const timer = setTimeout(() => companyRef.current?.focus(), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
+  const { form, setForm, focusRef } = useModalForm<BusinessRequestDto>(open, () =>
+    business
+      ? {
+          startDate: business.startDate || "",
+          endDate: business.endDate || "",
+          company: business.company || "",
+          department: business.department || "",
+          position: business.position || "",
+          skills: business.skills || [],
+          orderIndex: 0,
+          details: business.details || [],
+        }
+      : emptyForm(defaultOrderIndex)
+  );
 
   return (
     <Modal
@@ -76,7 +63,7 @@ export const BusinessFormModal = ({
         }}
       >
         <CareerFields
-          ref={companyRef}
+          ref={focusRef}
           value={form}
           onChange={(patch) => setForm({ ...form, ...patch })}
         />
