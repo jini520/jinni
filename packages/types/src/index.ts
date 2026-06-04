@@ -22,6 +22,7 @@ export interface ApiResponse<T> {
 export interface Category {
   id: string;
   name: string;
+  nameEn: string;
   order: number;
 }
 

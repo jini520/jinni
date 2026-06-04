@@ -2,11 +2,13 @@
 export interface CategoryDto {
   id: string;
   name: string;
+  nameEn: string;
   order?: number;
 }
 
 export interface CategoryRequestDto {
   name: string;
+  nameEn: string;
   order?: number;
 }
 
