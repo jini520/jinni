@@ -21,15 +21,23 @@ export const CategoryFormModal = ({
   onSubmit: (data: CategoryRequestDto) => void;
   onClose: () => void;
 }) => {
-  const [form, setForm] = useState<CategoryRequestDto>({ name: "", order: 0 });
+  const [form, setForm] = useState<CategoryRequestDto>({
+    name: "",
+    nameEn: "",
+    order: 0,
+  });
   const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) {
       setForm(
         category
-          ? { name: category.name, order: category.order || 0 }
-          : { name: "", order: defaultOrder }
+          ? {
+              name: category.name,
+              nameEn: category.nameEn,
+              order: category.order || 0,
+            }
+          : { name: "", nameEn: "", order: defaultOrder }
       );
     }
   }, [open, category, defaultOrder]);
@@ -60,6 +68,15 @@ export const CategoryFormModal = ({
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Frontend, Backend 등"
+            required
+          />
+        </FormField>
+        <FormField label="영문 이름" required>
+          <input
+            type="text"
+            value={form.nameEn}
+            onChange={(e) => setForm({ ...form, nameEn: e.target.value })}
+            placeholder="frontend, backend 등"
             required
           />
         </FormField>

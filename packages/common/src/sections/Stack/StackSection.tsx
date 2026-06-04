@@ -33,7 +33,7 @@ export function StackSection({ skills }: { skills: Skills }) {
             >
               <div className={styles.techRowLabel}>
                 <span className={styles.ko}>{TECH_GROUPS_KO[cat.name] ?? cat.name}</span>
-                <span className={styles.en}>— {cat.name}</span>
+                <span className={styles.en}>— {cat.nameEn.toUpperCase()}</span>
               </div>
               <div className={styles.techChips}>
                 {catSkills.map((skill, si) => {
