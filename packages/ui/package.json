@@ -5,7 +5,7 @@
   "scripts": {
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "icons:gen": "svgr --typescript --no-dimensions --filename-case kebab --index-template ./src/icons/svgr-index.cjs --out-dir ./src/icons/logos ./src/icons/_svg/logos && svgr --typescript --no-dimensions --filename-case kebab --index-template ./src/icons/svgr-index.cjs --out-dir ./src/icons/ui ./src/icons/_svg/ui"
+    "icons:gen": "svgr --typescript --jsx-runtime automatic --no-dimensions --filename-case kebab --index-template ./src/icons/svgr-index.cjs --out-dir ./src/icons/logos ./src/icons/_svg/logos && svgr --typescript --jsx-runtime automatic --no-dimensions --filename-case kebab --index-template ./src/icons/svgr-index.cjs --out-dir ./src/icons/ui ./src/icons/_svg/ui"
   },
   "exports": {
     ".": "./src/index.ts",
