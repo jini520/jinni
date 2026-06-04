@@ -11,6 +11,8 @@ export const useModalForm = <T>(open: boolean, makeSeed: () => T) => {
     setForm(makeSeed());
     const timer = setTimeout(() => focusRef.current?.focus(), 100);
     return () => clearTimeout(timer);
+    // makeSeed를 의도적으로 의존성에서 제외(열림 시점에만 시드). 추가 시 매 렌더 재시드됨.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   return { form, setForm, focusRef };
