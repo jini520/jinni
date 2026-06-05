@@ -1,7 +1,0 @@
-@use 'tokens/spacing' as sp;
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: sp.$space-3;
-}

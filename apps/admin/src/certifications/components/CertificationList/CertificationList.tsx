@@ -3,16 +3,24 @@ import type {
   SensorDescriptor,
   SensorOptions,
 } from "@dnd-kit/core";
-import type { CareerDto } from "../../../@types";
 import { SortableList } from "../../../shared/SortableList";
-import { CareerCard } from "../CareerCard";
+import { CertificationCard } from "../CertificationCard";
 
-export const CareerList = <T extends CareerDto>({
+interface CertItem {
+  id: string;
+  name: string;
+  date?: string;
+  organization?: string;
+  tier?: string;
+}
+
+export const CertificationList = <T extends CertItem>({
   items,
   sensors,
   toolbarTitle,
   addLabel,
   emptyMessage,
+  emptyActionLabel,
   onAdd,
   onEdit,
   onDelete,
@@ -23,6 +31,7 @@ export const CareerList = <T extends CareerDto>({
   toolbarTitle: string;
   addLabel: string;
   emptyMessage: string;
+  emptyActionLabel: string;
   onAdd: () => void;
   onEdit: (item: T) => void;
   onDelete: (id: string) => void;
@@ -34,20 +43,17 @@ export const CareerList = <T extends CareerDto>({
     toolbarTitle={toolbarTitle}
     addLabel={addLabel}
     emptyMessage={emptyMessage}
-    emptyActionLabel="첫 경력 추가하기"
+    emptyActionLabel={emptyActionLabel}
     onAdd={onAdd}
     onDragEnd={onDragEnd}
     renderItem={(item) => (
-      <CareerCard
+      <CertificationCard
         key={item.id}
         id={item.id}
-        title={item.company}
-        startDate={item.startDate}
-        endDate={item.endDate}
-        department={item.department}
-        position={item.position}
-        skills={item.skills}
-        details={(item as { details?: string[] }).details}
+        title={item.name}
+        date={item.date}
+        organization={item.organization}
+        tier={item.tier}
         onEdit={() => onEdit(item)}
         onDelete={() => onDelete(item.id)}
       />

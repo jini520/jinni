@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { FormRow, FormField } from "../../../components";
-import { formatDateInput } from "../../careerForm";
+import { formatDateInput } from "../../../shared/formatDateInput";
 
 export interface CareerFieldsValue {
   company: string;

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { type DragEndEvent } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
 import { careersApi, businessApi, careerProjectApi } from "../api/careers";
 import { useSortableSensors } from "../shared/useSortableSensors";
 import { useResourceMutations } from "../shared/useResourceMutations";
+import { useSortableReorder } from "../shared/useSortableReorder";
 import type {
   CareerDto,
   BusinessDto,
@@ -42,44 +42,7 @@ export const useCareers = () => {
     loadData();
   }, []);
 
-  // 범위 내 항목만 orderIndex를 갱신하고 변경분만 PATCH (낙관적 업데이트)
-  const reorder = async <T extends CareerDto>(
-    list: T[],
-    setList: (next: T[]) => void,
-    event: DragEndEvent,
-    update: (item: T, newOrderIndex: number) => Promise<unknown>
-  ) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = list.findIndex((item) => item.id === active.id);
-    const newIndex = list.findIndex((item) => item.id === over.id);
-    if (oldIndex === -1 || newIndex === -1) return;
-
-    const reordered = arrayMove(list, oldIndex, newIndex);
-    const startIndex = Math.min(oldIndex, newIndex);
-    const endIndex = Math.max(oldIndex, newIndex);
-
-    const updates = reordered
-      .slice(startIndex, endIndex + 1)
-      .map((item, relativeIndex) => {
-        const newOrderIndex = startIndex + relativeIndex;
-        const oldOrderIndex = list.findIndex((entry) => entry.id === item.id);
-        return oldOrderIndex !== newOrderIndex
-          ? update(item, newOrderIndex)
-          : Promise.resolve();
-      });
-
-    setList(reordered.map((item, index) => ({ ...item, orderIndex: index })));
-
-    try {
-      await Promise.all(updates);
-    } catch (err) {
-      setError("순서 변경에 실패했습니다.");
-      console.error(err);
-      loadData();
-    }
-  };
+  const reorder = useSortableReorder(setError, loadData);
 
   const onBusinessDragEnd = (event: DragEndEvent) =>
     reorder(businessList, setBusinessList, event, (business, orderIndex) =>

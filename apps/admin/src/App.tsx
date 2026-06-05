@@ -5,7 +5,7 @@ import Skills from "./skills";
 import Projects from "./projects/Projects";
 import ProjectDetail from "./projects/ProjectDetail";
 import Careers from "./careers";
-import Certifications from "./certifications/Certifications";
+import Certifications from "./certifications";
 import Educations from "./educations/Educations";
 import Resumes from "./resumes/Resumes";
 import Portfolios from "./portfolios/Portfolios";
