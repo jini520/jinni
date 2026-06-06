@@ -1,0 +1,7 @@
+@use 'tokens/spacing' as sp;
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+}

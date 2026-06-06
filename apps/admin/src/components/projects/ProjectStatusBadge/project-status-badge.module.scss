@@ -1,0 +1,25 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+
+.status {
+  font-size: t.$text-xs;
+  font-weight: t.$weight-medium;
+  padding: 2px sp.$space-2;
+  border-radius: 999px;
+}
+
+.inProgress {
+  background: color-mix(in srgb, var(--color-blue) 14%, transparent);
+  color: var(--color-blue);
+}
+
+.live {
+  background: color-mix(in srgb, var(--color-green) 16%, transparent);
+  color: var(--color-green);
+}
+
+.completed {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
+}
