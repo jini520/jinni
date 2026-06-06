@@ -6,7 +6,7 @@ import {
   BriefcaseIcon,
   UserIcon,
 } from "@/components/common";
-import { formatPeriod } from "@/components/careers/careerForm";
+import { formatPeriod } from "@/utils/formatPeriod";
 import styles from "./career-card.module.scss";
 
 export const CareerCard = ({

@@ -1,0 +1,1 @@
+export { EducationFormModal } from "./EducationFormModal";
