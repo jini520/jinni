@@ -7,7 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "@jinni/ui";
-import { UploadIcon, DownloadIcon } from "./icons";
+import { UploadIcon, DownloadIcon } from "../icons";
 import styles from "./file-manager.module.scss";
 
 export interface UploadAreaHandle {
