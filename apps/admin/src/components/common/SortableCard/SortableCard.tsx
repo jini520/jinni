@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@jinni/ui";
-import { GripIcon } from "./icons";
+import { GripIcon } from "../icons";
 import styles from "./sortable-card.module.scss";
 
 export function SortableCard({

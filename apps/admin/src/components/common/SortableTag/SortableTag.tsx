@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripIcon, CloseIcon } from "./icons";
+import { GripIcon, CloseIcon } from "../icons";
 import styles from "./sortable-tag.module.scss";
 
 // 모달 내 스택(태그) 순서 변경용 — 그립 핸들 드래그 + 삭제. 전 페이지 공통.
