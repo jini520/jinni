@@ -1,0 +1,63 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e
+            APP_DIR="${{ vars.APP_DIR }}"
+
+            # 1) 모노레포 최신화 (단일 클론)
+            cd "$APP_DIR"
+            BEFORE=$(git rev-parse HEAD)
+            git fetch origin main
+            git checkout main
+            git pull --ff-only origin main
+            AFTER=$(git rev-parse HEAD)
+
+            # 2) 변경 대상 판별 (수동 실행은 전체 재배포)
+            S=0; C=0; I=0
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              S=1; C=1; I=1
+            else
+              CHANGED=$(git diff --name-only "$BEFORE" "$AFTER")
+              if echo "$CHANGED" | grep -q '^server/'; then S=1; fi
+              if echo "$CHANGED" | grep -q '^client/'; then C=1; fi
+              if echo "$CHANGED" | grep -q '^infra/';  then I=1; fi
+            fi
+            echo "재배포 대상 → server=$S client=$C infra=$I"
+
+            # 3) compose 디렉토리 + 운영 client 프로필
+            cd "$APP_DIR/infra"
+            PROFILE=$(grep -E '^COMPOSE_PROFILES=' .env | cut -d= -f2)
+            test -n "$PROFILE" || { echo "COMPOSE_PROFILES가 infra/.env에 없음"; exit 1; }
+
+            # 4) 변경분만 재빌드·적용
+            if [ "$S" = 1 ]; then
+              echo "==> server 이미지 재빌드"
+              docker compose up -d --build --no-deps server
+            fi
+            if [ "$C" = 1 ]; then
+              echo "==> 프론트(admin, client-$PROFILE) 재빌드"
+              docker compose up -d --build --no-deps admin "client-${PROFILE}"
+            fi
+            if [ "$I" = 1 ]; then
+              echo "==> compose 설정 적용 + nginx reload"
+              docker compose up -d
+              docker compose exec -T nginx nginx -t && docker compose exec -T nginx nginx -s reload
+            fi
+
+            docker image prune -f

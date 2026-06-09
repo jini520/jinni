@@ -1,18 +1,25 @@
-name: CI
+name: Client CI
 
 on:
   pull_request:
     branches: [main, develop]
+    paths: ['client/**']
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6   # 버전은 package.json packageManager 사용 (이중 지정 방지)
+      - uses: pnpm/action-setup@v6   # 버전은 client/package.json packageManager 사용 (이중 지정 방지)
+        with:
+          package_json_file: client/package.json
       - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm build   # = pnpm --filter '@jinni/*' build (타입체크 포함)
