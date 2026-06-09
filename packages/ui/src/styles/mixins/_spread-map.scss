@@ -1,0 +1,8 @@
+@use 'sass:map';
+
+// CSS 변수 맵을 현재 스코프에 주입
+@mixin spread-map($map) {
+  @each $key, $value in $map {
+    #{$key}: #{$value};
+  }
+}

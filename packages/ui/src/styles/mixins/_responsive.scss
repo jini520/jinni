@@ -1,0 +1,19 @@
+@use '../tokens/breakpoints' as bp;
+
+@mixin min-width($size) {
+  @if      $size == xs  { @media (min-width: bp.$bp-xs)  { @content; } }
+  @else if $size == sm  { @media (min-width: bp.$bp-sm)  { @content; } }
+  @else if $size == md  { @media (min-width: bp.$bp-md)  { @content; } }
+  @else if $size == lg  { @media (min-width: bp.$bp-lg)  { @content; } }
+  @else if $size == xl  { @media (min-width: bp.$bp-xl)  { @content; } }
+  @else if $size == 2xl { @media (min-width: bp.$bp-2xl) { @content; } }
+  @else                 { @media (min-width: $size)       { @content; } }
+}
+
+@mixin max-width($size) {
+  @if      $size == sm  { @media (max-width: calc(bp.$bp-sm  - 1px)) { @content; } }
+  @else if $size == md  { @media (max-width: calc(bp.$bp-md  - 1px)) { @content; } }
+  @else if $size == lg  { @media (max-width: calc(bp.$bp-lg  - 1px)) { @content; } }
+  @else if $size == xl  { @media (max-width: calc(bp.$bp-xl  - 1px)) { @content; } }
+  @else                 { @media (max-width: $size)                   { @content; } }
+}

@@ -1,0 +1,37 @@
+@use '../tokens/colors' as c;
+@use '../tokens/typography' as t;
+
+// :root.light 또는 [data-theme='light'] 에서 사용
+// 직접 사용 금지 — theme/index.scss 경유
+
+$theme-light: (
+  // Background — 페이지는 화이트, 카드/패널만 블루 틴트 슬레이트
+  --color-bg:               #{c.$color-bg-light},
+  --color-bg-secondary:     #{c.$color-slate-50},
+
+  // Text — 슬레이트(블루 언더톤)
+  --color-text:             #{c.$color-slate-900},
+  --color-text-subtle:      #{c.$color-slate-500},
+  --color-text-faint:       #{c.$color-slate-400},
+
+  // Border — 블루 틴트
+  --color-border:           #{c.$color-slate-200},
+  --color-border-strong:    #{c.$color-slate-300},
+
+  // Accent
+  --color-accent:           #{c.$color-blue-500},
+
+  // System colors
+  --color-red:              #{c.$color-red-500},
+  --color-orange:           #{c.$color-orange-500},
+  --color-yellow:           #{c.$color-yellow-500},
+  --color-green:            #{c.$color-green-500},
+  --color-mint:             #{c.$color-mint-500},
+  --color-teal:             #{c.$color-teal-500},
+  --color-cyan:             #{c.$color-cyan-500},
+  --color-blue:             #{c.$color-blue-500},
+  --color-indigo:           #{c.$color-indigo-500},
+  --color-purple:           #{c.$color-purple-500},
+  --color-pink:             #{c.$color-pink-500},
+  --color-brown:            #{c.$color-brown-500},
+);

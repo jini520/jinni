@@ -1,0 +1,102 @@
+@use '@jinni/ui/scss/tokens/colors' as c;
+
+.hero {
+  padding: var(--hero-py) 0 var(--gy);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+  position: relative;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  font-family: var(--f-mono);
+  align-self: start;
+  justify-self: start;
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #{c.$color-pulse-green};
+  box-shadow: 0 0 10px #{c.$color-pulse-green};
+  animation: aPulse 2s infinite;
+}
+
+@keyframes aPulse {
+  50% { opacity: 0.4; }
+}
+
+.h1 {
+  margin: 22px 0 0;
+  font-family: var(--f-sans);
+  font-size: clamp(44px, 7vw, 92px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+}
+
+.ln1, .ln2 {
+  display: block;
+  font-size: 0.46em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fg-dim);
+  line-height: 1;
+}
+
+.ln2 { margin-top: 6px; }
+
+.ln3 {
+  display: block;
+  margin-top: 16px;
+}
+
+.name {
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(115deg, var(--a1) 0%, var(--a2) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 180% 180%;
+  animation: gradMove 9s ease-in-out infinite alternate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -6% -2%;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, var(--accent-glow) 0%, transparent 70%);
+    z-index: -1;
+    filter: blur(20px);
+  }
+}
+
+.h1En {
+  display: block;
+  margin-top: 36px;
+  font-family: var(--f-mono);
+  font-weight: 400;
+  font-size: clamp(13px, 1.2vw, 15.5px);
+  color: var(--fg-faint);
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+@keyframes gradMove {
+  to { background-position: 100% 50%; }
+}

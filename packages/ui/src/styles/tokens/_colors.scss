@@ -1,0 +1,72 @@
+// ── Primitive Color Tokens ────────────────────────────────────────────────
+// hex 리터럴은 이 파일에만 존재. 모든 상위 레이어는 이 변수를 참조.
+
+// System colors (iOS-inspired)
+$color-red-400:    #FF453A;
+$color-red-500:    #FF3B30;
+$color-orange-400: #FF9F0A;
+$color-orange-500: #FF9500;
+$color-yellow-400: #FFD60A;
+$color-yellow-500: #FFCC00;
+$color-green-400:  #30D158;
+$color-green-500:  #34C759;
+$color-mint-400:   #63E6E2;
+$color-mint-500:   #00C7BE;
+$color-teal-400:   #40CBE0;
+$color-teal-500:   #30B0C7;
+$color-cyan-400:   #64D2FF;
+$color-cyan-500:   #32ADE6;
+$color-blue-400:   #0A84FF;
+$color-blue-500:   #007AFF;
+$color-indigo-400: #5E5CE6;
+$color-indigo-500: #5856D6;
+$color-purple-400: #BF5AF2;
+$color-purple-500: #AF52DE;
+$color-pink-400:   #FF375F;
+$color-pink-500:   #FF2D55;
+$color-brown-400:  #AC8E68;
+$color-brown-500:  #A2845E;
+
+// Aurora accent
+$color-aurora-a1-light: #E0277E;
+$color-aurora-a1-dark:  #FF3D9A;
+$color-aurora-a2-light: #6A37D8;
+$color-aurora-a2-dark:  #9B5CFF;
+
+// Neutrals
+$color-white: #ffffff;
+$color-black: #000000;
+
+// Gray scale (light → dark)
+$color-gray-50:  #F2F2F7;
+$color-gray-100: #E5E5EA;
+$color-gray-200: #D1D1D6;
+$color-gray-300: #C7C7CC;
+$color-gray-400: #AEAEB2;
+$color-gray-500: #8E8E93;
+$color-gray-600: #636366;
+$color-gray-700: #48484A;
+$color-gray-800: #3A3A3C;
+$color-gray-900: #2C2C2E;
+$color-gray-950: #1C1C1E;
+
+// Slate scale (blue-tinted neutrals) — light 테마 중립.
+// 순수 gray 대신 accent(blue)와 어울리는 쿨 슬레이트. (채도 ↑ — 확실한 블루 틴트)
+$color-slate-25:  #f4f7fd;
+$color-slate-50:  #e9f0fb;
+$color-slate-100: #dbe6f8;
+$color-slate-200: #cbdaf2;
+$color-slate-300: #b1c6e8;
+$color-slate-400: #8193b3;
+$color-slate-500: #505d78;
+$color-slate-900: #141d30;
+
+// Background
+$color-bg-dark:  #0b0a14;
+$color-bg-light: #FFFFFF;
+
+// UI-specific
+$color-text-on-light: #0a0612;
+
+// Utility
+$color-pulse-green: #7DFFAE;

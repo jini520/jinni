@@ -1,0 +1,7 @@
+// @jinni/ui 스타일 진입점
+// 앱에서 `import '@jinni/ui/styles/index.scss'` 로 임포트
+
+@use 'global/reset';
+@use 'global/base';
+@use 'global/typography';
+@use 'theme/index';

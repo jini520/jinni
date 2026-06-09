@@ -1,0 +1,75 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/breakpoints' as bp;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-4;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
+}
+
+.label {
+  font-size: t.$text-sm;
+  font-weight: t.$weight-medium;
+  color: var(--color-text);
+}
+
+.required {
+  color: var(--color-red);
+  margin-left: 2px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: sp.$space-4;
+
+  @media (max-width: bp.$bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: sp.$space-2;
+  margin-top: sp.$space-2;
+}
+
+// 폼 내부 input/textarea/select 토큰 스타일 (FormField 하위에 한정)
+.field {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    width: 100%;
+    padding: sp.$space-2 sp.$space-3;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: t.$text-base;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+    &::placeholder {
+      color: var(--color-text-faint);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+    }
+  }
+
+  textarea {
+    resize: none;
+    min-height: 96px;
+  }
+}

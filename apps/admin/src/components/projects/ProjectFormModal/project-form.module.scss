@@ -1,0 +1,6 @@
+@use 'tokens/typography' as t;
+
+.hint {
+  font-size: t.$text-xs;
+  color: var(--color-text-faint);
+}

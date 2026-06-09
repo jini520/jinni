@@ -1,0 +1,185 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/shadows' as sh;
+
+// ── UploadArea ───────────────────────────────────────────────────────────
+.uploadArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: sp.$space-10 sp.$space-6;
+  border: 1.5px dashed var(--color-border);
+  border-radius: 16px;
+  background: var(--color-bg-secondary);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.dragging {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.uploading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.uploadContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: sp.$space-3;
+  text-align: center;
+}
+
+.uploadIcon {
+  display: flex;
+  color: var(--color-text-faint);
+
+  svg {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+.uploadText {
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.uploadSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ── FileRow ──────────────────────────────────────────────────────────────
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: sp.$space-3;
+  padding: sp.$space-3 sp.$space-4;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: sh.$shadow-sm;
+  }
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-3;
+  min-width: 0;
+}
+
+.icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.details {
+  min-width: 0;
+}
+
+.name {
+  font-size: t.$text-base;
+  font-weight: t.$weight-medium;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-2;
+  margin-top: 2px;
+  font-size: t.$text-xs;
+  color: var(--color-text-faint);
+
+  span:not(:last-child)::after {
+    content: "•";
+    margin-left: sp.$space-2;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-1;
+  flex-shrink: 0;
+}
+
+.danger.danger {
+  color: var(--color-red);
+
+  &:hover {
+    color: var(--color-red);
+    background: color-mix(in srgb, var(--color-red) 12%, transparent);
+  }
+}
+
+// ── Pagination ───────────────────────────────────────────────────────────
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: sp.$space-2;
+  margin-top: sp.$space-5;
+}
+
+.pageBtn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 sp.$space-2;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: t.$text-sm;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.pageInfo {
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+  padding: 0 sp.$space-2;
+}

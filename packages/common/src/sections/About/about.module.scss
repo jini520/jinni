@@ -1,0 +1,115 @@
+@use '@jinni/ui/scss/mixins/responsive' as rsp;
+@use '../../styles/section-base' as base;
+
+.section { @include base.section; }
+.shead { @include base.shead; }
+.sheadTag { @include base.sheadTag; }
+.sheadTitle { @include base.sheadTitle; }
+.sheadSub { @include base.sheadSub; }
+
+.aboutQa {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 7vw, 80px);
+  padding: 0 0 0 clamp(16px, 3vw, 40px);
+
+  @include rsp.max-width(760px) { padding-left: 12px; }
+}
+
+.qaBlock {
+  display: grid;
+  grid-template-columns: 72px 1fr 1.2fr;
+  gap: clamp(20px, 3vw, 48px);
+  align-items: start;
+  position: relative;
+  padding-top: clamp(28px, 4vw, 40px);
+  border-top: 1px solid var(--line);
+
+  &:first-child { border-top: 0; padding-top: 0; }
+
+  @include rsp.max-width(900px) {
+    grid-template-columns: 60px 1fr;
+    row-gap: 18px;
+
+    .qaAnswerWrap { grid-column: 2; }
+  }
+
+  @include rsp.max-width(600px) {
+    grid-template-columns: 1fr;
+    row-gap: 14px;
+
+    .qaAnswerWrap { grid-column: 1; }
+  }
+}
+
+.qaNum {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  color: var(--a1);
+  letter-spacing: 0.14em;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &::after {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: var(--a1);
+    opacity: 0.4;
+  }
+}
+
+.qaQuestion {
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.024em;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
+  padding-top: 2px;
+  text-wrap: balance;
+
+  :global(.hl) { color: var(--a1); }
+}
+
+.qaAnswerWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.qaAnswer {
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.7;
+  color: var(--fg-dim);
+  letter-spacing: -0.003em;
+  margin: 0;
+
+  :global(.hl) {
+    color: var(--color-text);
+    font-weight: 600;
+    background: linear-gradient(transparent 60%, var(--accent-soft) 60%);
+    padding: 0 2px;
+  }
+}
+
+.qaTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.qaTag {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  letter-spacing: 0.04em;
+}

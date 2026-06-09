@@ -1,0 +1,28 @@
+@use '../tokens/breakpoints' as bp;
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 13px;
+  scrollbar-gutter: stable;
+
+  @media (min-width: bp.$bp-sm) { font-size: 14px; }
+  @media (min-width: bp.$bp-md) { font-size: 15px; }
+  @media (min-width: bp.$bp-lg) { font-size: 16px; }
+}
+
+body {
+  background:   var(--color-bg);
+  color:        var(--color-text);
+  font-family:  var(--font-sans);
+  line-height:  var(--leading-normal);
+  min-height:   100dvh;
+  overflow-x:   hidden;
+  // 상단 inset은 Nav 바가 직접 처리(블러 바가 노치/다이나믹 아일랜드 밑까지 full-bleed)
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left:   env(safe-area-inset-left);
+  padding-right:  env(safe-area-inset-right);
+}
+
+button { font-family: inherit; cursor: pointer; }
+a      { color: inherit; }

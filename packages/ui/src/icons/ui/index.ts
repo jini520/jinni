@@ -1,0 +1,11 @@
+export { default as ArrowIcon } from "./arrow";
+export { default as AstarIcon } from "./astar";
+export { default as AwardIcon } from "./award";
+export { default as CertificationsIcon } from "./certifications";
+export { default as DownloadIcon } from "./download";
+export { default as HamburgerIcon } from "./hamburger";
+export { default as JieutIcon } from "./jieut";
+export { default as MieumIcon } from "./mieum";
+export { default as StarBurstIcon } from "./star-burst";
+export { default as ThreedotsIcon } from "./threedots";
+export { default as XIcon } from "./x";

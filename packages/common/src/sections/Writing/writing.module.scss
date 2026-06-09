@@ -1,0 +1,50 @@
+@use '@jinni/ui/scss/mixins/responsive' as rsp;
+@use '../../styles/section-base' as base;
+
+.section { @include base.section; }
+.shead { @include base.shead; }
+.sheadTag { @include base.sheadTag; }
+.sheadTitle { @include base.sheadTitle; }
+
+.posts { display: grid; gap: 6px; }
+
+.postRow {
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 22px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  transition: background 0.3s, border-color 0.3s, transform 0.25s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    background: var(--surface);
+    border-color: var(--line-2);
+    transform: translateX(4px);
+  }
+
+  @include rsp.max-width(720px) {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 16px 18px;
+
+    .ptag { width: fit-content; }
+  }
+}
+
+.date { font-family: var(--f-mono); font-size: 11px; color: var(--fg-faint); letter-spacing: 0.04em; }
+.ptitle { font-size: 15.5px; letter-spacing: -0.01em; }
+.ptag {
+  font-size: 10.5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--a1);
+  font-family: var(--f-mono);
+  letter-spacing: 0.04em;
+}
+.pread { font-size: 11px; color: var(--fg-faint); font-family: var(--f-mono); }

@@ -1,0 +1,23 @@
+// Next.js 앱 스타일 진입점
+@use 'tailwindcss';
+
+// packages/ui 글로벌 스타일 (reset, base, theme, typography)
+@use 'index';
+
+// Tailwind v4 — CSS 변수를 Tailwind 클래스로 브리징 (Next 앱 전용)
+@theme inline {
+  --color-bg:           var(--color-bg);
+  --color-bg-secondary: var(--color-bg-secondary);
+  --color-text:         var(--color-text);
+  --color-text-subtle:  var(--color-text-subtle);
+  --color-border:       var(--color-border);
+  --color-accent:       var(--color-accent);
+
+  --color-red:    var(--color-red);
+  --color-orange: var(--color-orange);
+  --color-yellow: var(--color-yellow);
+  --color-green:  var(--color-green);
+  --color-blue:   var(--color-blue);
+  --color-purple: var(--color-purple);
+  --color-pink:   var(--color-pink);
+}

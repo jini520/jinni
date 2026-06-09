@@ -6,11 +6,15 @@ export function useScrollProgress(): number {
   useEffect(() => {
     const fn = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? window.scrollY / max : 0);
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
     };
     window.addEventListener('scroll', fn, { passive: true });
+    window.addEventListener('load', fn);
     fn();
-    return () => window.removeEventListener('scroll', fn);
+    return () => {
+      window.removeEventListener('scroll', fn);
+      window.removeEventListener('load', fn);
+    };
   }, []);
 
   return progress;

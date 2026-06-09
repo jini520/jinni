@@ -1,0 +1,79 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+
+.contentMarkdown {
+  font-size: t.$text-base;
+  line-height: var(--leading-relaxed);
+  color: var(--color-text);
+
+  h1, h2, h3 {
+    margin: sp.$space-4 0 sp.$space-2;
+    color: var(--color-text);
+  }
+
+  p {
+    margin: sp.$space-2 0;
+    color: var(--color-text-subtle);
+  }
+
+  ul, ol {
+    padding-left: sp.$space-5;
+    color: var(--color-text-subtle);
+  }
+
+  a {
+    color: var(--color-accent);
+  }
+
+  :not(pre) > code {
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    font-size: 0.9em;
+  }
+
+  // 이미지가 컨텐츠 너비를 넘지 않도록
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: sp.$space-3 0;
+  }
+
+  // 표 디자인
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: sp.$space-4 0;
+    font-size: t.$text-sm;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+  }
+
+  thead {
+    background: var(--color-bg-secondary);
+  }
+
+  th,
+  td {
+    padding: sp.$space-2 sp.$space-3;
+    border: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: t.$weight-semibold;
+    color: var(--color-text);
+  }
+
+  td {
+    color: var(--color-text-subtle);
+  }
+
+  tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--color-bg-secondary) 50%, transparent);
+  }
+}

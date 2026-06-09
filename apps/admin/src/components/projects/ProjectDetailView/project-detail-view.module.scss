@@ -1,0 +1,138 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+
+.detailHeader {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+  padding-bottom: sp.$space-5;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detailHeaderTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: sp.$space-3;
+  flex-wrap: wrap;
+}
+
+.detailTitle {
+  font-size: t.$text-2xl;
+  font-weight: t.$weight-bold;
+  color: var(--color-text);
+}
+
+.detailActions {
+  display: flex;
+  gap: sp.$space-2;
+}
+
+.danger.danger {
+  color: var(--color-red);
+
+  &:hover {
+    color: var(--color-red);
+    background: color-mix(in srgb, var(--color-red) 12%, transparent);
+  }
+}
+
+.detailDesc {
+  font-size: t.$text-md;
+  color: var(--color-text-subtle);
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: sp.$space-3;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.detailSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-2;
+}
+
+.skillTag {
+  font-size: t.$text-xs;
+  padding: 2px sp.$space-2;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-subtle);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+}
+
+.sectionTitle {
+  font-size: t.$text-lg;
+  font-weight: t.$weight-semibold;
+  color: var(--color-text);
+}
+
+.detailText {
+  font-size: t.$text-base;
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-subtle);
+}
+
+.detailList {
+  margin: 0;
+  padding-left: sp.$space-5;
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-1;
+
+  li {
+    font-size: t.$text-base;
+    color: var(--color-text-subtle);
+  }
+}
+
+.feature {
+  padding: sp.$space-3 sp.$space-4;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+}
+
+.featureName {
+  font-size: t.$text-base;
+  font-weight: t.$weight-medium;
+  color: var(--color-text);
+}
+
+.featureNote {
+  margin-top: 2px;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: sp.$space-2;
+}
+
+.link {
+  font-size: t.$text-sm;
+  padding: sp.$space-2 sp.$space-3;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}

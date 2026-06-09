@@ -1,0 +1,31 @@
+.card {
+  position: relative;
+  border-radius: 20px;
+  padding: 28px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.4s, box-shadow 0.4s;
+}
+
+.clickable {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: var(--card-accent, var(--color-accent));
+    box-shadow: 0 20px 60px color-mix(in oklch, var(--card-accent, var(--color-accent)), transparent 80%);
+  }
+}
+
+.topLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--card-accent, var(--color-accent)), transparent);
+  opacity: 0.6;
+}

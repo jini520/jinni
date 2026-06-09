@@ -1,15 +1,24 @@
 {
-  "name": "jejinni",
+  "name": "jinni",
   "private": true,
   "scripts": {
-    "dev:web": "pnpm --filter @jejinni/web dev",
-    "dev:portfolio": "pnpm --filter @jejinni/portfolio dev",
-    "build:web": "pnpm --filter @jejinni/web build",
-    "build:portfolio": "pnpm --filter @jejinni/portfolio build",
-    "build": "pnpm --filter '@jejinni/*' build"
+    "dev:next": "pnpm --filter @jinni/next dev",
+    "dev:react": "pnpm --filter @jinni/react dev",
+    "dev:admin": "pnpm --filter @jinni/admin dev",
+    "build:next": "pnpm --filter @jinni/next build",
+    "build:react": "pnpm --filter @jinni/react build",
+    "build:admin": "pnpm --filter @jinni/admin build",
+    "build": "pnpm --filter '@jinni/*' build"
   },
   "devDependencies": {
     "typescript": "^5"
   },
-  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
+  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748",
+  "pnpm": {
+    "overrides": {
+      "csstype": "^3.2.3",
+      "@types/react": "^19.2.15",
+      "@types/react-dom": "^19.2.3"
+    }
+  }
 }

@@ -1,0 +1,49 @@
+@use '../mixins/spread-map' as mx;
+@use 'light' as l;
+@use 'dark' as d;
+@use '../tokens/typography' as t;
+@use '../tokens/colors' as c;
+
+:root {
+  // 기본값: light 테마
+  @include mx.spread-map(l.$theme-light);
+
+  --color-white: #{c.$color-white};
+  --color-pulse-green: #{c.$color-pulse-green};
+
+  // Typography CSS 변수 노출
+  --font-sans:  #{t.$font-sans};
+  --font-serif: #{t.$font-serif};
+  --font-mono:  #{t.$font-mono};
+
+  --text-xs:   #{t.$text-xs};
+  --text-sm:   #{t.$text-sm};
+  --text-base: #{t.$text-base};
+  --text-md:   #{t.$text-md};
+  --text-lg:   #{t.$text-lg};
+  --text-xl:   #{t.$text-xl};
+  --text-2xl:  #{t.$text-2xl};
+  --text-3xl:  #{t.$text-3xl};
+  --text-4xl:  #{t.$text-4xl};
+  --text-5xl:  #{t.$text-5xl};
+
+  --weight-normal:   #{t.$weight-normal};
+  --weight-medium:   #{t.$weight-medium};
+  --weight-semibold: #{t.$weight-semibold};
+  --weight-bold:     #{t.$weight-bold};
+
+  --leading-tight:   #{t.$leading-tight};
+  --leading-normal:  #{t.$leading-normal};
+  --leading-relaxed: #{t.$leading-relaxed};
+  --leading-loose:   #{t.$leading-loose};
+}
+
+:root.light,
+[data-theme='light'] {
+  @include mx.spread-map(l.$theme-light);
+}
+
+:root.dark,
+[data-theme='dark'] {
+  @include mx.spread-map(d.$theme-dark);
+}

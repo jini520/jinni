@@ -1,0 +1,47 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: sp.$space-2;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-1;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: sp.$space-2;
+  padding: sp.$space-2 sp.$space-3;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-secondary);
+  font-size: t.$text-sm;
+  color: var(--color-text);
+}
+
+.itemRemove {
+  border: none;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  font-size: t.$text-base;
+  line-height: 1;
+
+  &:hover {
+    color: var(--color-red);
+  }
+}

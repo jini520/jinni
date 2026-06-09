@@ -1,0 +1,38 @@
+// apps/react 고유 스타일 (리셋/베이스/테마는 @jinni/ui/styles/index.scss에서)
+
+// 포트폴리오 로딩 상태
+.portfolio-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 8px var(--color-accent);
+    margin-right: 16px;
+    flex-shrink: 0;
+    animation: loading-pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes loading-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.15; }
+  }
+
+  &::after {
+    content: 'JEJINNI.SITE / LOADING';
+    color: var(--color-text-faint);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+  }
+}

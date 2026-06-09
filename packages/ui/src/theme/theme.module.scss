@@ -1,0 +1,146 @@
+@use '../styles/tokens/colors' as c;
+@use '../styles/mixins/responsive' as rsp;
+
+// Theme Variant — Glass · Dark/Light
+.theme {
+  --a1: #{c.$color-aurora-a1-dark};
+  --a2: #{c.$color-aurora-a2-dark};
+  --surface: rgba(255, 255, 255, 0.025);
+  --surface-2: rgba(255, 255, 255, 0.045);
+  --surface-3: rgba(255, 255, 255, 0.075);
+  --fg-dim: rgba(240, 236, 248, 0.6);
+  --fg-faint: rgba(240, 236, 248, 0.34);
+  --line: rgba(255, 255, 255, 0.07);
+  --line-2: rgba(255, 255, 255, 0.13);
+  --accent-soft: rgba(255, 61, 154, 0.14);
+  --accent-glow: rgba(255, 61, 154, 0.35);
+  --f-display: 'Instrument Serif', 'Pretendard', serif;
+  --f-sans: 'Pretendard', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: var(--f-sans);
+  font-feature-settings: 'ss01', 'ss02', 'cv11';
+  letter-spacing: -0.011em;
+  min-height: 100vh;
+  position: relative;
+
+  &[data-theme='light'] {
+    --a1: #{c.$color-aurora-a1-light};
+    --a2: #{c.$color-aurora-a2-light};
+    --surface: rgba(11, 10, 20, 0.03);
+    --surface-2: rgba(11, 10, 20, 0.06);
+    --surface-3: rgba(11, 10, 20, 0.09);
+    --fg-dim: rgba(11, 10, 20, 0.62);
+    --fg-faint: rgba(11, 10, 20, 0.4);
+    --line: rgba(11, 10, 20, 0.08);
+    --line-2: rgba(11, 10, 20, 0.16);
+    --accent-soft: rgba(224, 39, 126, 0.14);
+    --accent-glow: rgba(224, 39, 126, 0.35);
+  }
+}
+
+// ── Background ─────────────────────────────────────────────────────────────
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  filter: blur(70px) saturate(120%);
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0.4;
+
+  .theme[data-theme='light'] & {
+    mix-blend-mode: multiply;
+    opacity: 0.32;
+  }
+
+  &.b1 {
+    width: 55vw;
+    height: 55vw;
+    right: -8vw;
+    top: -10vh;
+    background: radial-gradient(circle, var(--a1) 0%, transparent 60%);
+    animation: aFloat1 30s ease-in-out infinite alternate;
+  }
+
+  &.b2 {
+    width: 50vw;
+    height: 50vw;
+    left: -12vw;
+    bottom: -15vh;
+    background: radial-gradient(circle, var(--a2) 0%, transparent 60%);
+    animation: aFloat2 36s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes aFloat1 {
+  to { transform: translate(-6vw, 10vh) scale(1.08); }
+}
+@keyframes aFloat2 {
+  to { transform: translate(8vw, -8vh) scale(0.92); }
+}
+
+.grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 88px 88px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0, 0, 0, 0.8), transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0, 0, 0, 0.8), transparent 100%);
+}
+
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='.85'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 3;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  filter: blur(16px);
+  opacity: 0.4;
+
+  .theme[data-theme='light'] & {
+    mix-blend-mode: multiply;
+    opacity: 0.22;
+  }
+}
+
+
+.theme[data-density='compact'] { --gx: 24px; --gy: 64px;  --hero-py: 90px;  }
+.theme[data-density='regular'] { --gx: 32px; --gy: 96px;  --hero-py: 140px; }
+.theme[data-density='comfy']   { --gx: 48px; --gy: 140px; --hero-py: 200px; }
+
+@include rsp.max-width(480px) {
+  .theme[data-density='regular'] {
+    --gx: 20px;
+    --gy: 56px;
+    --hero-py: 72px;
+  }
+}
+

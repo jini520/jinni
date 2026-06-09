@@ -1,16 +1,34 @@
-// @jejinni/ui — Shared portfolio UI
+/// <reference path="./types/css-modules.d.ts" />
 
-// ── Variants ────────────────────────────────────────────────────────────────
-export { AuroraVariant } from './variants/aurora/Aurora';
+// ── Icons ─────────────────────────────────────────────────────────────────────
+export * from './icons';
 
-// ── Components ──────────────────────────────────────────────────────────────
-export { ScrollProgress } from './components/ScrollProgress';
+// ── Atoms ────────────────────────────────────────────────────────────────────
+export * from './atoms/Button';
+export * from './atoms/Tag';
+export * from './atoms/Badge';
+export * from './atoms/Pill';
 
-// ── Hooks ───────────────────────────────────────────────────────────────────
-export { useReveal } from './hooks/useReveal';
-export { useMouse } from './hooks/useMouse';
+// ── Molecules ────────────────────────────────────────────────────────────────
+export * from './molecules/Chip';
+export * from './molecules/Accordion';
+
+// ── Organisms ────────────────────────────────────────────────────────────────
+export * from './organisms/Nav';
+export * from './organisms/Card';
+export * from './organisms/Modal';
+export * from './organisms/ProgressBar';
+
+// ── Theme ────────────────────────────────────────────────────────────────────
+export * from './theme';
+
+// ── Hooks ────────────────────────────────────────────────────────────────────
+export { useReveal }         from './hooks/useReveal';
+export { useMouse }          from './hooks/useMouse';
 export { useScrollProgress } from './hooks/useScrollProgress';
 
-// ── Data ────────────────────────────────────────────────────────────────────
-export { PROFILE, LINKS } from './data/profile';
-export type { ContactLink } from './data/profile';
+// ── Utils ────────────────────────────────────────────────────────────────────
+export { formatPeriod, calcMonths, STATUS_LABELS } from './utils/project';
+
+// ── Misc ─────────────────────────────────────────────────────────────────────
+export { MarkdownRenderer } from './components/MarkdownRenderer';

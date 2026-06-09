@@ -1,0 +1,118 @@
+@use 'tokens/spacing' as sp;
+@use 'tokens/typography' as t;
+@use 'tokens/shadows' as sh;
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: sp.$space-3;
+  padding: sp.$space-4 sp.$space-5;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-bg);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: sh.$shadow-sm;
+  }
+}
+
+.dragging {
+  box-shadow: sh.$shadow-lg;
+  border-color: var(--color-accent);
+}
+
+// 드래그 핸들 (그립 스트립) — 전 페이지 통일
+.handle {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: grab;
+  touch-action: none;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: var(--color-accent);
+    background: var(--color-bg-secondary);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-3;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: sp.$space-3;
+}
+
+.titleWrap {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-2;
+  min-width: 0;
+}
+
+.title {
+  font-size: t.$text-md;
+  font-weight: t.$weight-semibold;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aside {
+  flex-shrink: 0;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: sp.$space-1;
+  flex-shrink: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: sp.$space-2;
+  font-size: t.$text-sm;
+  color: var(--color-text-subtle);
+}
+
+// 삭제 버튼 danger 변형 (@jinni/ui Button.ghost 위에 덮어쓰기 — 더블 클래스로 우선순위 확보)
+.danger.danger {
+  color: var(--color-red);
+
+  &:hover {
+    color: var(--color-red);
+    background: color-mix(in srgb, var(--color-red) 12%, transparent);
+  }
+}

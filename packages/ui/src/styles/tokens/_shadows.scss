@@ -1,0 +1,7 @@
+// ── Shadow Tokens ─────────────────────────────────────────────────────────
+@use 'colors' as c;
+
+$shadow-sm: 0 1px 4px rgba(c.$color-black, 0.08);
+$shadow-md: 0 4px 16px rgba(c.$color-black, 0.12);
+$shadow-lg: 0 8px 32px rgba(c.$color-black, 0.16);
+$shadow-xl: 0 20px 60px rgba(c.$color-black, 0.24);
