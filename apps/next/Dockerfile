@@ -1,6 +1,6 @@
 # Client (Next.js SSR) 프로덕션 Dockerfile
 # 빌드 컨텍스트: 모노레포 루트 (docker build -f apps/next/Dockerfile .)
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
 
@@ -25,7 +25,7 @@ COPY apps/next ./apps/next
 RUN pnpm --filter @jinni/next build
 
 # ── 실행 단계 (next start, SSR) ──
-FROM node:20-alpine
+FROM node:24-alpine
 
 RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
 
