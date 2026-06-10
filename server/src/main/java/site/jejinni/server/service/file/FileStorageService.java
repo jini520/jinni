@@ -56,10 +56,10 @@ public class FileStorageService {
   }
 
   public FileStorageService(
-      @Value("${file.upload-dir.images:/var/lib/jejinni-server/uploads/images}") String imageUploadDir,
-      @Value("${file.upload-dir.documents:/var/lib/jejinni-server/uploads/documents}") String documentUploadDir,
-      @Value("${file.upload-dir.resumes:/var/lib/jejinni-server/uploads/resumes}") String resumeUploadDir,
-      @Value("${file.upload-dir.portfolios:/var/lib/jejinni-server/uploads/portfolios}") String portfolioUploadDir) {
+      @Value("${file.upload-dir.images:/app/uploads/images}") String imageUploadDir,
+      @Value("${file.upload-dir.documents:/app/uploads/documents}") String documentUploadDir,
+      @Value("${file.upload-dir.resumes:/app/uploads/resumes}") String resumeUploadDir,
+      @Value("${file.upload-dir.portfolios:/app/uploads/portfolios}") String portfolioUploadDir) {
 
     this.fileStorageLocations = new HashMap<>();
 
