@@ -6,17 +6,19 @@ export const STATUS_LABELS: Record<ProjectStatus, string> = {
   COMPLETED: '완료',
 };
 
-/** "2025-11-01" → "2025.11" */
-function toYearMonth(isoDate: string): string {
-  return isoDate.substring(0, 7).replace('-', '.');
+/** ISO 날짜("2025-11-01") → "2025. 11." (국어 규범: 마침표 뒤 공백, 월 앞자리 0 없음) */
+export function formatYearMonth(isoDate?: string | null): string {
+  if (!isoDate) return '';
+  const [year, month] = isoDate.split('-');
+  return `${year}. ${Number(month)}.`;
 }
 
-/** "2025.11. -"  또는  "2025.11. - 2026.05." */
+/** "2025. 11. -"  또는  "2025. 11. - 2026. 5." */
 export function formatPeriod(startedAt: string | null, endedAt: string | null): string {
   if (!startedAt) return '';
-  const start = toYearMonth(startedAt);
-  if (!endedAt) return `${start}. -`;
-  return `${start}. - ${toYearMonth(endedAt)}.`;
+  const start = formatYearMonth(startedAt);
+  if (!endedAt) return `${start} -`;
+  return `${start} - ${formatYearMonth(endedAt)}`;
 }
 
 /** 경과/소요 개월 수 */

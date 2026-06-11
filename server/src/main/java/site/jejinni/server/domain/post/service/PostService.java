@@ -78,7 +78,7 @@ public class PostService {
     private String formatDate(String raw) {
         try {
             ZonedDateTime date = ZonedDateTime.parse(raw, RSS_DATE_FMT);
-            return String.format("%d.%02d", date.getYear(), date.getMonthValue());
+            return String.format("%d. %d.", date.getYear(), date.getMonthValue());
         } catch (Exception e) {
             return raw;
         }

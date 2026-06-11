@@ -3,8 +3,8 @@ import type {
   SensorDescriptor,
   SensorOptions,
 } from "@dnd-kit/core";
+import { formatYearMonth } from "@jinni/ui";
 import { SortableList } from "@/components/common/SortableList";
-import { formatYYMM } from "@/utils/formatPeriod";
 import { CertificationCard } from "../CertificationCard";
 
 interface CertItem {
@@ -52,7 +52,7 @@ export const CertificationList = <T extends CertItem>({
         key={item.id}
         id={item.id}
         title={item.name}
-        date={formatYYMM(item.date)}
+        date={formatYearMonth(item.date)}
         organization={item.organization}
         tier={item.tier}
         onEdit={() => onEdit(item)}

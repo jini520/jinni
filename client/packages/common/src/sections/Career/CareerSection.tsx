@@ -1,13 +1,10 @@
 import type { Careers } from '@jinni/types';
+import { formatYearMonth } from '@jinni/ui';
 import styles from './career.module.scss';
-
-// ISO 날짜(YYYY-MM-DD)를 "YY.MM."로 축약
-const formatYYMM = (date?: string): string =>
-  date ? `${date.slice(2, 7).replace('-', '.')}.` : '';
 
 export function CareerSection({ careers }: { careers: Careers }) {
   const careerList = careers.businesses.map((b, i) => ({
-    year: `${formatYYMM(b.startDate)} — ${formatYYMM(b.endDate)}`,
+    year: `${formatYearMonth(b.startDate)} — ${formatYearMonth(b.endDate)}`,
     company: b.company,
     role: b.position,
     note: b.details?.[0] ?? b.department,

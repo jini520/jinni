@@ -28,7 +28,7 @@ export { useMouse }          from './hooks/useMouse';
 export { useScrollProgress } from './hooks/useScrollProgress';
 
 // ── Utils ────────────────────────────────────────────────────────────────────
-export { formatPeriod, calcMonths, STATUS_LABELS } from './utils/project';
+export { formatYearMonth, formatPeriod, calcMonths, STATUS_LABELS } from './utils/project';
 
 // ── Misc ─────────────────────────────────────────────────────────────────────
 export { MarkdownRenderer } from './components/MarkdownRenderer';
