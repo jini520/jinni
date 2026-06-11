@@ -25,16 +25,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 아키텍처 컨벤션
 
-레이어 우선 + 도메인 중첩 구조(루트 CLAUDE.md 참고). 그 위의 컨벤션:
+도메인 우선 구조(루트 CLAUDE.md 참고). 그 위의 컨벤션:
 
 - **응답 포맷**: 성공은 `ApiResponse<T>`로 감싸 `{"data": ...}` 반환. 에러는 `ErrorResponse`(`{status, message}`).
-- **예외 → HTTP 매핑** (`exception/GlobalExceptionHandler`): `NotFoundException`→404, `BadRequestException`→400, `IllegalStateException`→409(충돌 용도로 사용), `@Valid` 실패→400(필드별 메시지 조인). 그 외 Spring MVC 예외도 전부 `ErrorResponse` 포맷으로 통일됨. 새 엔드포인트는 이 예외들을 던지면 되고 컨트롤러에서 try-catch 불필요.
-- **엔티티**: 모두 `domain/entity/BaseEntity` 상속 — `created_at`/`updated_at`이 JPA Auditing(`config/JpaAuditingConfig`)으로 자동 관리. 새 테이블에 두 컬럼 필수.
+- **예외 → HTTP 매핑** (`global/exception/GlobalExceptionHandler`): `NotFoundException`→404, `BadRequestException`→400, `IllegalStateException`→409(충돌 용도로 사용), `@Valid` 실패→400(필드별 메시지 조인). 그 외 Spring MVC 예외도 전부 `ErrorResponse` 포맷으로 통일됨. 새 엔드포인트는 이 예외들을 던지면 되고 컨트롤러에서 try-catch 불필요.
+- **엔티티**: 모두 `global/entity/BaseEntity` 상속 — `created_at`/`updated_at`이 JPA Auditing(`global/config/JpaAuditingConfig`)으로 자동 관리. 새 테이블에 두 컬럼 필수.
 
 ## 도메인 특이사항
 
-- **`resume`·`portfolio`는 독자 도메인이 아니다** — 자체 service/repository/entity 없이 `service/file/`(FileService·FileStorageService)을 `FileType.RESUME`/`PORTFOLIO`로 재사용하는 얇은 컨트롤러. 파일 관련 변경은 `file` 쪽을 수정하면 네 타입(IMAGE/DOCUMENT/RESUME/PORTFOLIO) 모두에 적용됨. 저장 경로는 `file.upload-dir.*` 프로퍼티(prod에서 ENC, compose에서 볼륨 마운트).
-- **`velog`**: DB·캐시 없이 요청마다 velog RSS를 실시간 fetch(최대 4건). 실패 시 예외가 아니라 **빈 리스트로 200 응답**(`VelogService`에서 catch) — 외부 장애가 포트폴리오 페이지를 깨뜨리지 않기 위함.
+- **`resume`·`portfolio`는 컨트롤러만 가진 얇은 도메인** — 자체 service/repository/entity 없이 `domain/file/service/`(FileService·FileStorageService)를 `FileType.RESUME`/`PORTFOLIO`로 재사용. 파일 관련 변경은 `file` 도메인을 수정하면 네 타입(IMAGE/DOCUMENT/RESUME/PORTFOLIO) 모두에 적용됨. 저장 경로는 `file.upload-dir.*` 프로퍼티(prod에서 ENC, compose에서 볼륨 마운트).
+- **`post`** (구 velog): DB·캐시 없이 요청마다 velog RSS를 실시간 fetch(최대 4건). 실패 시 예외가 아니라 **빈 리스트로 200 응답**(`PostService`에서 catch) — 외부 장애가 포트폴리오 페이지를 깨뜨리지 않기 위함.
 
 ## Flyway 주의
 

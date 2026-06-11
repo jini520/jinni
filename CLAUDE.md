@@ -49,7 +49,7 @@ pnpm --filter @jinni/ui icons:gen  # _svg → SVGR 컴포넌트 재생성
 
 ## 서버 (`server/`에서 실행)
 
-Spring Boot, **레이어 우선 + 도메인 중첩** 구조. 최상위가 레이어(`controller/` `service/` `repository/` `dto/` `domain/entity/`, 그 외 `config/` `exception/`)이고, 각 레이어 안에 도메인 하위 패키지가 들어간다 — **파일 경로는 `controller/career/…`·`service/skill/…` 식이며 도메인 폴더가 최상위가 아님에 주의**. 도메인: `career`, `skill`, `education`, `project`, `certification`, `resume`·`portfolio`(`file` 도메인을 `FileType`으로 재사용하는 얇은 컨트롤러 — 자체 service/repository 없음), `velog`(외부 RSS 연동), `file`(파일 업로드/저장 — service·repository·dto에만 존재). 패키지 루트는 `site.jejinni.server`.
+Spring Boot, **도메인 우선** 구조. 최상위가 `domain/`·`global/`이고, 각 도메인 폴더 안에 레이어 하위 패키지가 들어간다 — 파일 경로는 `domain/career/controller/…`·`domain/skill/service/…` 식. 도메인: `career`, `skill`, `education`, `project`, `achievement`(자격증+수상), `post`(velog RSS 연동), `resume`·`portfolio`(`file`을 `FileType`으로 재사용하는 얇은 컨트롤러 — 자체 service/repository 없음), `file`(파일 업로드/저장 — API 없는 지원 도메인, project·resume·portfolio가 사용). 공통 요소는 `global/`(`config/` `exception/` `response/` `entity/`). 패키지 루트는 `site.jejinni.server`.
 
 ```bash
 ./gradlew bootRun                              # 로컬 실행
@@ -66,7 +66,7 @@ Spring Boot, **레이어 우선 + 도메인 중첩** 구조. 최상위가 레이
 - 기본(`application.properties`): 공통 설정. Flyway off.
 - `prod`(`application-prod.properties`): DB·파일경로·계정 등이 `ENC(...)`로 암호화되어 있고 Flyway on. 실행 시 **`JASYPT_ENCRYPTOR_PASSWORD` 환경변수 필수**(없으면 복호화 실패).
 
-**보안 현황(인지 필요)**: `config/SecurityConfig`는 `/api/**`에 와일드카드 CORS + `anyRequest().permitAll()`로, 현재 **모든 엔드포인트가 무인증 공개**다(쓰기·삭제 포함). 의도된 현 상태이며 인증 도입은 보류 중 — 변경 작업 시 이 전제를 깨지 않도록 주의.
+**보안 현황(인지 필요)**: `global/config/SecurityConfig`는 `/api/**`에 와일드카드 CORS + `anyRequest().permitAll()`로, 현재 **모든 엔드포인트가 무인증 공개**다(쓰기·삭제 포함). 의도된 현 상태이며 인증 도입은 보류 중 — 변경 작업 시 이 전제를 깨지 않도록 주의.
 
 ## 인프라 / 배포 (`infra/`)
 
