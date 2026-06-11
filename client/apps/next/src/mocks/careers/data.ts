@@ -1,11 +1,11 @@
-import type { Careers } from "@/api/careers.types";
+import type { Careers } from "@jinni/types";
 
 export const mockCareers: Careers = {
   businesses: [
     {
       id: "ff3bd3e2-a374-4213-9c5b-1f34aa056ca2",
       startDate: "2024-06-01",
-      endDate: "2025-02-01",
+      endDate: null,
       company: "Connecting Point",
       department: "스타트업",
       position: "Frontend Developer",

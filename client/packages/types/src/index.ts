@@ -43,7 +43,7 @@ export interface Skills {
 export interface CareerBase {
   id: string;
   startDate: string;          // ISO date "2024-06-01"
-  endDate: string;
+  endDate: string | null;     // null = 재직 중
   company: string;
   department: string;
   position: string;

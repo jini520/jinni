@@ -3,12 +3,12 @@ import { formatYearMonth } from '@jinni/ui';
 import styles from './career.module.scss';
 
 export function CareerSection({ careers }: { careers: Careers }) {
-  const careerList = careers.businesses.map((b, i) => ({
-    year: `${formatYearMonth(b.startDate)} — ${formatYearMonth(b.endDate)}`,
+  const careerList = careers.businesses.map((b) => ({
+    year: `${formatYearMonth(b.startDate)} — ${b.endDate ? formatYearMonth(b.endDate) : 'Now'}`,
     company: b.company,
     role: b.position,
     note: b.details?.[0] ?? b.department,
-    isCurrent: i === 0,
+    isCurrent: !b.endDate,
   }));
 
   return (
