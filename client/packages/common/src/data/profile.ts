@@ -12,7 +12,7 @@ export const PROFILE = {
   site: 'jejinni.site',
   location: 'Seoul, KR',
   available: true,
-  experience: '5+ years',
+  experience: '2 years',
 } as const;
 
 export const LINKS: ContactLink[] = [

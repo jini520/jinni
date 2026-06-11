@@ -20,7 +20,9 @@ export function AboutSection() {
             <span className={styles.qaNum}>{String(i + 1).padStart(2, '0')}</span>
             <h3 className={styles.qaQuestion}>{b.q}</h3>
             <div className={styles.qaAnswerWrap}>
-              <p className={styles.qaAnswer}>{b.a}</p>
+              {b.a.map((answer, j) => (
+                <p key={j} className={styles.qaAnswer}>{answer}</p>
+              ))}
               <div className={styles.qaTags}>
                 {b.tags.map((t) => <span key={t} className={styles.qaTag}>{t}</span>)}
               </div>

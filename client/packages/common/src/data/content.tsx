@@ -11,17 +11,24 @@ export const TECH_GROUPS_KO: Record<string, string> = {
 export const QA_BLOCKS = [
   {
     q: (<>어떤 <span className="hl">개발자</span>인가요?</>),
-    a: (<>사용자 경험을 코드로 설계하는 <span className="hl">프론트엔드 개발자</span>입니다. React와 TypeScript를 주력으로 웹 · 모바일 영역 모두에서 일해왔고, 디자이너의 의도를 한 픽셀까지 살리는 것에 집착합니다.</>),
-    tags: ['React · TypeScript', 'Web · Mobile', '5+ years'],
+    a: [
+      (<>사용자 경험을 코드로 설계하고, 그 코드가 <span className="hl">사용자에게 닿는 순간까지</span> 책임지는 프론트엔드 개발자입니다. React와 TypeScript가 주력이지만, 필요하면 API와 인프라까지 직접 만들고 운영합니다.</>),
+    ],
+    tags: ['React · TypeScript', 'End-to-End', 'Web · Mobile'],
   },
   {
-    q: (<><span className="hl">무엇</span>을 즐기나요?</>),
-    a: (<><span className="hl">디자인 시스템</span>을 처음부터 구축하고, 컴포넌트 API를 다듬는 일을 가장 좋아합니다. 마이크로 인터랙션이 제품의 신뢰감을 만든다고 믿고, 그 디테일을 챙기는 일에서 보람을 느낍니다.</>),
-    tags: ['Design Systems', 'Micro-interaction', 'Performance'],
+    q: (<><span className="hl">무엇</span>에 집착하나요?</>),
+    a: [
+      (<>돌아가는 코드보다 <span className="hl">유지보수 가능한 구조</span>에 집착합니다. 디자인 시스템을 처음부터 구축하고 컴포넌트 API를 다듬는 일을 가장 좋아하며, 마이크로 인터랙션의 디테일이 제품의 신뢰감을 만든다고 믿습니다.</>),
+    ],
+    tags: ['Design Systems', 'Refactoring', 'Micro-interaction'],
   },
   {
     q: (<><span className="hl">어떻게</span> 일하나요?</>),
-    a: (<>디자이너와 <span className="hl">가깝게 일하는 것</span>을 선호합니다. Figma 핸드오프 단계에서 인터랙션을 함께 리뷰하고, 컴포넌트 단계부터 의도를 맞추는 협업이 결과적으로 더 빠르고 정확한 제품을 만든다고 믿습니다.</>),
-    tags: ['Designer-friendly', 'Component-first', 'Remote OK'],
+    a: [
+      (<>문제를 만나면 증상이 아니라 <span className="hl">근본 원인</span>까지 파고들고, 배운 것은 팀이 다시 쓸 수 있게 문서로 남깁니다. 디자이너와는 Figma 핸드오프 단계부터 인터랙션을 함께 리뷰하며 의도를 맞춥니다.</>),
+      (<>AI를 <span className="hl">가장 빠른 동료</span>로 씁니다. 프로젝트의 맥락과 규칙을 문서로 만들어 주입하고, 결과물은 직접 검증하는 협업 프로세스를 설계했습니다. 덕분에 주력인 프론트엔드를 넘어 서버와 인프라까지, 혼자서도 팀의 속도로 다룹니다.</>),
+    ],
+    tags: ['Root-cause', 'Documentation', 'AI-assisted', 'Context Engineering'],
   },
 ];
