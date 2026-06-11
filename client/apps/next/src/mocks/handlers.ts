@@ -4,6 +4,7 @@ import { careerHandlers } from "./careers";
 import { certificationHandlers } from "./certifiactions";
 import { eduHandlers } from "./edu";
 import { resumeHandlers } from "./resume";
+import { postHandlers } from "./posts";
 
 export const handlers = [
   ...projectHandlers,
@@ -12,4 +13,5 @@ export const handlers = [
   ...eduHandlers,
   ...certificationHandlers,
   ...resumeHandlers,
+  ...postHandlers,
 ];

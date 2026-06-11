@@ -6,8 +6,8 @@ import type {
   ApiResponse,
   PageResponse,
   PortfolioData,
+  VelogPost,
 } from '@jinni/types';
-import { fetchVelogPost } from '@/services/velog.service';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://jejinni.site';
 
@@ -38,6 +38,11 @@ async function fetchProjects(): Promise<Project[]> {
   return data?.items ?? [];
 }
 
+async function fetchPosts(): Promise<VelogPost[]> {
+  const data = await apiFetch<VelogPost[]>('/api/posts');
+  return data ?? [];
+}
+
 export async function fetchProjectDetail(id: string): Promise<ProjectDetail | undefined> {
   return apiFetch<ProjectDetail>(`/api/projects/${id}`);
 }
@@ -47,7 +52,7 @@ export async function fetchPortfolioData(): Promise<PortfolioData> {
     fetchSkills(),
     fetchCareers(),
     fetchProjects(),
-    fetchVelogPost(),
+    fetchPosts(),
   ]);
   return { skills, careers, projects, posts };
 }
