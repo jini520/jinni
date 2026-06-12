@@ -13,9 +13,6 @@ export function StackSection({ skills }: { skills: Skills }) {
           <div className={styles.sheadTag}>/ 02 · Stack</div>
           <div className={styles.sheadTitle}>기술 스택</div>
         </div>
-        <p className={styles.sheadSub} data-reveal data-delay="1">
-          실무에서 일상적으로 사용하는 도구들.
-        </p>
       </div>
 
       <div className={styles.tech}>

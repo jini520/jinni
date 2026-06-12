@@ -14,12 +14,9 @@ export function ProjectsSection({ projects, onProjectClick }: ProjectsSectionPro
     <section id="work" className={styles.section}>
       <div className={styles.shead}>
         <div data-reveal>
-          <div className={styles.sheadTag}>/ 03 · Selected Work</div>
+          <div className={styles.sheadTag}>/ 03 · Project</div>
           <div className={styles.sheadTitle}><em>프로젝트</em></div>
         </div>
-        <p className={styles.sheadSub} data-reveal data-delay="1">
-          임팩트 중심으로 선별한 작업물.
-        </p>
       </div>
 
       <div className={styles.projects}>

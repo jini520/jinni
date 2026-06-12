@@ -49,17 +49,3 @@
 
   @include rsp.max-width(480px) { white-space: normal; }
 }
-
-@mixin sheadSub {
-  color: var(--fg-dim);
-  font-size: 14.5px;
-  line-height: 1.6;
-  white-space: nowrap;
-  justify-self: end;
-
-  @include rsp.max-width(760px) {
-    justify-self: start;
-    white-space: normal;
-    max-width: 420px;
-  }
-}

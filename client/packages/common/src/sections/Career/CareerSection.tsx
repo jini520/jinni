@@ -21,7 +21,7 @@ export function CareerSection({ careers }: { careers: Careers }) {
     <section id="career" className={styles.section}>
       <div className={styles.shead}>
         <div data-reveal>
-          <div className={styles.sheadTag}>/ 04 · Timeline</div>
+          <div className={styles.sheadTag}>/ 04 · Career</div>
           <div className={styles.sheadTitle}>커리어</div>
         </div>
       </div>

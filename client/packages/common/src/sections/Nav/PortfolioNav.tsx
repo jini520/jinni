@@ -7,7 +7,7 @@ import styles from './nav.module.scss';
 const navLinks = [
   { label: 'About',   href: '#about' },
   { label: 'Stack',   href: '#stack' },
-  { label: 'Work',    href: '#work' },
+  { label: 'Project', href: '#work' },
   { label: 'Career',  href: '#career' },
   { label: 'Writing', href: '#writing' },
 ];

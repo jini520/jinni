@@ -7,11 +7,8 @@ export function AboutSection() {
       <div className={styles.shead}>
         <div data-reveal>
           <div className={styles.sheadTag}>/ 01 · About</div>
-          <div className={styles.sheadTitle}>코드로 그리는 <em>인터페이스</em></div>
+          <div className={styles.sheadTitle}>Who am <em>I</em></div>
         </div>
-        <p className={styles.sheadSub} data-reveal data-delay="1">
-          디자인 시스템과 성능, 사용자 경험 사이의 균형 — 그 사이에서 길을 만듭니다.
-        </p>
       </div>
 
       <div className={styles.aboutQa}>
