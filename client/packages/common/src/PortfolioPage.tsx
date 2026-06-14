@@ -26,10 +26,11 @@ export function PortfolioPage({ data, renderProjectLink, renderLink, apiUrl }: P
 
   return (
     <>
+      <a href="#main" className={styles.skipLink}>본문으로 건너뛰기</a>
       <ProgressBar accent="var(--a1)" />
       <PortfolioNav renderLink={renderLink} apiUrl={apiUrl} />
 
-      <main className={styles.main}>
+      <main id="main" tabIndex={-1} className={styles.main}>
         <HeroSection />
         <AboutSection />
         <StackSection skills={skills} />

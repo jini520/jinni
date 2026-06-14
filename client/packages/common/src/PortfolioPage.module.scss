@@ -5,6 +5,31 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 var(--gx, 32px);
+
+  // skip link 점프 대상(tabindex=-1) — 거대한 main에 포커스 링이 그려지지 않게
+  &:focus { outline: none; }
+}
+
+// 본문 바로가기 — 평소 화면 밖, 첫 Tab(:focus) 때 좌상단에 노출 (WCAG 2.4.1)
+.skipLink {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3000;
+  transform: translateY(-120%);
+  padding: 12px 20px;
+  background: var(--a1, #ff3d9a);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 10px 0;
+  transition: transform 0.2s ease;
+
+  &:focus {
+    transform: translateY(0);
+    outline: none;
+  }
 }
 
 // ── Reveal animation ───────────────────────────────────────────────────────
