@@ -33,7 +33,7 @@ async function fetchCareers(): Promise<Careers> {
   return data ?? { businesses: [], projects: [] };
 }
 
-async function fetchProjects(): Promise<Project[]> {
+export async function fetchProjects(): Promise<Project[]> {
   const data = await apiFetch<PageResponse<Project>>('/api/projects?page=0&size=20');
   return data?.items ?? [];
 }
