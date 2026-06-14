@@ -65,8 +65,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  // @modal 병렬 라우트 슬롯 — 인터셉트 라우트(프로젝트 모달)가 여기로 렌더된다.
+  modal: React.ReactNode;
 }>) {
   return (
     <html lang="ko">
@@ -76,6 +79,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         {children}
+        {modal}
       </body>
     </html>
   );
