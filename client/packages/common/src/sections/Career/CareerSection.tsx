@@ -9,7 +9,8 @@ export function CareerSection({ careers }: { careers: Careers }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const careerList = careers.businesses.map((b) => ({
-    year: `${formatYearMonth(b.startDate)} — ${b.endDate ? formatYearMonth(b.endDate) : 'Now'}`,
+    startDate: b.startDate,
+    endDate: b.endDate,
     company: b.company,
     role: b.position,
     details: b.details ?? [],
@@ -29,7 +30,13 @@ export function CareerSection({ careers }: { careers: Careers }) {
       <div className={styles.career}>
         {careerList.map((c, i) => (
           <div key={i} className={styles.careerItem} data-reveal data-delay={Math.min(i + 1, 4) as 1 | 2 | 3 | 4}>
-            <div className={styles.careerYear}>{c.year}</div>
+            <div className={styles.careerYear}>
+              <time dateTime={c.startDate.slice(0, 7)}>{formatYearMonth(c.startDate)}</time>
+              {' — '}
+              {c.endDate
+                ? <time dateTime={c.endDate.slice(0, 7)}>{formatYearMonth(c.endDate)}</time>
+                : 'Now'}
+            </div>
             <div className={styles.careerBody}>
               <div className={styles.companyRow}>
                 <div className={styles.company}>{c.company}</div>
