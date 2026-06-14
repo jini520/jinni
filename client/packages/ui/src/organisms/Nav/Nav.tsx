@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { cloneElement, isValidElement, useEffect, useState } from 'react';
 import styles from './nav.module.scss';
 
 export interface NavLink {
@@ -20,8 +20,14 @@ export interface NavProps {
 }
 
 export function Nav({ links, brand, cta, theme = 'dark', onToggleTheme, renderLink, className, activeHref }: NavProps) {
-  const linkEl = (href: string, children: React.ReactNode) =>
-    renderLink ? renderLink(href, children) : <a href={href}>{children}</a>;
+  const linkEl = (href: string, active: boolean, children: React.ReactNode) => {
+    const el = renderLink ? renderLink(href, children) : <a href={href}>{children}</a>;
+    // aria-current는 링크 요소(<a>)에 — 스크롤 스파이가 가리키는 현재 섹션을 AT에 알린다.
+    // <a>가 renderLink/기본값 어느 쪽이든 cloneElement로 주입.
+    return active && isValidElement(el)
+      ? cloneElement(el as React.ReactElement<{ 'aria-current'?: string }>, { 'aria-current': 'true' })
+      : el;
+  };
 
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -39,7 +45,11 @@ export function Nav({ links, brand, cta, theme = 'dark', onToggleTheme, renderLi
         <ul className={styles.links}>
           {links.map((l) => (
             <li key={l.href}>
-              {linkEl(l.href, <span className={styles.link} data-active={l.href === activeHref}>{l.label}</span>)}
+              {linkEl(
+                l.href,
+                l.href === activeHref,
+                <span className={styles.link} data-active={l.href === activeHref}>{l.label}</span>,
+              )}
             </li>
           ))}
         </ul>
