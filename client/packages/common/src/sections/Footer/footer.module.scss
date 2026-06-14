@@ -27,6 +27,8 @@
 .contactTag {
   grid-area: tag;
   @include base.sheadTag;
+  // h2 전환 — UA 기본 bold가 끼어들지 않도록 기존(상속 400) 굵기 유지
+  font-weight: 400;
 }
 
 .contactLinks {

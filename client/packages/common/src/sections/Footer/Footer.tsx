@@ -5,7 +5,7 @@ import styles from './footer.module.scss';
 export function Footer() {
   return (
     <footer className={styles.foot}>
-      <div className={styles.contactTag}>Contact</div>
+      <h2 className={styles.contactTag}>Contact</h2>
       <div className={styles.contactLinks}>
         {LINKS.map((l) => (
           <a key={l.label} href={l.href} className={styles.contactLink} target="_blank" rel="noopener noreferrer">

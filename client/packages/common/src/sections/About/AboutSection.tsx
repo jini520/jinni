@@ -7,7 +7,7 @@ export function AboutSection() {
       <div className={styles.shead}>
         <div data-reveal>
           <div className={styles.sheadTag}>/ 01 · About</div>
-          <div className={styles.sheadTitle}>Who am <em>I</em></div>
+          <h2 className={styles.sheadTitle}>Who am <em>I</em></h2>
         </div>
       </div>
 

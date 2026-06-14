@@ -9,7 +9,7 @@ export function WritingSection({ posts }: { posts: VelogPost[] }) {
       <div className={styles.shead}>
         <div data-reveal>
           <div className={styles.sheadTag}>/ 05 · Writing</div>
-          <div className={styles.sheadTitle}>최근 <em>글</em></div>
+          <h2 className={styles.sheadTitle}>최근 <em>글</em></h2>
         </div>
       </div>
 

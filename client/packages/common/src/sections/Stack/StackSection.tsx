@@ -11,7 +11,7 @@ export function StackSection({ skills }: { skills: Skills }) {
       <div className={styles.shead}>
         <div data-reveal>
           <div className={styles.sheadTag}>/ 02 · Stack</div>
-          <div className={styles.sheadTitle}>기술 스택</div>
+          <h2 className={styles.sheadTitle}>기술 스택</h2>
         </div>
       </div>
 

@@ -15,7 +15,7 @@ export function ProjectsSection({ projects, onProjectClick }: ProjectsSectionPro
       <div className={styles.shead}>
         <div data-reveal>
           <div className={styles.sheadTag}>/ 03 · Project</div>
-          <div className={styles.sheadTitle}><em>프로젝트</em></div>
+          <h2 className={styles.sheadTitle}><em>프로젝트</em></h2>
         </div>
       </div>
 
