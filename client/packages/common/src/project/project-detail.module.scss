@@ -68,6 +68,9 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 
+  // 다이얼로그는 초기 포커스만 받는 컨테이너(tabindex=-1) — 포커스 링 숨김
+  &:focus { outline: none; }
+
   // mobile: 풀 페이지
   border: none;
   border-radius: 0;

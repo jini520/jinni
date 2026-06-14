@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import type { ProjectDetail } from '@jinni/types';
 import { MarkdownRenderer, STATUS_LABELS, formatPeriod, calcMonths } from '@jinni/ui';
@@ -15,14 +15,51 @@ interface Props {
 }
 
 export function ProjectModal({ project: p, accent, dark, idx, onClose }: Props) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    const prev = document.body.style.overflow;
+    const dialog = dialogRef.current;
+    const prevActive = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', onKey);
+
+    // 초기 포커스 — 다이얼로그로 이동(SR이 라벨을 읽고, Tab 트랩의 기준점이 된다)
+    dialog?.focus();
+
+    const getFocusable = () =>
+      dialog
+        ? Array.from(
+            dialog.querySelectorAll<HTMLElement>(
+              'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+            ),
+          ).filter((el) => el.offsetParent !== null)
+        : [];
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key !== 'Tab' || !dialog) return;
+      // 포커스가 모달 경계(첫·끝) 또는 모달 밖에 닿으면 반대편으로 순환(트랩)
+      const items = getFocusable();
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === first || active === dialog || !dialog.contains(active)) {
+          e.preventDefault();
+          (last ?? dialog).focus();
+        }
+      } else if (active === last || !dialog.contains(active)) {
+        e.preventDefault();
+        (first ?? dialog).focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKey);
     return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prev;
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+      prevActive?.focus?.();  // 닫을 때 모달을 열었던 요소로 포커스 복원
     };
   }, [onClose]);
 
@@ -43,9 +80,14 @@ export function ProjectModal({ project: p, accent, dark, idx, onClose }: Props) 
     >
       <div className={styles.inner}>
         <div
+          ref={dialogRef}
           className={styles.modal}
           style={{ ['--c' as string]: accent }}
           onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          tabIndex={-1}
         >
           {/* 닫기 버튼 — sticky */}
           <div className={styles.closeRow}>
@@ -55,7 +97,7 @@ export function ProjectModal({ project: p, accent, dark, idx, onClose }: Props) 
           {/* HEAD */}
           <div className={styles.head}>
             <div className={styles.num}>PROJECT — {idx}</div>
-            <div className={styles.title}>{p.title}</div>
+            <h2 id={titleId} className={styles.title}>{p.title}</h2>
             <div className={styles.sub}>{p.description}</div>
             <div className={styles.tags}>
               {p.status && (
