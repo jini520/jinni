@@ -6,7 +6,7 @@ import { PortfolioNav } from './sections/Nav/PortfolioNav';
 import { HeroSection } from './sections/Hero/HeroSection';
 import { AboutSection } from './sections/About/AboutSection';
 import { StackSection } from './sections/Stack/StackSection';
-import { ProjectsSection } from './sections/Projects/ProjectsSection';
+import { ProjectsSection, type ProjectLinkProps } from './sections/Projects/ProjectsSection';
 import { CareerSection } from './sections/Career/CareerSection';
 import { WritingSection } from './sections/Writing/WritingSection';
 import { Footer } from './sections/Footer/Footer';
@@ -14,12 +14,12 @@ import styles from './PortfolioPage.module.scss';
 
 export interface PortfolioPageProps {
   data: PortfolioData;
-  onProjectClick: (id: string, accent: string, idx: string) => void;
+  renderProjectLink: (props: ProjectLinkProps) => React.ReactNode;
   renderLink?: (href: string, children: React.ReactNode) => React.ReactNode;
   apiUrl?: string;
 }
 
-export function PortfolioPage({ data, onProjectClick, renderLink, apiUrl }: PortfolioPageProps) {
+export function PortfolioPage({ data, renderProjectLink, renderLink, apiUrl }: PortfolioPageProps) {
   useReveal();
 
   const { skills, careers, projects, posts } = data;
@@ -33,7 +33,7 @@ export function PortfolioPage({ data, onProjectClick, renderLink, apiUrl }: Port
         <HeroSection />
         <AboutSection />
         <StackSection skills={skills} />
-        <ProjectsSection projects={projects} onProjectClick={onProjectClick} />
+        <ProjectsSection projects={projects} renderProjectLink={renderProjectLink} />
         <CareerSection careers={careers} />
         <WritingSection posts={posts} />
         <Footer />

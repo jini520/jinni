@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import type { PortfolioData, ProjectDetail } from '@jinni/types';
 import { fetchPortfolioData, fetchProjectDetail } from './data';
 import { Theme, ThemeProvider, useTheme } from '@jinni/ui';
@@ -36,7 +36,6 @@ function ProjectModalRoute() {
 // ── 메인 앱 ───────────────────────────────────────────────────────────────
 function AppContent() {
   const [data, setData] = useState<PortfolioData | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // 새로고침 전 스크롤 위치 저장
@@ -70,9 +69,9 @@ function AppContent() {
         {data && (
           <PortfolioPage
             data={data}
-            onProjectClick={(id, accent, idx) =>
-              navigate(`/projects/${id}`, { state: { accent, idx } })
-            }
+            renderProjectLink={({ to, accent, idx, children, ...rest }) => (
+              <Link to={to} state={{ accent, idx }} {...rest}>{children}</Link>
+            )}
             renderLink={(href, children) => <a href={href}>{children}</a>}
             apiUrl={import.meta.env.VITE_API_URL}
           />
