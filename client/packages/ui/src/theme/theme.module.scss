@@ -88,6 +88,14 @@
   to { transform: translate(8vw, -8vh) scale(0.92); }
 }
 
+// 동작 줄이기 — 무한 부유하는 배경 블롭(대이동) 정지
+@media (prefers-reduced-motion: reduce) {
+  .blob.b1,
+  .blob.b2 {
+    animation: none;
+  }
+}
+
 .grid {
   position: fixed;
   inset: 0;

@@ -44,3 +44,12 @@
   &:global([data-delay='3']) { transition-delay: 0.24s; }
   &:global([data-delay='4']) { transition-delay: 0.32s; }
 }
+
+// 동작 줄이기 — 스크롤 리빌(대이동)을 끄고 콘텐츠를 즉시 표시. 미세 인터랙션은 유지.
+@media (prefers-reduced-motion: reduce) {
+  :global([data-reveal]) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
