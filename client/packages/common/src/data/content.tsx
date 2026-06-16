@@ -1,4 +1,5 @@
-export const CARD_ACCENTS = ['#ff3d9a', '#9b5cff', '#3dd0ff', '#ffb84d'];
+// 프로젝트별 색 — 저채도 차분 팔레트. 중간 명도로 라이트·다크 양쪽 가독 확보.
+export const CARD_ACCENTS = ['#C25E86', '#8470C0', '#3F95A8', '#B5822F'];
 
 export const TECH_GROUPS_KO: Record<string, string> = {
   언어: '언어',

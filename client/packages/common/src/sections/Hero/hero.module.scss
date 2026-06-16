@@ -67,22 +67,7 @@
 
 .name {
   display: inline-block;
-  position: relative;
-  background: linear-gradient(115deg, var(--a1) 0%, var(--a2) 80%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  background-size: 180% 180%;
-  animation: gradMove 9s ease-in-out infinite alternate;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: -6% -2%;
-    background: radial-gradient(ellipse 70% 80% at 50% 50%, var(--accent-glow) 0%, transparent 70%);
-    z-index: -1;
-    filter: blur(20px);
-  }
+  color: var(--a1);
 }
 
 .h1En {
@@ -97,13 +82,3 @@
   text-transform: uppercase;
 }
 
-@keyframes gradMove {
-  to { background-position: 100% 50%; }
-}
-
-// 동작 줄이기 — 제목 그라디언트(.name)의 무한 이동 정지(색은 그대로 유지)
-@media (prefers-reduced-motion: reduce) {
-  .name {
-    animation: none;
-  }
-}
