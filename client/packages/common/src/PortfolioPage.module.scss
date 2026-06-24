@@ -10,24 +10,37 @@
   &:focus { outline: none; }
 }
 
-// 본문 바로가기 — 평소 화면 밖, 첫 Tab(:focus) 때 좌상단에 노출 (WCAG 2.4.1)
+// 본문 바로가기 — 평소 숨김(clip 기법), 첫 Tab(:focus) 때 좌상단에 노출 (WCAG 2.4.1)
+// transform 기반 숨김을 쓰지 않는 이유: iOS Safari가 모달(전체화면 fixed 오버레이 +
+// body 스크롤락 토글) 진입·종료 시 기존 fixed 요소의 transform 클리핑을 리페인트로
+// 풀어버려 스킵 링크가 노치/다이나믹 아일랜드 영역에 노출되는 버그가 있다.
+// 1px 박스로 숨기면 transform이 풀려도 드러날 게 없다.
 .skipLink {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 3000;
-  transform: translateY(-120%);
-  padding: 12px 20px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
   background: var(--a1, #ff3d9a);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
   border-radius: 0 0 10px 0;
-  transition: transform 0.2s ease;
 
   &:focus {
-    transform: translateY(0);
+    width: auto;
+    height: auto;
+    padding: 12px 20px;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
     outline: none;
   }
 }
